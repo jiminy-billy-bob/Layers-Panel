@@ -1,0 +1,20 @@
+
+.rendering{
+display: none;
+}
+
+#renderBar {
+display: none;
+}
+
+#utilitiesBar{
+border-top: 1px solid #efefef;
+}
+
+body { 
+margin-top: 28px;
+}
+
+#menu {
+top: 34px;
+}

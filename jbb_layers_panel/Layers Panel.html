@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-compatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="./js/jquery-ui.css" rel="stylesheet" type="text/css">
+		<link href="./js/jquery.contextMenu.css" rel="stylesheet" type="text/css">
+		<link href="./css/layerspanel.css" rel="stylesheet" type="text/css">
+		
+		<!--[if lte IE 8]>
+		  <style type="text/css">
+		  .menu {
+			filter:progid:DXImageTransform.Microsoft.Shadow(color='#aaaaaa', Direction=135, Strength=5);
+			zoom: 1;
+		  } 
+		  </style>
+		<![endif]-->
+
+	</head>
+	<body style="cursor: auto;" class="unselectable">
+		
+		<input id="serialize" value="" style="display:none"/>
+		
+		<div id="header">
+			<div title="Resize window" id="minimize"></div>
+			
+			<div id="renderBar" class="toolbar">
+				<a href="#" title="Choose render engine" onclick="return false"><div unselectable="on"><div id="renderListButton" unselectable="on"><span>Vray</span></div></div></a>
+				
+				<a href="#" title="Render with Indigo" onclick="return false" class="renderA"><div class='renderElement headerElement right indigo' unselectable="on"><div id="indigo" class="renderButton indigo" unselectable="on" style="display:none"></div></div></a>
+				
+				<a href="#" title="Render with Kerkythea" onclick="return false" class="renderA"><div class='renderElement headerElement right kerkythea' unselectable="on"><div id="kt" class="renderButton kerkythea" unselectable="on" style="display:none"></div></div></a>
+				
+				<a href="#" title="Render with Maxwell Fire" onclick="return false" class="renderA"><div class='renderElement headerElement right maxwell' unselectable="on"><div id="mxfire" class="renderButton maxwell" unselectable="on" style="display:none"></div></div></a>
+				<a href="#" title="Network Render with Maxwell" onclick="return false" class="renderA"><div class='renderElement headerElement right maxwell' unselectable="on"><div id="mxnet" class="renderButton maxwell" unselectable="on" style="display:none"></div></div></a>
+				<a href="#" title="Export to Maxwell Studio" onclick="return false" class="renderA"><div class='renderElement headerElement right maxwell' unselectable="on"><div id="mxstudio" class="renderButton maxwell" unselectable="on" style="display:none"></div></div></a>
+				<a href="#" title="Render with Maxwell" onclick="return false" class="renderA"><div class='renderElement headerElement right maxwell' unselectable="on"><div id="mx" class="renderButton maxwell" unselectable="on" style="display:none"></div></div></a>
+				
+				<a href="#" title="Render with Podium" onclick="return false" class="renderA"><div class='renderElement headerElement right podium' unselectable="on"><div id="podium" class="renderButton podium" unselectable="on" style="display:none"></div></div></a>
+				
+				<a href="#" title="Render with Vray RT" onclick="return false" class="renderA"><div class='renderElement headerElement right vray' unselectable="on"><div id="vrayrt" class="renderButton vray" unselectable="on"></div></div></a>
+				<a href="#" title="Render with Vray" onclick="return false" class="renderA"><div class='renderElement headerElement right vray' unselectable="on"><div id="vray" class="renderButton" unselectable="on"></div></div></a>
+			</div>
+			<div id="utilitiesBar" class="toolbar">
+				<a href="#" title="Open menu" onclick="return false"><div class='headerElement2 left' unselectable="on"><div id="menuButton" unselectable="on"></div></div></a>
+				<a href="#" title="Set selection's layer as current layer" onclick="return false"><div class='headerElement2 right' id="currentParent" unselectable="on"><div id="current" unselectable="on"></div></div></a>
+				<a href="#" title="Move selection to highlighted layer" onclick="return false"><div class='headerElement2 right' unselectable="on"><div id="moveSel" unselectable="on"></div></div></a>
+				<a href="#" title="Lock layer" onclick="return false"><div class='headerElement2 right' unselectable="on"><div id="lock1" unselectable="on"></div></div></a>
+			</div>
+		</div>
+	   
+		<div class="menu" id="renderList">
+				<a href="#" id="useIndigo" title="Use Indigo" onclick="return false"><div class="menuElement">Indigo</div></a>
+				<a href="#" id="useKT" title="Use Kerkythea" onclick="return false"><div class="menuElement">Kerkythea</div></a>
+				<a href="#" id="useMaxwell" title="Use Maxwell" onclick="return false"><div class="menuElement">Maxwell</div></a>
+				<a href="#" id="usePodium" title="Use Podium" onclick="return false"><div class="menuElement">Podium</div></a>
+				<a href="#" id="useVray" title="Use Vray" onclick="return false"><div class="menuElement">Vray</div></a>
+		</div>
+		
+		
+		<div class="menu" id="menu">
+				<a href="#" id="purgeLayers" title="Purge unused layers" onclick="return false"><div class="menuElement">Purge unused layers</div></a>
+				<a href="#" id="purgeGroups" title="Purge unused groups" onclick="return false"><div class="menuElement">Purge unused groups</div></a>
+				<div class="seperator"></div>
+				<a href="#" id="options" title="" onclick="return false"><div class="menuElement">Options</div></a>
+				<div class="seperator"></div>
+				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=thomash76%40gmail%2ecom&lc=GB&item_name=Thomas%20Hauchecorne&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" id="" title="Donate to the author" target="_blank"><div class="menuElement">Donate to the author</div></a>
+		</div>
+		
+		
+		<div class="menu" id="menuLayer">
+				<a href="#" id="newHiddenLayer" title="Add layer only visible in this scene" onclick="return false"><div class="menuElement">Add layer only visible in this scene</div></a>
+		</div>
+		
+		<!--[if lt IE 7 ]><div id="browser">Your Internet Explorer version is outdated, please <a href="http://www.google.com/search?q=internet+explorer" target="_blank">update it</a> to get Layers Panel working properly</div><![endif]-->
+		<!--[if IE 7 ]><div id="browser" class="ie7"><p>Your Internet Explorer version (7) is outdated, please <a href="http://www.google.com/search?q=internet+explorer" target="_blank">update it</a> to get Layers Panel working properly</p></div><![endif]-->
+		
+		<div id="layersContainer">
+			<div id="layers">
+					<ol id="olsortable" class="sortable ui-sortable">
+						<div id="layer_0" class="layer mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf" unselectable="on">
+							<div id="lidiv0" class="lidiv" unselectable="on">
+								<div class="handle" unselectable="on"></div>
+								<div class="rendering render" unselectable="on"></div>
+								<div class="visibility visible" unselectable="on"></div>
+								<div class="active disabled" unselectable="on"></div>
+								<span class="inputName" >
+									<input class="inputNameInput" type="text" value="' + layerName + '" />
+								</span>
+								<span class="layerName">
+									<span class="layerNameText" unselectable="on">Layer0</span>
+								</span>
+							</div>
+						</div>
+					</ol>
+			</div>
+		</div>
+		
+		
+		<div id="footer" unselectable="on">
+			<div id="footer2" unselectable="on">
+				<a href="#" title="Delete layer(s) and move content to current layer" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="trash3" class="trash" unselectable="on"></div></div></a>
+				<a href="#" title="Delete layer(s) and move content to default layer" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="trash" class="trash" unselectable="on"></div></div></a>
+				<a href="#" title="Delete layer(s) and delete content" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="trash2" class="trash" unselectable="on"></div></div></a>
+				<a href="#" title="Add layer" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="newLayer" unselectable="on"></div></div></a>
+				<a href="#" title="Add group" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="newGroup" unselectable="on"></div></div></a>
+				<!--<a  id="print" href="#" title="Print" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div unselectable="on"></div></div></a>-->
+			</div>
+		</div>
+			
+		<script src="./js/jquery.js"></script>
+		<script src="./js/jquery-ui.min.js"></script>
+		<script src="./js/jquery.json-2.4.min.js"></script>
+		<script src="./js/jquery.mjs.nestedSortable.js"></script>
+		<script src="./js/jquery.contextMenu.js"></script>
+		<script src="./js/jquery.scrollTo.js"></script>
+		<script src="./js/layerspanel.js"></script>
+		
+		
+	</body>
+</html>

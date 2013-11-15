@@ -1,0 +1,32 @@
+
+body {
+margin: 0;
+color: #000;
+background-color: #ff9962;
+font-size: 11px;
+font-family: arial;
+padding: 3px;
+overflow-x: hidden;
+overflow-y: hidden;
+}
+
+a{
+color: #555;
+text-decoration: underline;
+}
+
+#more{
+float: right;
+margin: 2px 5px 0 0;
+}
+
+#hide{
+margin-top: 2px;
+color: #555;
+float: left;
+}
+
+#hide span{
+position: relative;
+top: -2px;
+}

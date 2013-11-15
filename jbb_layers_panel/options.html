@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-compatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="./css/options.css" rel="stylesheet" type="text/css">
+
+	</head>
+	<body>
+  
+		<fieldset>
+			<legend>Startup</legend>
+			<input type="checkbox" name="startup" id="startup" value="startup"><label for="startup">Open Layers Panel when Sketchup starts</label><br/>
+		</fieldset>
+		<fieldset>
+			<legend>Interface</legend>
+			<input type="checkbox" name="displaywarning" id="displaywarning" value="displaywarning" checked="true"><label for="displaywarning">Display warning when drawing to another layer than Layer0</label><br/>
+			<input type="checkbox" name="displayrender" id="displayrender" value="displayrender" checked="true"><label for="displayrender">Display render toolbar</label><br/>
+			<input type="checkbox" name="displayIE" id="displayIE" value="displayIE" checked="true"><label for="displayIE">Display outdated IE warning <b>(Please make sure Internet Explorer is at least version 8 before hiding this)</b></label><br/>
+		</fieldset>
+		<fieldset>
+			<legend>Behaviour</legend>
+			<input type="checkbox" name="autoupdate" id="autoupdate" value="autoupdate"><label for="autoupdate">Auto-update active scene</label><br/>
+		</fieldset>
+		<div id="submitButtons"><input type="submit" value="OK" id="ok" class="submitButton"/><input type="submit" value="Cancel" id="cancel" class="submitButton"/></div>
+		
+		<script src="./js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$("#ok").on( "click", function() {
+				var startup = false
+				var displayWarning = false
+				var displayRender = false
+				var displayIE = false
+				var autoUpdate = false
+				
+				if($('#startup').is(':checked')){
+					var startup = true
+				}
+				if($('#displaywarning').is(':checked')){
+					var displayWarning = true
+				}
+				if($('#displayrender').is(':checked')){
+					var displayRender = true
+				}
+				if($('#displayIE').is(':checked')){
+					var displayIE = true
+				}
+				if($('#autoupdate').is(':checked')){
+					var autoUpdate = true
+				}
+				
+				window.location = 'skp:startup@' + startup;
+				window.location = 'skp:displayWarning@' + displayWarning;
+				window.location = 'skp:displayRender@' + displayRender;
+				window.location = 'skp:displayIE@' + displayIE;
+				window.location = 'skp:autoUpdate@' + autoUpdate;
+				window.location = 'skp:close@';
+			});
+			
+			$("#cancel").on( "click", function() {
+				window.location = 'skp:close@';
+			});
+			
+			function checkStartup() {
+				$("input[name=startup]").attr('checked', true);
+			}
+			function uncheckWarning() {
+				$("input[name=displaywarning]").attr('checked', false);
+			}
+			function uncheckRender() {
+				$("input[name=displayrender]").attr('checked', false);
+			}
+			function uncheckIE() {
+				$("input[name=displayIE]").attr('checked', false);
+			}
+			function checkUpdate() {
+				$("input[name=autoupdate]").attr('checked', true);
+			}
+			
+			$(document).ready(function(){
+				window.location = 'skp:getOptions@';
+			});
+		</script>
+	</body>
+</html>

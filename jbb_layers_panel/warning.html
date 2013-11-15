@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-compatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="./css/warning.css" rel="stylesheet" type="text/css">
+
+	</head>
+	<body>
+		<b>WARNING</b> : You're not drawing geometry on Layer0<br/>
+		<div id="more"><a target="_blank" href="http://help.sketchup.com/en/article/38572">More about this...</a></div>
+		<div id="hide"><input type="checkbox" name="hide" id="hidebox" value="hide"><span><label for="hidebox">Do not show this again</label></span></div>
+		
+		<script src="./js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$("#hidebox").on( "click", function() {
+				var displayWarning = true
+				
+				if($('#hidebox').is(':checked')){
+					var displayWarning = false
+				}
+				
+				window.location = 'skp:displayWarning@' + displayWarning;
+			});
+		</script>
+	</body>
+</html>

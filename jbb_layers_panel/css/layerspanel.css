@@ -1,0 +1,691 @@
+
+html {
+height: 100%;
+}
+
+body {
+margin: 0;
+height: 100%;
+width: 100%;
+color: #333;
+background-color: #c6c6c6;
+font-size: 12px;
+font-family: arial;
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+padding: 0 0 30px 0;
+overflow-x: hidden;
+overflow-y: hidden;
+margin: 57px 0 30px 0;
+}
+
+
+
+/****** CONTEXT MENU ******/
+
+.context-menu-list {
+min-width: 100px;
+max-width: 120px;
+}
+
+.context-menu-item {
+padding-left: 2px;
+}
+
+
+
+/****** HEADER ******/
+
+#minimize {
+width: 100%;
+height: 3px;
+position: fixed;
+top: 0;
+left: 0;
+background-color: #949494;
+cursor: pointer;
+}
+
+.left {
+float: left;
+}
+
+.right {
+float: right;
+}
+
+#header {
+background: #d6d6d6;
+width: 100%;
+position: fixed;
+top: 3px;
+z-index: 200;
+}
+
+.toolbar{
+width: 100%;
+height: 26px;
+border-bottom: 1px solid #9e9e9e;
+}
+
+#utilitiesBar{
+height: 24px;
+border-top: 1px solid #efefef;
+}
+
+#renderBar{
+border-top: 1px solid #efefef;
+height: 26px;
+}
+
+.headerElement {
+width: 26px;
+height: 100%;
+}
+
+.headerElementHover {
+background: url("./img/headerElement.png") no-repeat 0px 0px;
+}
+
+.headerElementClick{
+background: url("./img/headerElementBis.png") no-repeat 0px 0px;
+}
+
+.headerElement2 {
+width: 22px;
+margin-top: 1px;
+margin-right: 3px;
+height: 100%;
+}
+
+.headerElement2Hover {
+background: url("./img/headerElement2.png") no-repeat 0px 0px;
+}
+
+.headerElement2Click{
+background: url("./img/headerElement2bis.png") no-repeat 0px 0px;
+}
+
+/****** Render bar ******/
+
+#renderListButton{
+background: url("./img/listButton.png") no-repeat 0px -53px;
+width: 70px;
+height: 25px;
+float: left;
+padding-left: 8px;
+margin-top: 2px;
+}
+
+#renderListButton.clicked{
+background: url("./img/listButton.png") no-repeat 0px -79px;
+}
+
+#renderListButton span {
+background: url("./img/listButton.png") no-repeat right 0px;
+margin-top: -1px;
+display: block;
+overflow: hidden;
+white-space: nowrap;
+height: 25px;
+line-height: 25px;
+cursor: pointer;
+width: 100%;
+display: block; }
+
+#renderListButton.clicked span{
+background: url("./img/listButton.png") no-repeat right -26px;
+}
+
+#renderList {
+position: fixed;
+left: 1px;
+top: 33px;
+}
+
+.renderButton {
+width: 26px;
+height: 26px;
+}
+
+#vray {
+background: url("./img/vray.png") no-repeat 5px 4px;
+}
+#vrayrt {
+background: url("./img/vrayrt.png") no-repeat 5px 4px;
+}
+
+#mx {
+background: url("./img/maxwell_16.png") no-repeat 5px 5px;
+}
+#mxstudio {
+background: url("./img/studio_16.png") no-repeat 5px 5px;
+}
+#mxnet {
+background: url("./img/network_16.png") no-repeat 5px 5px;
+}
+#mxfire {
+background: url("./img/fire_16.png") no-repeat 5px 5px;
+}
+
+#kt{
+background: url("./img/kt_icon.png") no-repeat 1px 1px;
+}
+
+#indigo{
+background: url("./img/IndigoLogo.gif") no-repeat 1px 1px;
+}
+
+#podium{
+background: url("./img/render_16.png") no-repeat 5px 4px;
+}
+
+#menuButton {
+background: url("./img/menu2.png") no-repeat 4px 3px;
+width: 25px;
+height: 100%;
+}
+
+/****** Utilities bar ******/
+
+#current {
+background: url("./img/current.png") no-repeat 2px 3px;
+width: 25px;
+height: 100%;
+}
+
+#moveSel {
+background: url("./img/moveSel.png") no-repeat 2px 3px;
+width: 25px;
+height: 100%;
+}
+
+#lock1 {
+background: url("./img/lock.png") no-repeat 7px 3px;
+width: 25px;
+height: 100%;
+float: right;
+}
+
+
+/****** IE warning ******/
+
+#browser {
+width: 100%;
+background-color: #ff5a00;
+padding: 2px;
+padding-right: 30px;
+font-weight: bold;
+}
+
+#browser a {
+text-decoration: underline;
+}
+
+
+/******* MENU ******/
+
+.menu {
+display: none;
+background: #eee;
+border: 1px solid #999;
+z-index: 397;
+font-size: 11px;
+box-shadow: 3px 4px 5px #aaa;
+}
+
+.menuWrapper {
+background: #eee;
+border: 1px solid #999;
+width: 100%;
+height: 100%;
+position: absolute;
+bottom: 3px;
+left: -4px;
+z-index: 398;
+}
+
+#menu {
+width: 125px;
+position: fixed;
+top: 59px;
+left: 1px;
+}
+
+.menuElement {
+padding: 3px 5px 3px 5px;
+margin: 2px;
+border: 1px solid #eee;
+}
+
+.menuElement:hover {
+background: #ddd;
+border: 1px solid #999;
+}
+
+.seperator{
+margin-left: 3px;
+width: 93%;
+border-bottom: 1px solid #bbb;
+}
+
+
+	
+/****** LAYERS ******/
+
+#layersContainer {
+position: fixed;
+width: 200%;
+margin: -20px;
+}
+
+#layers {
+height: 100%;
+width: 50%;
+overflow-y: scroll;
+margin: 20px;
+padding: 0 0 30px 0;
+}
+
+a{
+color: #333;
+text-decoration: none;
+}
+
+.placeholder {
+outline: 1px dashed #4183C4;
+margin: 4px;
+height: 13px;
+}
+
+.mjs-nestedSortable-error {
+background: #fbe3e4;
+border-color: transparent;
+}
+
+ol {
+margin: 0;
+padding: 0;
+padding-left: 30px;
+}
+
+ol.sortable, ol.sortable ol {
+margin-left: 12px;
+padding: 0;
+list-style-type: none;
+}
+
+ol.sortable {
+margin: 0 0;
+}
+
+.sortable li {
+padding: 0;
+}
+
+li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
+border-color: #999;
+background: #fafafa;
+}
+
+.sortable li.mjs-nestedSortable-collapsed > ol {
+display: none;
+}
+
+.sortable li.mjs-nestedSortable-branch > div > .disclose {
+display: inline-block;
+}
+
+.lidiv { 
+height: 20px;
+background: #d6d6d6; 
+position: relative;
+list-style: none; 
+border-bottom: 1px solid #9e9e9e;
+border-top: 1px solid #9e9e9e;
+border-right: 1px solid #9e9e9e;
+margin-top: -1px;
+}
+
+.group > .lidiv {
+background: #ddd;
+}
+
+.ui-selecting , .group > .ui-selecting { 
+background: #d3dbeb;
+}
+
+.ui-selected, .group > .ui-selected  { 
+background: #b7cdf9;
+}
+
+.ui-sortable-helper  { 
+border-top: 1px solid #9e9e9e;
+}
+
+.ui-sortable-placeholder  { 
+border-bottom: 1px solid #9e9e9e;
+}
+
+.rendering{
+padding: 0;
+float: right;
+height: 100%;
+width: 24px;
+border-left: 1px solid #9e9e9e;
+cursor: pointer;
+}
+
+.render{
+background: url("./img/render.png") no-repeat 3px 3px;
+}
+
+.noRender{
+background: url("./img/square.png") no-repeat 6px 4px;
+}
+
+.noRenderByGroup{
+background: url("./img/render2.png") no-repeat 3px 3px;
+}
+
+.visibility {
+padding: 0;
+float: right;
+height: 100%;
+width: 21px;
+border-left: 1px solid #9e9e9e;
+cursor: pointer;
+}
+
+.visible{
+background: url("./img/eye.png") no-repeat 5px 4px;
+}
+
+.hidden {
+background: url("./img/square.png") no-repeat 5px 4px;
+}
+
+.hiddenByGroup {
+background: url("./img/eye2.png") no-repeat 5px 4px;
+}
+
+.active {
+padding: 0;
+float: right;
+height: 100%;
+width: 21px;
+border-left: 1px solid #9e9e9e;
+cursor: pointer;
+}
+
+.lock2 {
+padding: 0;
+float: right;
+height: 100%;
+width: 17px;
+display: none;
+}
+
+.locked {
+display: block;
+background: url("./img/lock.png") no-repeat 0px;
+}
+
+.enabled {
+background: url("./img/radio2.png") no-repeat 6px 6px;
+}
+
+.disabled {
+background: url("./img/radio1.png") no-repeat 6px 6px;
+}
+
+.handle { 
+padding: 0;
+background: url("./img/updown.png") no-repeat 3px 7px;
+float: left;
+height: 100%;
+width: 11px;
+border-left: 1px solid #9e9e9e;
+border-right: 1px solid #9e9e9e;
+cursor: move;
+}
+
+.layerName {
+display: block;
+padding: 3px 0 0 8px;
+height: 22px;
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+
+.inputName {
+font-size:1px;
+display: none;
+overflow: hidden;
+padding: 0px 0 0 11px;
+height: 20px;
+}
+
+.inputNameInput {
+width: 100%;
+}
+
+
+/**** Layer0 ****/
+
+#layer_0 > .lidiv { 
+background: url("./img/layer0.png");
+border-top: 1px solid #9e9e9e;
+}
+
+#layer_0 > .ui-selected  { 
+background: url("./img/layer0s.png");
+}
+
+.handle0 { 
+padding: 0;
+background: none;
+float: left;
+height: 100%;
+width: 11px;
+border-left: 1px solid #9e9e9e;
+border-right: 1px solid #9e9e9e;
+}
+
+
+
+/****** DISCLOSE ******/
+
+.disclose {
+padding: 0;
+display: block;
+float: left;
+width: 35px;
+height: 100%;
+cursor: pointer;
+}
+
+.mjs-nestedSortable-leaf > .lidiv > .disclose{
+background: url("./img/group.png") no-repeat 5px 5px;
+}
+
+.mjs-nestedSortable-branch > .lidiv > .disclose{
+background: url("./img/group.png") no-repeat 5px 5px;
+}
+
+.mjs-nestedSortable-collapsed > .lidiv > .disclose{
+background: url("./img/group2.png") no-repeat 5px 5px;
+}
+
+.mjs-nestedSortable-expanded > .lidiv > .disclose{
+background: url("./img/group.png") no-repeat 5px 5px;
+}
+
+
+/******* MENU LAYER ******/
+
+#menuLayer {
+width: 135px;
+position: fixed;
+bottom: 22px;
+right: 4px;
+}
+
+
+
+/****** FOOTER ******/
+
+#footer {
+background: #d6d6d6;
+border-top: 2px solid #9e9e9e;
+width: 100%;
+height: 18px;
+position: fixed;
+bottom: 0px;
+}  
+
+#footer2{
+border-top: 1px solid #efefef;
+width: 100%;
+height: 17px;
+position: fixed;
+bottom: 0px;
+padding: 0 20px 0 0;
+}
+
+
+.footerElement {
+margin: 0 1px 0 1px;
+width: 25px;
+height: 100%;
+float: right;
+}
+
+
+.footerElementLeft {
+float: left;
+}
+
+
+.footerElementRight {
+float: right;
+}
+
+
+.footerHover {
+margin: 0;
+background: #efefef;
+border-left: 1px solid #9e9e9e;
+border-right: 1px solid #9e9e9e;
+}
+
+
+.footerClick {
+background: #9c9c9c;
+}
+
+
+#newLayer {
+background: url("./img/layer2.png") no-repeat 5px 0px;
+width: 25px;
+height: 100%;
+float: right;
+}
+
+#newGroup {
+background: url("./img/newgroup.png") no-repeat 6px 0px;
+width: 25px;
+height: 100%;
+float: right;
+}
+
+.trash {
+width: 25px;
+height: 100%;
+float: right;
+}
+
+#trash {
+background: url("./img/trash1.png") no-repeat 6px 0px;
+}
+
+#trash2 {
+background: url("./img/trash2.png") no-repeat 6px 0px;
+}
+
+#trash3 {
+background: url("./img/trash3.png") no-repeat 6px 0px;
+}
+
+##update {
+height: 50px;
+overflow: hidden;
+}
+
+
+/******* OVERLAY + DIALOG ******/
+
+#confirmDelete{
+color: #555;
+display: none;
+position: absolute;
+padding-left: 10px;
+padding-top: 10px;
+z-index:100;
+}
+
+#wrapper{
+margin-right: 10px;
+width: 300px;
+background-color: #c6c6c6;
+padding: 1px 10px 10px 10px;
+border: 1px solid #555;
+}
+
+#wrapper2 {
+z-index:105;
+}
+
+#wrapperButtons {
+text-align: center;
+}
+
+.deleteButton {
+margin: 20px 5px 0 5px;
+width: 50px;
+background-color:#eee;
+border:1px solid #888;
+display:inline-block;
+color:#777;
+font-family:arial;
+font-size:11px;
+font-weight:bold;
+padding:4px 9px;
+text-decoration:none;
+}
+
+.deleteButton:hover {
+background-color:#ddd;
+}
+
+.deleteButton:active {
+position:relative;
+top:1px;
+}
+
+#overlay {
+display: none;
+position: absolute;
+width: 100%;
+height: 100%;
+background-color: #000;
+z-index: 99;
+opacity: 0.5;
+-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+filter: alpha(opacity=40);
+}

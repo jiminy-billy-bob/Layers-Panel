@@ -1,0 +1,32 @@
+
+body {
+margin: 0;
+color: #000;
+background-color: #ededed;
+font-size: 11px;
+font-family: arial;
+padding: 5px;
+overflow-x: hidden;
+overflow-y: hidden;
+}
+
+fieldset{
+padding: 7px;
+margin: 0 0 10px 0;
+}
+
+label{
+position: relative;
+top: -2px;
+}
+
+#submitButtons{
+width: 170px;
+margin: auto;
+}
+
+.submitButton{
+width: 75px;
+margin-right: 5px;
+margin-left: 5px;
+}
