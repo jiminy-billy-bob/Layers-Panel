@@ -750,7 +750,7 @@
 	var headerHeight = 107;
 	function noRenderToolbar() {
 		headerHeight = 78;
-		$('head').append('<link href="./css/norendertoolbar.css" rel="stylesheet" type="text/css">');
+		$('head').append('<link href="../css/norendertoolbar.css" rel="stylesheet" type="text/css">');
 	}
 	
 //-------------
