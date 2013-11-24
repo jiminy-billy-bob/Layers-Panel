@@ -784,6 +784,15 @@
 	}
 	
 	
+//-------------
+	
+	
+	function hightlightLayer(layerID) {
+		layerID = "#layer_" + layerID;
+		$(layerID).children(".lidiv").addClass("ui-selected");
+	}
+	
+	
 	
 	
 	
@@ -941,6 +950,18 @@ $(document).ready(function(){
 				item2 = item2.parent().parent();
 			}
 			unHide(item, true, undefined);
+		}
+		else if (e.shiftKey && $(this).parent().hasClass("ui-selected")) {
+			if( $(this).hasClass("visible") ){
+				$(".ui-selected").each(function() {
+					hide($(this).parent());
+				});
+			}
+			else {
+				$(".ui-selected").each(function() {
+					unHide($(this).parent());
+				});
+			}
 		}
 		else{
 			if( $(this).hasClass("visible") ){
@@ -1220,8 +1241,24 @@ $(document).ready(function(){
 		}
 	});
 	
+	$('#select').click(function() {
+		if($('.ui-selected').length == 0){
+			alert("Please select a layer");
+		}
+		else{
+			$('.ui-selected').each(function(){
+				layerID = $(this).parent().attr('id').replace('layer_', '');
+				window.location = 'skp:selectFromLayer@' + layerID ;
+			});
+		}
+	});
+	
 	$('#current').click(function() {
 		window.location = 'skp:getSelectionLayer';
+	});
+	
+	$('#highlight').click(function() {
+		window.location = 'skp:highlightSelectionLayer';
 	});
 
 

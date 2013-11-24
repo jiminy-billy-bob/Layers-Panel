@@ -733,6 +733,38 @@ module JBB_LayersPanel
 			end#if
 		end#callback
 
+		@dialog.add_action_callback("highlightSelectionLayer") do |wdl, action|
+			selection = @model.selection
+			if selection.empty?
+				UI.messagebox("Please select at least one object")
+			else selection.length == 1
+				@model.start_operation("Highlight selection's layer", true)
+					selection.each { |entity| 
+						layerId = entity.layer.get_attribute("jbb_layerspanel", "ID")
+						hightlightLayer = "hightlightLayer('#{layerId}');"
+						@dialog.execute_script(hightlightLayer)
+					}
+				@model.commit_operation
+			end#if
+		end#callback
+
+		@dialog.add_action_callback("selectFromLayer") do |wdl, layerId|
+			@model.start_operation("Select highlighted layer's entities", true)
+			selection = @model.selection
+			entities = @model.active_entities
+			@layers.each{|layer| 
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+					entities.each { |entity| 
+						if entity.layer == layer
+							selection.add entity
+						end#if
+					}
+					break
+				end#if
+			}
+			@model.commit_operation
+		end#callback
+
 		@dialog.add_action_callback("moveSelection") do |wdl, layerId|
 			selection = @model.selection
 			if selection.empty?
