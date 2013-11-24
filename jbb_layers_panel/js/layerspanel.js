@@ -499,10 +499,12 @@
 	}
 
 
-	function hide(item, byGroup, ruby) {
+	function hide(item, byGroup, ruby, warning) {
 	
 		if(item.find(".enabled").length) { // If active layer
-			alert('You cannot hide the current layer.');
+			if(warning != false){
+				alert('You cannot hide the current layer.');
+			}
 		}
 		
 		else {
@@ -920,11 +922,33 @@ $(document).ready(function(){
 	$(document).on('click', '.visibility', function (e) {
 		var item = $(this).parent().parent();
 		
-		if( $(this).hasClass("visible") ){
-			hide(item);
+		if (e.ctrlKey) {
+			unHide(item, true, undefined);
+			item.parent().children("li").each(function() {
+				hide($(this), undefined, undefined, false);
+			});
+			unHide(item, true, undefined);
 		}
-		else {
-			unHide(item, true);
+		else if (e.altKey) {
+			item2 = item;
+			while(item2.parent("ol").length){
+				item2.parent("ol").children(".layer").each(function() {
+					hide($(this), undefined, undefined, false);
+				});
+				item2.parent("ol").children(".group").each(function() {
+					hide($(this));
+				});
+				item2 = item2.parent().parent();
+			}
+			unHide(item, true, undefined);
+		}
+		else{
+			if( $(this).hasClass("visible") ){
+				hide(item);
+			}
+			else {
+				unHide(item, true);
+			}
 		}
 	});
 	

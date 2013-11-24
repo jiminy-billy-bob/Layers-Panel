@@ -58,28 +58,25 @@ module JBB_LayersPanel
 	class JBB_LP_layersObserver < Sketchup::LayersObserver
 
 		def onLayerAdded(layers, layer)
+			JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
 			timer_02 = UI.start_timer(0, false) {
-				begin
 				UI.stop_timer(timer_02)
-				JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
 					JBB_LayersPanel.initializeLayerDictID
 					JBB_LayersPanel.IdLayer(layer)
 					if JBB_LayersPanel.dialog
+						JBB_LayersPanel.layers.each {| l | layer = l }
 						layerIdForJS = layer.get_attribute("jbb_layerspanel", "ID")
 						addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerIdForJS}');"
 						JBB_LayersPanel.dialog.execute_script(addLayerFromRuby)
 						showLayerFromRuby = "showLayerFromRuby('#{layerIdForJS}');"
 						JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
 					end#if
-				JBB_LayersPanel.model.commit_operation
-				JBB_LayersPanel.model.start_operation("Add layer", true, false, true)
-					# puts "lo"
+				JBB_LayersPanel.model.commit_operation #Necessary...
+				JBB_LayersPanel.model.start_operation("Add layer", true, false, true) #Necessary...
 					layer.set_attribute("jbb_layerspanel", "observer", 1)
 					layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)
-				JBB_LayersPanel.model.commit_operation
-				rescue
-				end
 			}
+			JBB_LayersPanel.model.commit_operation
 		end#onLayerAdded
 		
 		def onLayerRemoved(layers, layer)

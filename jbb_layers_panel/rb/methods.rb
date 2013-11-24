@@ -36,7 +36,7 @@ module JBB_LayersPanel
 	end#def
 	
 	def self.IdLayer(layer) #Give a unique custom id to a layer
-		begin
+		# begin
 			if layer.get_attribute("jbb_layerspanel", "ID") != nil 
 				#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
 			else
@@ -46,8 +46,8 @@ module JBB_LayersPanel
 				self.incLayerDictID
 				@model.commit_operation 
 			end#if
-		rescue
-		end
+		# rescue
+		# end
 	end#def
 	
 	
