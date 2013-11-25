@@ -19,8 +19,10 @@ module JBB_LayersPanel
 					if layer.visible?
 						showLayerFromRuby = "showLayerFromRuby('#{layerId}');"
 						JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
+						done_04b = false
 						timer_04b = UI.start_timer(0, false) {
-							UI.stop_timer(timer_04b)
+							next if done_04b
+							done_04b = true
 							JBB_LayersPanel.unHideByGroup(layerId)
 						}
 					else
@@ -32,8 +34,10 @@ module JBB_LayersPanel
 					JBB_LayersPanel.dialog.execute_script(renameLayerFromRuby)
 					
 					if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
+						done_04 = false
 						timer_04 = UI.start_timer(0, false) {
-							UI.stop_timer(timer_04)
+							next if done_04
+							done_04 = true
 							if	JBB_LayersPanel.model.pages.selected_page != nil
 								JBB_LayersPanel.model.pages.selected_page.update(32) #Update page's layers state
 								# puts "update " + JBB_LayersPanel.model.pages.selected_page.name
@@ -59,8 +63,10 @@ module JBB_LayersPanel
 
 		def onLayerAdded(layers, layer)
 			JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
+			done_02 = false
 			timer_02 = UI.start_timer(0, false) {
-				UI.stop_timer(timer_02)
+				next if done_02
+				done_02 = true
 					JBB_LayersPanel.initializeLayerDictID
 					JBB_LayersPanel.IdLayer(layer)
 					if JBB_LayersPanel.dialog
@@ -83,8 +89,10 @@ module JBB_LayersPanel
 			layerId = layer.get_attribute("jbb_layerspanel", "ID")
 			deleteLayerFromRuby = "deleteLayerFromRuby('#{layerId}');"
 			JBB_LayersPanel.dialog.execute_script(deleteLayerFromRuby)
+			done_03 = false
 			timer_03 = UI.start_timer(0, false) {
-				UI.stop_timer(timer_03)
+				next if done_03
+				done_03 = true
 				if JBB_LayersPanel.allowSerialize == true
 					JBB_LayersPanel.dialog.execute_script("storeSerialize();")
 				end#if
@@ -122,15 +130,19 @@ module JBB_LayersPanel
 	class JBB_LP_AppObserver < Sketchup::AppObserver
 
 		def onNewModel(newModel)
+			done_05 = false
 			timer_05 = UI.start_timer(0, false) {
-				UI.stop_timer(timer_05)
+				next if done_05
+				done_05 = true
 				JBB_LayersPanel.openedModel(newModel)
 			}
 		end#def
 
 		def onOpenModel(newModel)
+			done_06 = false
 			timer_06 = UI.start_timer(0, false) {
-				UI.stop_timer(timer_06)
+				next if done_06
+				done_06 = true
 				JBB_LayersPanel.openedModel(newModel)
 			}
 		end#def
@@ -212,8 +224,10 @@ module JBB_LayersPanel
 				
 				JBB_LayersPanel.check = 0
 				
+				done_07 = false
 				timer_07 = UI.start_timer(0, false) {
-					UI.stop_timer(timer_07)
+					next if done_07
+					done_07 = true
 					dict.each { | key, value |
 					   activePage.set_attribute("jbb_layerspanel_tempHiddenGroups", key, value)
 					}
@@ -257,8 +271,10 @@ module JBB_LayersPanel
 			# puts "added " + page.name
 			JBB_LayersPanel.check = 1
 			
+			done_08 = false
 			timer_08 = UI.start_timer(0, false) {
-				UI.stop_timer(timer_08)
+				next if done_08
+				done_08 = true
 				dict.each { | key, value |
 				   page.set_attribute("jbb_layerspanel_collapseGroups", key, value)
 				}
@@ -298,8 +314,10 @@ module JBB_LayersPanel
 	end#def
 
 	def self.updateDictionaries(activePage)
+		done_09 = false
 		timer_09 = UI.start_timer(0, false) {
-			UI.stop_timer(timer_09)
+			next if done_09
+			done_09 = true
 			dict = activePage.attribute_dictionary "jbb_layerspanel_tempHiddenGroups", true
 			dict2 = activePage.attribute_dictionary "jbb_layerspanel_tempHiddenByGroupLayers", true
 			
