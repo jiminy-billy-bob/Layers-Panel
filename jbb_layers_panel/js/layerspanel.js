@@ -1066,6 +1066,13 @@ $(document).ready(function(){
 			$(this).closest('div').children(".inputName").css('display', 'block').children(".inputNameInput").val(name).focus().select();
 		}
 	});
+	//Select layer when clicking (.selectable() messes with dblclick)
+	$(document).on('click', '.layerNameText', function (e) {
+		$(".ui-selected").each(function(e){
+			$(this).removeClass("ui-selected");
+		});
+		$(this).closest('div').addClass("ui-selected");
+	});
 	
 	//Detect enter key, trigger blur
 	$(document).on('keyup', '.inputNameInput', function (e) {
