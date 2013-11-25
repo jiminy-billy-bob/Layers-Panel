@@ -710,8 +710,10 @@ module JBB_LayersPanel
 				
 				#Revert to the previous active layer
 				@model.active_layer = activeLayer
+				done = false
 				timer_01 = UI.start_timer(0, false) {
-					UI.stop_timer(timer_01)
+					next if done
+					done = true
 					self.deleteLayer(dummyLayer)
 				}
 			@model.commit_operation
