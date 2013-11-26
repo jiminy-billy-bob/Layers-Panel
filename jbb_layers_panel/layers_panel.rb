@@ -104,7 +104,7 @@ module JBB_LayersPanel
 	end#if
 
 	if Sketchup.read_default("jbb_layers_panel", "startup") == true
-		@dialog.show()
+		self.showDialog(@dialog)
 		self.make_toolwindow_frame("Layers Panel")
 	end#if
 	

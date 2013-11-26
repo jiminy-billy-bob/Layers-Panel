@@ -9,6 +9,14 @@ module JBB_LayersPanel
 		return hash
 	end#def
 	
+	def self.showDialog(dialog)
+		if MAC
+			dialog.show_modal()
+		else
+			dialog.show()
+		end#if
+	end#def
+	
 	
 	### LAYER SERIALIZE ### ------------------------------------------------------
 	

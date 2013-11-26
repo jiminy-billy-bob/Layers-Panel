@@ -93,7 +93,7 @@ module JBB_LayersPanel
 	def self.show_layerspanel_dlg_options
 		if !@dialogOptions || !@dialogOptions.visible?
 			self.createDialogOptions
-			@dialogOptions.show()
+			self.showDialog(@dialogOptions)
 			self.make_toolwindow_frame("Layers Panel options")
 			@dialogOptions.execute_script("window.blur()")
 		end#if

@@ -24,7 +24,7 @@ module JBB_LayersPanel
 	def self.show_layerspanel_dlg_warning
 		if !@dialogWarning || !@dialogWarning.visible?
 			self.createDialogWarning
-			@dialogWarning.show()
+			self.showDialog(@dialogWarning)
 			self.make_toolwindow_frame("Layers Panel Warning")
 			@dialogWarning.execute_script("window.blur()")
 		end#if

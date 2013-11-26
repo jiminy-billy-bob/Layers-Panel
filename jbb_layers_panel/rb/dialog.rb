@@ -866,11 +866,7 @@ module JBB_LayersPanel
 		
 		############
 		if closed
-			if MAC
-				@dialog.show_modal()
-			else
-				@dialog.show()
-			end#if
+			self.showDialog(@dialog)
 			self.make_toolwindow_frame("Layers Panel")
 			true
 		end#if
