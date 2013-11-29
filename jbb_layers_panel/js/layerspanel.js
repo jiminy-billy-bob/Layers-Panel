@@ -39,11 +39,44 @@
 	
 //-------------
 
+	
+	var callback_busy = false;
+	var callback_queue = [];
+	function skpCallback(callback) {
+		console.log('skpCallback', callback);
+		callback_queue.push(callback);
+		skpPumpCallback();
+	}
+
+	function skpPumpCallback() {
+		console.log('skpPumpCallback');
+		if (!callback_busy && callback_queue.length > 0) {
+			var callback = callback_queue.shift();
+			skpPushCallback(callback);
+		}
+	}
+
+	function skpPushCallback(callback) {
+		console.log('skpPushCallback', callback);
+		callback_busy = true;
+		window.location = callback;
+	}
+
+	// Called from Ruby.
+	function skpCallbackReceived() {
+		console.log('skpCallbackReceived');
+		callback_busy = false;
+		skpPumpCallback();
+	}
+
+
+//-------------
+
 
 	function getModelLayers(serialize) {
 		allowSerialize = false;
 		query = 'skp:getModelLayers@' + serialize;
-		window.location.href = query;
+		skpCallback(query);
 		allowSerialize = true;
 	}
 	
@@ -51,7 +84,7 @@
 
 
 	function getActiveLayer() {
-		window.location = 'skp:getActiveLayer@';
+		skpCallback('skp:getActiveLayer@');
 	}
 	
 //-------------
@@ -59,7 +92,7 @@
 
 	function getCollapsedGroups() {
 		allowSerialize = false;
-		window.location = 'skp:getCollapsedGroups@';
+		skpCallback('skp:getCollapsedGroups@');
 		allowSerialize = true;
 	}
 	
@@ -76,7 +109,7 @@
 
 	function setActiveLayerFromJS(layerID) {
 		layerID = layerID.replace('layer_', '')
-		window.location = 'skp:setActiveLayerFromJS@' + layerID;
+		skpCallback('skp:setActiveLayerFromJS@' + layerID);
 	}
 	
 //-------------
@@ -128,10 +161,10 @@
 	
 	function addLayerFromJS(hidden) {
 		if(hidden){
-			window.location = 'skp:addHiddenLayerFromJS';
+			skpCallback('skp:addHiddenLayerFromJS');
 		}
 		else {
-			window.location = 'skp:addLayerFromJS';
+			skpCallback('skp:addLayerFromJS');
 		}
 	}
 	
@@ -155,7 +188,7 @@
 				}
 			}
 	
-			window.location = 'skp:addGroupStart@' + groupName;
+			skpCallback('skp:addGroupStart@' + groupName);
 		
 			getLayerDictID();
 			groupID = layerDictID;
@@ -187,7 +220,7 @@
 			storeSerialize();
 		}
 		
-		window.location = 'skp:addGroupEnd@';
+		skpCallback('skp:addGroupEnd@');
 		allowSerialize = true;
 		return groupID;
 	}
@@ -248,7 +281,7 @@
 	
 		var layerNameS = { "layerID":layerID, "newLayerName":newLayerName }; //Json
 		var JsonLayerNameS = $.toJSON( layerNameS );
-		window.location = 'skp:renameLayerFromJS@' + JsonLayerNameS;
+		skpCallback('skp:renameLayerFromJS@' + JsonLayerNameS);
 		
 	}
 	
@@ -262,7 +295,7 @@
 		groupID = groupID.replace('group_', '')
 		var renameGroup = { "groupID":groupID, "newGroupName":newGroupName }; //Json
 		var renameGroup2 = $.toJSON( renameGroup );
-		window.location = 'skp:renameGroup@' + renameGroup2;
+		skpCallback('skp:renameGroup@' + renameGroup2);
 		
 	}
 	
@@ -293,11 +326,11 @@
 				layerID = layerID.replace('layer_', '');
 				if(unlocked == false){
 					$(this).parent().find('.lock2').removeClass('locked');
-					window.location = 'skp:unlockFromJS@' + layerID;
+					skpCallback('skp:unlockFromJS@' + layerID);
 				}
 				else{
 					$(this).parent().find('.lock2').addClass('locked');
-					window.location = 'skp:lockFromJS@' + layerID;
+					skpCallback('skp:lockFromJS@' + layerID);
 				}
 			}
 		});
@@ -393,13 +426,13 @@
 	
 	function deleteLayerFromJS(layerID, deleteGeom, currentLayer) {
 		if(deleteGeom == true) {
-			window.location = 'skp:deleteLayer&GeomFromJS@' + layerID;
+			 skpCallback('skp:deleteLayer&GeomFromJS@' + layerID);
 		}
 		else if(currentLayer == true) {
-			window.location = 'skp:deleteLayerToCurrentFromJS@' + layerID;
+			skpCallback('skp:deleteLayerToCurrentFromJS@' + layerID);
 		}
 		else {
-			window.location = 'skp:deleteLayerFromJS@' + layerID;
+			skpCallback('skp:deleteLayerFromJS@' + layerID);
 		}
 	}
 	
@@ -436,7 +469,7 @@
 			}
 		});
 		// alert(layerIDs);
-		window.location = 'skp:mergeLayers@' + layerIDs;
+		skpCallback('skp:mergeLayers@' + layerIDs);
 	}
 	
 	
@@ -444,12 +477,12 @@
 	
 	
 	function showLayerFromJS(layerID) {
-		window.location = 'skp:showLayerFromJS@' + layerID;
+		skpCallback('skp:showLayerFromJS@' + layerID);
 	}
 	
 	
 	function hideLayerFromJS(layerID, grouped) {
-		window.location = 'skp:hideLayerFromJS@' + layerID;
+		skpCallback('skp:hideLayerFromJS@' + layerID);
 	}
 	
 	
@@ -523,10 +556,10 @@
 				var groupID = item.attr('id').replace('group_', '');
 				if (!byGroup) { //mark group as hidden directly on its highest element
 					item.addClass("hiddenGroup"); 
-					window.location = 'skp:hideGroup@' + groupID;
+					skpCallback('skp:hideGroup@' + groupID);
 				}
 				else {
-					window.location = 'skp:hideGroupByGroup@' + groupID;
+					skpCallback('skp:hideGroupByGroup@' + groupID);
 				}
 			
 				item.children("ol").children(".group").each(function(i) { // Hide visible groups
@@ -545,7 +578,7 @@
 					layerID = item.attr('id').replace('layer_', '');
 					hideLayerFromJS(layerID);
 					if (byGroup) {
-						window.location = 'skp:hideByGroup@' + layerID;
+						skpCallback('skp:hideByGroup@' + layerID);
 					}
 				}
 			}
@@ -573,7 +606,7 @@
 			if ( isGroup(item) ) { //is group
 				item.removeClass("hiddenGroup");
 				groupID = item.attr('id').replace('group_', '');
-				window.location = 'skp:unHideGroup@' + groupID;
+				skpCallback('skp:unHideGroup@' + groupID);
 			
 				item.children("ol").children(".group").each(function(i) { // unHide hiddenByGroup groups
 					if ( $(this).children(".lidiv").children(".visibility").hasClass("hiddenByGroup") ) {
@@ -590,7 +623,7 @@
 				if (ruby != true){
 					layerID = item.attr('id').replace('layer_', '');
 					showLayerFromJS(layerID);
-					// window.location = 'skp:unHideByGroup@' + layerID;
+					// skpCallback('skp:unHideByGroup@' + layerID);
 				}
 			}
 		}
@@ -633,10 +666,10 @@
 			var groupID = item.attr('id').replace('group_', '');
 			if (!byGroup) { //mark group as noRender directly on its highest element
 				item.addClass("noRenderGroup"); 
-				window.location = 'skp:noRender@' + groupID;
+				skpCallback('skp:noRender@' + groupID);
 			}
 			else {
-				window.location = 'skp:noRenderByGroup@' + groupID;
+				skpCallback('skp:noRenderByGroup@' + groupID);
 			}
 		
 			item.children("ol").children(".group").each(function(i) { // noRender render groups
@@ -654,10 +687,10 @@
 			if (ruby != true){
 				layerID = item.attr('id').replace('layer_', '');
 				if (byGroup) {
-					window.location = 'skp:noRenderByGroup@' + layerID;
+					skpCallback('skp:noRenderByGroup@' + layerID);
 				}
 				else {
-					window.location = 'skp:noRender@' + layerID;
+					skpCallback('skp:noRender@' + layerID);
 				}
 			}
 		}
@@ -685,7 +718,7 @@
 			if ( isGroup(item) ) { //is group
 				item.removeClass("noRenderGroup");
 				groupID = item.attr('id').replace('group_', '');
-				window.location = 'skp:render@' + groupID;
+				skpCallback('skp:render@' + groupID);
 			
 				item.children("ol").children(".group").each(function(i) { // render noRenderByGroup groups
 					if ( $(this).children(".lidiv").children(".rendering").hasClass("noRenderByGroup") ) {
@@ -701,19 +734,19 @@
 			else { //is layer
 				if (ruby != true){
 					layerID = item.attr('id').replace('layer_', '');
-					window.location = 'skp:render@' + layerID;
+					skpCallback('skp:render@' + layerID);
 				}
 			}
 		}
 	}
 	
 	function triggerRender(engine) {
-		window.location = 'skp:triggerRender@' + engine;
+		skpCallback('skp:triggerRender@' + engine);
 		// alert('render');
 	}
 	
 	function getRenderEngine() {
-		window.location = 'skp:getRenderEngine@';
+		skpCallback('skp:getRenderEngine@');
 	}
 	
 	function useRenderEngine(engine) {
@@ -725,27 +758,27 @@
 		if(engine == "mx"){
 			$('#renderListButton span').text('Maxwell');
 			$('.maxwell').show();
-			window.location = 'skp:useRenderEngine@mx'
+			skpCallback('skp:useRenderEngine@mx')
 		}
 		else if(engine == "kt"){
 			$('#renderListButton span').text('Kerkythea');
 			$('.kerkythea').show();
-			window.location = 'skp:useRenderEngine@kt'
+			skpCallback('skp:useRenderEngine@kt')
 		}
 		else if(engine == "indigo"){
 			$('#renderListButton span').text('Indigo');
 			$('.indigo').show();
-			window.location = 'skp:useRenderEngine@indigo'
+			skpCallback('skp:useRenderEngine@indigo')
 		}
 		else if(engine == "podium"){
 			$('#renderListButton span').text('Podium');
 			$('.podium').show();
-			window.location = 'skp:useRenderEngine@podium'
+			skpCallback('skp:useRenderEngine@podium')
 		}
 		else{ // Vray is default
 			$('#renderListButton span').text('Vray');
 			$('.vray').show();
-			window.location = 'skp:useRenderEngine@vray'
+			skpCallback('skp:useRenderEngine@vray')
 		}
 	}
 	
@@ -759,7 +792,7 @@
 	
 	
 	function getLayerDictID() {
-		window.location = 'skp:getLayerDictID';
+		skpCallback('skp:getLayerDictID');
 	}
 	
 	
@@ -775,7 +808,7 @@
 		if (allowSerialize == true) {
 			serialized = $('ol.sortable').nestedSortable('serialize');
 			$('#serialize').val(serialized);
-			window.location = 'skp:storeSerialize@';
+			skpCallback('skp:storeSerialize@');
 		}
 	}
 	
@@ -856,7 +889,7 @@ $(document).ready(function(){
 	
 
 	$(document).bind("contextmenu", function(e) { // Disable right-click
-		return false;
+		//return false;
 	});
 	
 	// $(function(){
@@ -905,15 +938,15 @@ $(document).ready(function(){
 		var groupID = $(this).parent().parent().attr('id').replace('group_', '');
 		if ($(this).closest('li').hasClass('mjs-nestedSortable-collapsed')) {
 			$(this).closest('li').removeClass('mjs-nestedSortable-collapsed').addClass('mjs-nestedSortable-expanded');
-			window.location = 'skp:expandGroup@' + groupID;
+			skpCallback('skp:expandGroup@' + groupID);
 		}
 		else if ($(this).closest('li').hasClass('mjs-nestedSortable-expanded')) {
 			$(this).closest('li').removeClass('mjs-nestedSortable-expanded').addClass('mjs-nestedSortable-collapsed');
-			window.location = 'skp:collapseGroup@' + groupID;
+			skpCallback('skp:collapseGroup@' + groupID);
 		}
 		else {
 			$(this).closest('li').addClass('mjs-nestedSortable-collapsed');
-			window.location = 'skp:collapseGroup@' + groupID;
+			skpCallback('skp:collapseGroup@' + groupID);
 		}
 	});
 	
@@ -1028,7 +1061,7 @@ $(document).ready(function(){
 			ui.item.addClass("mjs-nestedSortable-expanded");
 		}
 		
-		window.location = 'skp:sortItem@'
+		skpCallback('skp:sortItem@')
 		// storeSerialize();
 	});
 	
@@ -1145,10 +1178,10 @@ $(document).ready(function(){
 		var jsonSize = $.toJSON( size );
 		
 		if($(window).height() > 5){
-			window.location = 'skp:minimizeDialog@' + jsonSize;
+			skpCallback('skp:minimizeDialog@' + jsonSize);
 		}
 		else {
-			window.location = 'skp:maximizeDialog@' + jsonSize;
+			skpCallback('skp:maximizeDialog@' + jsonSize);
 		}
 	});
 	
@@ -1240,7 +1273,7 @@ $(document).ready(function(){
 		else if ($('.ui-selected').length == 1){
 			if ($('.ui-selected').parent().hasClass("layer")) { // If layer
 				layerID = $('.ui-selected').parent().attr('id').replace('layer_', '');
-				window.location = 'skp:moveSelection@' + layerID ;
+				skpCallback('skp:moveSelection@' + layerID);
 			} else { alert("Please select a layer, not a group"); }
 		}
 		else {
@@ -1255,17 +1288,17 @@ $(document).ready(function(){
 		else{
 			$('.ui-selected').each(function(){
 				layerID = $(this).parent().attr('id').replace('layer_', '');
-				window.location = 'skp:selectFromLayer@' + layerID ;
+				skpCallback('skp:selectFromLayer@' + layerID);
 			});
 		}
 	});
 	
 	$('#current').click(function() {
-		window.location = 'skp:getSelectionLayer';
+		skpCallback('skp:getSelectionLayer');
 	});
 	
 	$('#highlight').click(function() {
-		window.location = 'skp:highlightSelectionLayer';
+		skpCallback('skp:highlightSelectionLayer');
 	});
 
 
@@ -1296,7 +1329,7 @@ $(document).ready(function(){
 	});
 	
 	$('#purgeLayers').click(function() {
-		window.location = 'skp:purgeLayersFromJS';
+		skpCallback('skp:purgeLayersFromJS');
 		storeSerialize();
 	});
 	
@@ -1305,7 +1338,7 @@ $(document).ready(function(){
 	});
 	
 	$('#options').click(function() {
-		window.location = 'skp:openOptionsDialog';
+		skpCallback('skp:openOptionsDialog');
 	});
 	
 	
@@ -1384,13 +1417,13 @@ $(document).ready(function(){
 	
 	$(document).keydown(function(e){
 		if( e.which === 90 && e.ctrlKey ){
-			window.location = 'skp:undo';
+			skpCallback('skp:undo');
 		}          
 	}); 
 	
 	$(document).keydown(function(e){
 		if( e.which === 89 && e.ctrlKey ){
-			window.location = 'skp:redo';
+			skpCallback('skp:redo');
 		}          
 	}); 
 	
