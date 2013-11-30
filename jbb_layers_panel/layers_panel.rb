@@ -46,7 +46,7 @@ module JBB_LayersPanel
 	
 #-----------------------------------------------------------------------------
 	
-	@lpversion = "0.8"
+	@lpversion = "0.9"
 	@store = "ps"
 	
 	@isActive = true

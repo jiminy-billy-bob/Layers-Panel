@@ -219,7 +219,7 @@ module JBB_LayersPanel
 
 		def add_bridge_callback(callback, &block)
 			add_action_callback(callback) do  |webdialog, params|
-				puts "add_bridge_callback(#{callback}) { |#{params}| }"
+				# puts "add_bridge_callback(#{callback}) { |#{params}| }"
 				block.call(webdialog, params)
 				execute_script('skpCallbackReceived();')
 			end

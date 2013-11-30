@@ -17,7 +17,7 @@
 			<legend>Interface</legend>
 			<input type="checkbox" name="displaywarning" id="displaywarning" value="displaywarning" checked="true"><label for="displaywarning">Display warning when drawing to another layer than Layer0</label><br/>
 			<input type="checkbox" name="displayrender" id="displayrender" value="displayrender" checked="true"><label for="displayrender">Display render toolbar</label><br/>
-			<input type="checkbox" name="displayIE" id="displayIE" value="displayIE" checked="true"><label for="displayIE">Display outdated IE warning <b>(Please make sure Internet Explorer is at least version 8 before hiding this)</b></label><br/>
+			<!--<input type="checkbox" name="displayIE" id="displayIE" value="displayIE" checked="true"><label for="displayIE">Display outdated IE warning <b>(Please make sure Internet Explorer is at least version 8 before hiding this)</b></label><br/>-->
 		</fieldset>
 		<fieldset>
 			<legend>Behaviour</legend>
@@ -31,7 +31,7 @@
 				var startup = false
 				var displayWarning = false
 				var displayRender = false
-				var displayIE = false
+				//var displayIE = false
 				var autoUpdate = false
 				
 				if($('#startup').is(':checked')){
@@ -43,9 +43,9 @@
 				if($('#displayrender').is(':checked')){
 					var displayRender = true
 				}
-				if($('#displayIE').is(':checked')){
-					var displayIE = true
-				}
+				//if($('#displayIE').is(':checked')){
+				//	var displayIE = true
+				//}
 				if($('#autoupdate').is(':checked')){
 					var autoUpdate = true
 				}
@@ -53,7 +53,7 @@
 				window.location = 'skp:startup@' + startup;
 				window.location = 'skp:displayWarning@' + displayWarning;
 				window.location = 'skp:displayRender@' + displayRender;
-				window.location = 'skp:displayIE@' + displayIE;
+				//window.location = 'skp:displayIE@' + displayIE;
 				window.location = 'skp:autoUpdate@' + autoUpdate;
 				window.location = 'skp:close@';
 			});
@@ -71,9 +71,9 @@
 			function uncheckRender() {
 				$("input[name=displayrender]").attr('checked', false);
 			}
-			function uncheckIE() {
-				$("input[name=displayIE]").attr('checked', false);
-			}
+			//function uncheckIE() {
+			//	$("input[name=displayIE]").attr('checked', false);
+			//}
 			function checkUpdate() {
 				$("input[name=autoupdate]").attr('checked', true);
 			}
