@@ -214,7 +214,20 @@ module JBB_LayersPanel
 	
 	
 	### WEBDIALOG & CALLBACKS ### ------------------------------------------------------
-	
+
+	class WebdialogBridge < UI::WebDialog
+
+		def add_bridge_callback(callback, &block)
+			add_action_callback(callback) do  |webdialog, params|
+				puts "add_bridge_callback(#{callback}) { |#{params}| }"
+				block.call(webdialog, params)
+				execute_script('skpCallbackReceived();')
+			end
+		end
+
+	end # WebdialogBridge
+
+
 	# Create the WebDialog instance
 	def self.createDialog
 		
@@ -227,7 +240,7 @@ module JBB_LayersPanel
 			end
 		end#if
 		
-		@dialog = UI::WebDialog.new("Layers Panel", false, "LayersPanel", 215, 300, 300, 200, true)
+		@dialog = WebdialogBridge.new("Layers Panel", false, "LayersPanel", 215, 300, 300, 200, true)
 		@dialog.min_width = 199
 		@dialog.min_height = 37
 		# @html_path = File.dirname( __FILE__ ) + "/layers Panel.html"
@@ -236,19 +249,19 @@ module JBB_LayersPanel
 		
 		### Initialize dialog ### ------------------------------------------------------
 
-		@dialog.add_action_callback("getModelLayers") do  |wdl, action|
+		@dialog.add_bridge_callback("getModelLayers") do  |wdl, action|
 			self.getModelLayers(true)
 		end#callback getModelLayers
 
-		@dialog.add_action_callback("getCollapsedGroups") do  |wdl, action|
+		@dialog.add_bridge_callback("getCollapsedGroups") do  |wdl, action|
 			self.getCollapsedGroups()
 		end#callback getModelLayers
 
-		@dialog.add_action_callback("getActiveLayer") do  |wdl, action|
+		@dialog.add_bridge_callback("getActiveLayer") do  |wdl, action|
 			self.getActiveLayer()
 		end#callback getModelLayers
 
-		@dialog.add_action_callback("setActiveLayerFromJS") do  |wdl, layerId|
+		@dialog.add_bridge_callback("setActiveLayerFromJS") do  |wdl, layerId|
 			# puts layerId
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
@@ -264,20 +277,20 @@ module JBB_LayersPanel
 		
 		### Layers ### ------------------------------------------------------
 
-		@dialog.add_action_callback("addLayerFromJS") do
+		@dialog.add_bridge_callback("addLayerFromJS") do
 			@model.start_operation("Add layer", true)
 				layer = @layers.add @layers.unique_name
 			@model.commit_operation
 		end#callback addLayerFromJS
 
-		@dialog.add_action_callback("addHiddenLayerFromJS") do
+		@dialog.add_bridge_callback("addHiddenLayerFromJS") do
 			@model.start_operation("Add layer", true)
 			layer = @layers.add @layers.unique_name
 			layer.page_behavior=(LAYER_HIDDEN_BY_DEFAULT | LAYER_IS_HIDDEN_ON_NEW_PAGES)
 			@model.commit_operation
 		end#callback addLayerFromJS
 
-		@dialog.add_action_callback("renameLayerFromJS") do |wdl, layerNameS|
+		@dialog.add_bridge_callback("renameLayerFromJS") do |wdl, layerNameS|
 			@model.start_operation("Rename layer", true)
 			hashLayerNames = self.jsonToHash(layerNameS)
 			layerId = hashLayerNames['layerID']
@@ -295,7 +308,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback renameLayerFromJS
 
-		@dialog.add_action_callback("checkLayerForContent") do |wdl, layerId|
+		@dialog.add_bridge_callback("checkLayerForContent") do |wdl, layerId|
 			# puts layerId
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
@@ -315,7 +328,7 @@ module JBB_LayersPanel
 			}
 		end#callback
 
-		@dialog.add_action_callback("lockFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("lockFromJS") do |wdl, layerId|
 			@model.start_operation("Lock layer", true)
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
@@ -327,7 +340,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback
 
-		@dialog.add_action_callback("unlockFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("unlockFromJS") do |wdl, layerId|
 			@model.start_operation("Unlock layer", true)
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
@@ -339,7 +352,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback
 
-		@dialog.add_action_callback("deleteLayerFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("deleteLayerFromJS") do |wdl, layerId|
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
 					self.deleteLayer(layer)
@@ -348,7 +361,7 @@ module JBB_LayersPanel
 			}
 		end#callback deleteLayerFromJS
 
-		@dialog.add_action_callback("deleteLayerToCurrentFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("deleteLayerToCurrentFromJS") do |wdl, layerId|
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
 					self.deleteLayer(layer, false, true)
@@ -357,7 +370,7 @@ module JBB_LayersPanel
 			}
 		end#callback deleteLayerToCurrentFromJS
 
-		@dialog.add_action_callback("deleteLayer&GeomFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("deleteLayer&GeomFromJS") do |wdl, layerId|
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
 					self.deleteLayer(layer, true)
@@ -366,7 +379,7 @@ module JBB_LayersPanel
 			}
 		end#callback deleteLayer&GeomFromJS
 
-		@dialog.add_action_callback("mergeLayers") do |wdl, layerIDs|
+		@dialog.add_bridge_callback("mergeLayers") do |wdl, layerIDs|
 			matches = layerIDs.to_s.scan(/([^,]+),/) #make an array of it
 			activeLayer = @model.active_layer #Store current active layer to revert later
 			i = 1
@@ -408,7 +421,7 @@ module JBB_LayersPanel
 			self.storeSerialize
 		end#callback mergeLayers
 
-		@dialog.add_action_callback("hideLayerFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("hideLayerFromJS") do |wdl, layerId|
 			@model.start_operation("Hide layer", true)
 			# puts layerId
 			@layers.each{|layer| 
@@ -420,7 +433,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback hideLayerFromJS
 
-		@dialog.add_action_callback("showLayerFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("showLayerFromJS") do |wdl, layerId|
 			@model.start_operation("Unhide layer", true)
 			# puts layerId
 			@layers.each{|layer| 
@@ -432,7 +445,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback showLayerFromJS
 
-		@dialog.add_action_callback("hideByGroup") do |wdl, layerId|
+		@dialog.add_bridge_callback("hideByGroup") do |wdl, layerId|
 			@model.start_operation("Hide layer", true, false, true)
 			# puts layerId
 			if @model.pages.selected_page == nil
@@ -450,7 +463,7 @@ module JBB_LayersPanel
 		
 		### Groups ### ------------------------------------------------------
 		
-		@dialog.add_action_callback("addGroupStart") do |wdl, groupName|
+		@dialog.add_bridge_callback("addGroupStart") do |wdl, groupName|
 			@model.start_operation("Add group layer", true)
 			self.initializeLayerDictID
 			# puts groupName
@@ -458,12 +471,12 @@ module JBB_LayersPanel
 			@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
 		end#callback addGroup
 
-		@dialog.add_action_callback("addGroupEnd") do |wdl, groupName|
+		@dialog.add_bridge_callback("addGroupEnd") do |wdl, groupName|
 			# @dialog.execute_script("storeSerialize();")
 			@model.commit_operation
 		end#callback addGroup
 
-		@dialog.add_action_callback("renameGroup") do |wdl, renameGroup|
+		@dialog.add_bridge_callback("renameGroup") do |wdl, renameGroup|
 			@model.start_operation("Rename group layer", true)
 			hashGroup = self.jsonToHash(renameGroup)
 			groupId = hashGroup['groupID']
@@ -474,7 +487,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback renameGroup
 
-		@dialog.add_action_callback("collapseGroup") do |wdl, groupId|
+		@dialog.add_bridge_callback("collapseGroup") do |wdl, groupId|
 			# puts "collapse " + groupId
 			@model.start_operation("Collapse group layer", true)
 			if @model.pages.selected_page == nil
@@ -486,7 +499,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback collapseGroup
 
-		@dialog.add_action_callback("expandGroup") do |wdl, groupId|
+		@dialog.add_bridge_callback("expandGroup") do |wdl, groupId|
 			# puts "expand " + groupId
 			@model.start_operation("Expand group layer", true)
 			if @model.pages.selected_page == nil
@@ -498,7 +511,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback expandGroup
 
-		@dialog.add_action_callback("hideGroup") do |wdl, groupId|
+		@dialog.add_bridge_callback("hideGroup") do |wdl, groupId|
 			# puts "Hide group " + groupId
 			@model.start_operation("Hide group layer", true)
 			if @model.pages.selected_page == nil
@@ -515,7 +528,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback hideGroup
 
-		@dialog.add_action_callback("hideGroupByGroup") do |wdl, groupId|
+		@dialog.add_bridge_callback("hideGroupByGroup") do |wdl, groupId|
 			# puts "HideByGroup group " + groupId
 			@model.start_operation("Hide group layer", true, false, true)
 			if @model.pages.selected_page == nil
@@ -531,7 +544,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback hideGroupByGroup
 
-		@dialog.add_action_callback("unHideGroup") do |wdl, groupId|
+		@dialog.add_bridge_callback("unHideGroup") do |wdl, groupId|
 			# puts "Hide group " + groupId
 			@model.start_operation("Unhide group layer", true)
 			if @model.pages.selected_page == nil
@@ -551,19 +564,19 @@ module JBB_LayersPanel
 		
 		### Render ### ------------------------------------------------------
 
-		@dialog.add_action_callback("useRenderEngine") do |wdl, engine|
+		@dialog.add_bridge_callback("useRenderEngine") do |wdl, engine|
 			Sketchup.write_default("jbb_layers_panel", "render_engine", engine)
 		end#callback render
 
-		@dialog.add_action_callback("getRenderEngine") do |wdl, action|
+		@dialog.add_bridge_callback("getRenderEngine") do |wdl, action|
 			self.getRenderEngine
 		end#callback render
 
-		@dialog.add_action_callback("checkRenderToolbar") do |wdl, action|
+		@dialog.add_bridge_callback("checkRenderToolbar") do |wdl, action|
 			self.checkRenderToolbar
 		end#callback render
 
-		@dialog.add_action_callback("render") do |wdl, itemId|
+		@dialog.add_bridge_callback("render") do |wdl, itemId|
 			# puts "Render item " + itemId
 			@model.start_operation("Render layer", true)
 			if @model.pages.selected_page == nil
@@ -575,7 +588,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback render
 
-		@dialog.add_action_callback("noRender") do |wdl, itemId|
+		@dialog.add_bridge_callback("noRender") do |wdl, itemId|
 			# puts "noRender item " + itemId
 			@model.start_operation("noRender layer", true)
 			if @model.pages.selected_page == nil
@@ -587,7 +600,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback noRender
 
-		@dialog.add_action_callback("noRenderByGroup") do |wdl, itemId|
+		@dialog.add_bridge_callback("noRenderByGroup") do |wdl, itemId|
 			# puts "noRenderByGroup item " + itemId
 			@model.start_operation("noRenderByGroup layer", true, false, true)
 			if @model.pages.selected_page == nil
@@ -599,7 +612,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback noRenderByGroup
 
-		@dialog.add_action_callback("triggerRender") do |wdl, engine|
+		@dialog.add_bridge_callback("triggerRender") do |wdl, engine|
 			# puts "render"
 			@model.start_operation("test", true)
 				
@@ -722,7 +735,7 @@ module JBB_LayersPanel
 		
 		### Misc ### ------------------------------------------------------
 
-		@dialog.add_action_callback("getSelectionLayer") do |wdl, layerId|
+		@dialog.add_bridge_callback("getSelectionLayer") do |wdl, layerId|
 			selection = @model.selection
 			if selection.empty?
 				UI.messagebox("Please select an object")
@@ -735,7 +748,7 @@ module JBB_LayersPanel
 			end#if
 		end#callback
 
-		@dialog.add_action_callback("highlightSelectionLayer") do |wdl, action|
+		@dialog.add_bridge_callback("highlightSelectionLayer") do |wdl, action|
 			selection = @model.selection
 			if selection.empty?
 				UI.messagebox("Please select at least one object")
@@ -750,7 +763,7 @@ module JBB_LayersPanel
 			end#if
 		end#callback
 
-		@dialog.add_action_callback("selectFromLayer") do |wdl, layerId|
+		@dialog.add_bridge_callback("selectFromLayer") do |wdl, layerId|
 			@model.start_operation("Select highlighted layer's entities", true)
 			selection = @model.selection
 			entities = @model.active_entities
@@ -767,7 +780,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback
 
-		@dialog.add_action_callback("moveSelection") do |wdl, layerId|
+		@dialog.add_bridge_callback("moveSelection") do |wdl, layerId|
 			selection = @model.selection
 			if selection.empty?
 				UI.messagebox("Please select at least one object")
@@ -785,7 +798,7 @@ module JBB_LayersPanel
 			end#if
 		end#callback
 
-		@dialog.add_action_callback("purgeLayersFromJS") do |wdl, act|
+		@dialog.add_bridge_callback("purgeLayersFromJS") do |wdl, act|
 			@model.start_operation("Purge unused layers", true)
 			group=@model.entities.add_group()
 			group.layer=nil
@@ -805,7 +818,7 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback purgeLayersFromJS
 
-		@dialog.add_action_callback("getLayerDictID") do |wdl, act|
+		@dialog.add_bridge_callback("getLayerDictID") do |wdl, act|
 			# @model.start_operation("Add group layer", true, false, true)
 			self.initializeLayerDictID
 			sendLayerDictID = "receiveLayerDictID('#{@layerDictID}');"
@@ -814,29 +827,29 @@ module JBB_LayersPanel
 			# @model.commit_operation
 		end#callback getLayerDictID
 
-		@dialog.add_action_callback("storeSerialize") do
+		@dialog.add_bridge_callback("storeSerialize") do
 			self.storeSerialize
 		end#callback storeSerialize
 
-		@dialog.add_action_callback("sortItem") do |wdl, serialized|
+		@dialog.add_bridge_callback("sortItem") do |wdl, serialized|
 			@model.start_operation("Sort layer/group", true)
 			@dialog.execute_script("storeSerialize();")
 			@model.commit_operation
 		end#callback 
 
-		@dialog.add_action_callback("iframeTrack") do
+		@dialog.add_bridge_callback("iframeTrack") do
 			self.iframeTrack
 		end#callback
 
-		@dialog.add_action_callback("openOptionsDialog") do
+		@dialog.add_bridge_callback("openOptionsDialog") do
 			self.show_layerspanel_dlg_options
 		end#callback
 
-		@dialog.add_action_callback("undo") do
+		@dialog.add_bridge_callback("undo") do
 			Sketchup.send_action("editUndo:")
 		end#callback 
 
-		@dialog.add_action_callback("redo") do
+		@dialog.add_bridge_callback("redo") do
 			Sketchup.send_action("editRedo:")
 		end#callback
 
@@ -844,21 +857,21 @@ module JBB_LayersPanel
 			# @dialog.execute_script("storeSerialize();")
 		end
 
-		@dialog.add_action_callback("checkIEwarning") do |wdl, action|
+		@dialog.add_bridge_callback("checkIEwarning") do |wdl, action|
 			self.checkIEwarning
 		end#callback render
 
-		@dialog.add_action_callback("startup") do |wdl, action|
+		@dialog.add_bridge_callback("startup") do |wdl, action|
 			self.dialogStartup
 		end#callback render
 
-		@dialog.add_action_callback("minimizeDialog") do |wdl, size|
+		@dialog.add_bridge_callback("minimizeDialog") do |wdl, size|
 			sizeHash = self.jsonToHash(size)
 			@dialog.set_size(sizeHash['width'].to_i + 16, 37)
 			@heightBeforeMinimize = sizeHash['height']
 		end#callback render
 
-		@dialog.add_action_callback("maximizeDialog") do |wdl, size|
+		@dialog.add_bridge_callback("maximizeDialog") do |wdl, size|
 			sizeHash = self.jsonToHash(size)
 			@dialog.set_size(sizeHash['width'].to_i + 16, @heightBeforeMinimize + 34)
 		end#callback render
