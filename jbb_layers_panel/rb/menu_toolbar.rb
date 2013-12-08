@@ -85,7 +85,9 @@ module JBB_LayersPanel
 		
 		layerspanel_tb = UI::Toolbar.new "Layers Panel"
 		layerspanel_tb.add_item cmd_toggle_layerspanel_dlg
-		layerspanel_tb.show
+		if WIN
+			layerspanel_tb.show
+		end#if
 	end
 
 

@@ -593,7 +593,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("purgeGroups") do |wdl, action|
 			@model.start_operation("Purge groups", true)
-				# self.storeSerialize
+				self.storeSerialize
 			@model.commit_operation
 		end#callback unGroupLayers
 		

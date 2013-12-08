@@ -26,6 +26,7 @@
 		<div id="submitButtons"><input type="submit" value="OK" id="ok" class="submitButton"/><input type="submit" value="Cancel" id="cancel" class="submitButton"/></div>
 		
 		<script src="../js/jquery.js"></script>
+		<script src="../js/bridge.js"></script>
 		<script type="text/javascript">
 			$("#ok").on( "click", function() {
 				var startup = false
@@ -50,16 +51,16 @@
 					var autoUpdate = true
 				}
 				
-				window.location = 'skp:startup@' + startup;
-				window.location = 'skp:displayWarning@' + displayWarning;
-				window.location = 'skp:displayRender@' + displayRender;
-				//window.location = 'skp:displayIE@' + displayIE;
-				window.location = 'skp:autoUpdate@' + autoUpdate;
-				window.location = 'skp:close@';
+				skpPushCallback('skp:startup@' + startup);
+				skpPushCallback('skp:displayWarning@' + displayWarning);
+				skpPushCallback('skp:displayRender@' + displayRender);
+				//skpPushCallback(skp:displayIE@' + displayIE);
+				skpPushCallback('skp:autoUpdate@' + autoUpdate);
+				skpPushCallback('skp:close@');
 			});
 			
 			$("#cancel").on( "click", function() {
-				window.location = 'skp:close@';
+				skpPushCallback('skp:close@');
 			});
 			
 			function checkStartup() {
@@ -79,7 +80,7 @@
 			}
 			
 			$(document).ready(function(){
-				window.location = 'skp:getOptions@';
+				skpPushCallback('skp:getOptions@');
 			});
 		</script>
 	</body>

@@ -6,12 +6,12 @@ module JBB_LayersPanel
 		
 	# Create the WebDialog instance
 	def self.createDialogOptions
-		@dialogOptions = UI::WebDialog.new("Layers Panel options", false, "LayersPanelOptions", 250, 100, 300, 200, false)
+		@dialogOptions = WebdialogBridge.new("Layers Panel options", false, "LayersPanelOptions", 250, 100, 300, 200, false)
 		@dialogOptions.set_size(270,280)
 		# @html_path3 = File.dirname( __FILE__ ) + "/options.html"
 		@dialogOptions.set_file(@html_path3)
 		
-		@dialogOptions.add_action_callback("startup") do  |wdl, startup|
+		@dialogOptions.add_bridge_callback("startup") do  |wdl, startup|
 			if startup == "true"
 				Sketchup.write_default("jbb_layers_panel", "startup", true)
 			else
@@ -19,7 +19,7 @@ module JBB_LayersPanel
 			end
 		end#callback
 		
-		@dialogOptions.add_action_callback("displayWarning") do  |wdl, display|
+		@dialogOptions.add_bridge_callback("displayWarning") do  |wdl, display|
 			# puts display
 			if display == "true"
 				Sketchup.write_default("jbb_layers_panel", "display_warning", true)
@@ -28,7 +28,7 @@ module JBB_LayersPanel
 			end
 		end#callback
 		
-		@dialogOptions.add_action_callback("displayRender") do  |wdl, display|
+		@dialogOptions.add_bridge_callback("displayRender") do  |wdl, display|
 			# puts display
 			if display == "true"
 				Sketchup.write_default("jbb_layers_panel", "display_render", true)
@@ -37,7 +37,7 @@ module JBB_LayersPanel
 			end
 		end#callback
 		
-		# @dialogOptions.add_action_callback("displayIE") do  |wdl, display|
+		# @dialogOptions.add_bridge_callback("displayIE") do  |wdl, display|
 			# # puts display
 			# if display == "true"
 				# Sketchup.write_default("jbb_layers_panel", "display_IE", true)
@@ -46,7 +46,7 @@ module JBB_LayersPanel
 			# end
 		# end#callback
 		
-		@dialogOptions.add_action_callback("autoUpdate") do  |wdl, autoUpdate|
+		@dialogOptions.add_bridge_callback("autoUpdate") do  |wdl, autoUpdate|
 			# puts autoUpdate
 			if autoUpdate == "true"
 				Sketchup.write_default("jbb_layers_panel", "auto_update", true)
@@ -60,12 +60,12 @@ module JBB_LayersPanel
 			end
 		end#callback
 		
-		@dialogOptions.add_action_callback("close") do  |wdl, display|
+		@dialogOptions.add_bridge_callback("close") do  |wdl, display|
 			JBB_LayersPanel.close_layerspanel_dlg_options
 			JBB_LayersPanel.dialog.execute_script("reloadDialog();")
 		end#callback
 		
-		@dialogOptions.add_action_callback("getOptions") do  ||
+		@dialogOptions.add_bridge_callback("getOptions") do  ||
 			startup = Sketchup.read_default("jbb_layers_panel", "startup")
 			displayRender = Sketchup.read_default("jbb_layers_panel", "display_render")
 			displayWarning = Sketchup.read_default("jbb_layers_panel", "display_warning")
