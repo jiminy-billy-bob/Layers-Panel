@@ -16,8 +16,6 @@ module JBB_LayersPanel
 	end#def
 	
 	def self.getModelLayers(serialize)
-		# @model.start_operation("Layers Panel", true)
-		
 		serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized layers
 		matches = serialized.to_s.scan(/(layer|group)\[(\d+)\]\=(\d+|null)/) #make an array of it
 		
@@ -55,7 +53,6 @@ module JBB_LayersPanel
 		else
 			dict = @model.pages.selected_page
 		end#if
-		# if dict.attribute_dictionaries["jbb_layerspanel_hiddenGroups"]
 		begin
 			dict.attribute_dictionaries["jbb_layerspanel_tempHiddenGroups"].each { | groupId, value |
 				if value == 1
@@ -69,14 +66,24 @@ module JBB_LayersPanel
 		rescue
 		end#begin
 		
+		firstOp = true
 		#Hide/show layers, add missing layers
 		@layers.each{|layer|
 			# puts layer.name
 			if layer != @layers[0]
-				if layer.get_attribute("jbb_layerspanel", "ID") == nil 
+				if layer.get_attribute("jbb_layerspanel", "ID") == nil #if layer not IDed
 					# puts 'attribute'
-					self.initializeLayerDictID
-					self.IdLayer(layer)
+					if firstOp == true
+						@model.start_operation("Layers Panel ID", true)
+							self.initializeLayerDictID
+							self.IdLayer(layer)
+						@model.commit_operation
+						firstOp = false
+					else
+						@model.start_operation("Layers Panel ID", true, false, true)
+							self.IdLayer(layer)
+						@model.commit_operation
+					end#if
 				end#if
 				
 				layerId = layer.get_attribute("jbb_layerspanel", "ID")
@@ -94,11 +101,20 @@ module JBB_LayersPanel
 				end#if
 				
 				if layer.get_attribute("jbb_layerspanel", "observer") != 1
-					@model.start_operation("Add layer observer", true, false, true)
-					layer.add_observer(@jbb_lp_entityObserver)
-					layer.set_attribute("jbb_layerspanel", "observer", 1)
-					# puts 'observer ' + layer.name
-					@model.commit_operation 
+					if firstOp == true
+						@model.start_operation("Add layer observer", true)
+							layer.add_observer(@jbb_lp_entityObserver)
+							layer.set_attribute("jbb_layerspanel", "observer", 1)
+							# puts 'observer ' + layer.name
+						@model.commit_operation 
+						firstOp = false
+					else
+						@model.start_operation("Add layer observer", true, false, true)
+							layer.add_observer(@jbb_lp_entityObserver)
+							layer.set_attribute("jbb_layerspanel", "observer", 1)
+							# puts 'observer ' + layer.name
+						@model.commit_operation 
+					end#if
 				end#if
 			end#if
 		}
@@ -117,7 +133,6 @@ module JBB_LayersPanel
 		rescue
 		end#begin
 		
-		# @model.commit_operation
 	end#def
 
 	def self.getCollapsedGroups()
@@ -158,7 +173,6 @@ module JBB_LayersPanel
 	end#def
 
 	def self.unHideByGroup(layerId)
-		# @model.start_operation("Unhide layer", true, false, true)
 		if @model.pages.selected_page == nil
 			dict = @model
 		else
@@ -169,7 +183,6 @@ module JBB_LayersPanel
 			dict.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 0)
 		end#if
 		# puts layer.name + " unhidden by group"
-		# @model.commit_operation
 	end#def
 
 	def self.getRenderEngine
@@ -203,11 +216,15 @@ module JBB_LayersPanel
 	end#def
 
 	def self.storeSerialize
-		@model.start_operation("Store Serialize", true, false, true)
-		serialized = @dialog.get_element_value("serialize")
-		# puts serialized
-		@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
-		@model.commit_operation
+		@dialog.execute_script("storeSerialize();")
+	end#def
+
+	def self.storeSerialize2
+		if @allowSerialize == true
+			serialized = @dialog.get_element_value("serialize")
+			# puts serialized
+			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
+		end#if
 	end#def
 	
 	
@@ -243,7 +260,6 @@ module JBB_LayersPanel
 		@dialog = WebdialogBridge.new("Layers Panel", false, "LayersPanel", 215, 300, 300, 200, true)
 		@dialog.min_width = 199
 		@dialog.min_height = 37
-		# @html_path = File.dirname( __FILE__ ) + "/layers Panel.html"
 		@dialog.set_file(@html_path)
 		
 		
@@ -380,6 +396,7 @@ module JBB_LayersPanel
 		end#callback deleteLayer&GeomFromJS
 
 		@dialog.add_bridge_callback("mergeLayers") do |wdl, layerIDs|
+			@model.start_operation("Merge layers", true)
 			matches = layerIDs.to_s.scan(/([^,]+),/) #make an array of it
 			activeLayer = @model.active_layer #Store current active layer to revert later
 			i = 1
@@ -419,6 +436,7 @@ module JBB_LayersPanel
 				@model.active_layer = activeLayer #Restore active layer
 			end#if
 			self.storeSerialize
+			@model.commit_operation
 		end#callback mergeLayers
 
 		@dialog.add_bridge_callback("hideLayerFromJS") do |wdl, layerId|
@@ -466,13 +484,13 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("addGroupStart") do |wdl, groupName|
 			@model.start_operation("Add group layer", true)
 			self.initializeLayerDictID
+			self.incLayerDictID
 			# puts groupName
 			# puts @layerDictID
 			@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
 		end#callback addGroup
 
 		@dialog.add_bridge_callback("addGroupEnd") do |wdl, groupName|
-			# @dialog.execute_script("storeSerialize();")
 			@model.commit_operation
 		end#callback addGroup
 
@@ -560,6 +578,24 @@ module JBB_LayersPanel
 			# puts "unhide group"
 			@model.commit_operation
 		end#callback unHideGroup
+
+		@dialog.add_bridge_callback("groupLayers") do |wdl, action|
+			@model.start_operation("Group layers", true, false, true) #merges with previous "Add group" operation
+				self.storeSerialize
+			@model.commit_operation
+		end#callback groupLayers
+
+		@dialog.add_bridge_callback("unGroupLayers") do |wdl, action|
+			@model.start_operation("Ungroup layers", true)
+				self.storeSerialize
+			@model.commit_operation
+		end#callback unGroupLayers
+
+		@dialog.add_bridge_callback("purgeGroups") do |wdl, action|
+			@model.start_operation("Purge groups", true)
+				# self.storeSerialize
+			@model.commit_operation
+		end#callback unGroupLayers
 		
 		
 		### Render ### ------------------------------------------------------
@@ -815,25 +851,31 @@ module JBB_LayersPanel
 			if group.deleted? == false
 				group.erase! ### erase! the temporary layer user, use set as was.
 			end#if
+			self.storeSerialize
 			@model.commit_operation
 		end#callback purgeLayersFromJS
 
 		@dialog.add_bridge_callback("getLayerDictID") do |wdl, act|
-			# @model.start_operation("Add group layer", true, false, true)
-			self.initializeLayerDictID
+			if @layerDictID == nil
+				self.initializeLayerDictID
+			end#if
 			sendLayerDictID = "receiveLayerDictID('#{@layerDictID}');"
 			@dialog.execute_script(sendLayerDictID)
-			self.incLayerDictID
-			# @model.commit_operation
 		end#callback getLayerDictID
 
 		@dialog.add_bridge_callback("storeSerialize") do
+			@model.start_operation("storeSerialize", true, false, true) #Merge with previous operation
 			self.storeSerialize
+			@model.commit_operation
+		end#callback storeSerialize
+
+		@dialog.add_bridge_callback("storeSerialize2") do
+			self.storeSerialize2
 		end#callback storeSerialize
 
 		@dialog.add_bridge_callback("sortItem") do |wdl, serialized|
 			@model.start_operation("Sort layer/group", true)
-			@dialog.execute_script("storeSerialize();")
+			self.storeSerialize
 			@model.commit_operation
 		end#callback 
 
@@ -852,10 +894,6 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("redo") do
 			Sketchup.send_action("editRedo:")
 		end#callback
-
-		@dialog.set_on_close do
-			# @dialog.execute_script("storeSerialize();")
-		end
 
 		@dialog.add_bridge_callback("checkIEwarning") do |wdl, action|
 			self.checkIEwarning

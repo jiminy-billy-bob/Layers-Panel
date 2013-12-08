@@ -142,14 +142,6 @@
 					$('.sortable').append(layerStr);
 				}
 			}
-			
-			if (serialize == false) {
-				allowSerialize = false;
-			}
-			
-			if (allowSerialize == true) {
-				storeSerialize();
-			}
 		}
 		
 		allowSerialize = true;
@@ -246,11 +238,11 @@
 			});
 			$(groupID).children(".lidiv").addClass("ui-selected"); // Select new group
 			
-			storeSerialize();
+			skpCallback('skp:groupLayers@');
 		}
 	}
 	
-	function unGroupLayers() { // Group selected layers
+	function unGroupLayers() { // Ungroup selected group
 		if($(".ui-selected").length){
 			// parentOl = $(".ui-selected:first").parent().parent();
 			// parentOl.children(".group").each(function() {
@@ -268,7 +260,7 @@
 						item.empty().remove();
 					}
 					// item.hide();
-					storeSerialize();
+					skpCallback('skp:unGroupLayers@');
 				}
 			});
 		}
@@ -405,7 +397,7 @@
 			if ($(this).parent().hasClass("group")) { // If group
 				$(this).parent().empty().remove();
 			}
-			storeSerialize();
+			skpCallback('skp:storeSerialize@');
 		});
 	}
 	
@@ -519,7 +511,7 @@
 				$(this).remove();
 			}
 		});
-		storeSerialize();
+		skpCallback('skp:purgeGroups@');
 	}
 	
 	
@@ -808,7 +800,7 @@
 		if (allowSerialize == true) {
 			serialized = $('ol.sortable').nestedSortable('serialize');
 			$('#serialize').val(serialized);
-			skpCallback('skp:storeSerialize@');
+			skpCallback('skp:storeSerialize2@');
 		}
 	}
 	
@@ -1315,7 +1307,6 @@ $(document).ready(function(){
 	
 	$('#purgeLayers').click(function() {
 		skpCallback('skp:purgeLayersFromJS');
-		storeSerialize();
 	});
 	
 	$('#purgeGroups').click(function() {

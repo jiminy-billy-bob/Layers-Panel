@@ -3,7 +3,7 @@ module JBB_LayersPanel
 
 	
 	### WARNING LAYER0 ### ------------------------------------------------------
-		
+	
 	# Create the WebDialog instance
 	def self.createDialogWarning
 		@dialogWarning = UI::WebDialog.new("Layers Panel Warning", false, "LayersPanelWarning", 265, 65, 300, 200, false)

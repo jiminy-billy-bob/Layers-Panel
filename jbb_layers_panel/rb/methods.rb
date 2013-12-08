@@ -21,16 +21,13 @@ module JBB_LayersPanel
 	### LAYER SERIALIZE ### ------------------------------------------------------
 	
 	def self.incLayerDictID
-		@model.start_operation("Layers Panel", true, false, true)
 		@layerDictID = @layerDictID + 1
 		@model.set_attribute("jbb_layerspanel", "layerDictID", @layerDictID) #Store incremented layerDictID in model attribute dict
 		# puts "incLayerDictID"
-		@model.commit_operation
 	end#def
 	
 	def self.initializeLayerDictID
 		if @layerDictID == nil
-			@model.start_operation("Initialize Layers Panel", true, false, true)
 			if @model.get_attribute("jbb_layerspanel", "layerDictID") != nil #Get layerDictID from model if exists
 				@layerDictID = @model.get_attribute("jbb_layerspanel", "layerDictID")
 			else #Else, create it
@@ -38,24 +35,17 @@ module JBB_LayersPanel
 				@layerDictID = 0
 			end#if
 			self.incLayerDictID
-			@model.commit_operation 
-			# puts "Current layerDictID : " + @layerDictID.to_s
 		end#if
 	end#def
 	
 	def self.IdLayer(layer) #Give a unique custom id to a layer
-		# begin
 			if layer.get_attribute("jbb_layerspanel", "ID") != nil 
 				#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
 			else
-				@model.start_operation("ID layer", true, false, true)
 				layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
 				# puts "layerDictID " + @layerDictID.to_s
 				self.incLayerDictID
-				@model.commit_operation 
 			end#if
-		# rescue
-		# end
 	end#def
 	
 	
@@ -89,7 +79,6 @@ module JBB_LayersPanel
 		@layers.purge_unused ### purge layer from browser
 		group.erase! ### erase! the temporary layer user, use set as was.
 		@allowSerialize = true
-		@dialog.execute_script("storeSerialize();")
 		@model.commit_operation 
 	end#def
 

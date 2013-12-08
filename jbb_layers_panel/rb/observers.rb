@@ -23,7 +23,11 @@ module JBB_LayersPanel
 						timer_04b = UI.start_timer(0, false) {
 							next if done_04b
 							done_04b = true
-							JBB_LayersPanel.unHideByGroup(layerId)
+							if JBB_LayersPanel.allowSerialize == true
+								JBB_LayersPanel.model.start_operation("Unhide layer", true, false, true)
+								JBB_LayersPanel.unHideByGroup(layerId)
+								JBB_LayersPanel.model.commit_operation
+							end#if
 						}
 					else
 						hideLayerFromRuby = "hideLayerFromRuby('#{layerId}');"
@@ -62,27 +66,30 @@ module JBB_LayersPanel
 	class JBB_LP_layersObserver < Sketchup::LayersObserver
 
 		def onLayerAdded(layers, layer)
-			JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
 			done_02 = false
 			timer_02 = UI.start_timer(0, false) {
 				next if done_02
 				done_02 = true
-					JBB_LayersPanel.initializeLayerDictID
-					JBB_LayersPanel.IdLayer(layer)
-					if JBB_LayersPanel.dialog
-						JBB_LayersPanel.layers.each {| l | layer = l }
-						layerIdForJS = layer.get_attribute("jbb_layerspanel", "ID")
-						addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerIdForJS}');"
-						JBB_LayersPanel.dialog.execute_script(addLayerFromRuby)
-						showLayerFromRuby = "showLayerFromRuby('#{layerIdForJS}');"
-						JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
-					end#if
-				JBB_LayersPanel.model.commit_operation #Necessary...
-				JBB_LayersPanel.model.start_operation("Add layer", true, false, true) #Necessary...
-					layer.set_attribute("jbb_layerspanel", "observer", 1)
-					layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)
+				if JBB_LayersPanel.allowSerialize == true
+					JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
+						JBB_LayersPanel.initializeLayerDictID
+						JBB_LayersPanel.IdLayer(layer)
+						if JBB_LayersPanel.dialog
+							JBB_LayersPanel.layers.each {| l | layer = l }
+							layerIdForJS = layer.get_attribute("jbb_layerspanel", "ID")
+							addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerIdForJS}');"
+							JBB_LayersPanel.dialog.execute_script(addLayerFromRuby)
+							showLayerFromRuby = "showLayerFromRuby('#{layerIdForJS}');"
+							JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
+						end#if
+					JBB_LayersPanel.model.commit_operation #Necessary...
+					JBB_LayersPanel.model.start_operation("Add layer.", true, false, true) #Necessary...
+						layer.set_attribute("jbb_layerspanel", "observer", 1)
+						layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)
+						JBB_LayersPanel.storeSerialize
+					JBB_LayersPanel.model.commit_operation
+				end#if
 			}
-			JBB_LayersPanel.model.commit_operation
 		end#onLayerAdded
 		
 		def onLayerRemoved(layers, layer)
@@ -94,7 +101,9 @@ module JBB_LayersPanel
 				next if done_03
 				done_03 = true
 				if JBB_LayersPanel.allowSerialize == true
-					JBB_LayersPanel.dialog.execute_script("storeSerialize();")
+					JBB_LayersPanel.model.start_operation("Delete layer", true, false, true)
+					JBB_LayersPanel.storeSerialize
+					JBB_LayersPanel.model.commit_operation
 				end#if
 			}
 		end#onLayerRemoved
@@ -183,16 +192,30 @@ module JBB_LayersPanel
 
 	class JBB_LP_ModelObserver < Sketchup::ModelObserver
 		def onTransactionUndo(model)
+			JBB_LayersPanel.allowSerialize = false
 			JBB_LayersPanel.dialog.execute_script("emptyOl();")
 			JBB_LayersPanel.getModelLayers(false)
 			JBB_LayersPanel.getActiveLayer()
 			JBB_LayersPanel.getCollapsedGroups()
+			done_19 = false
+			timer_19 = UI.start_timer(0, false) {
+				next if done_19
+				done_19 = true
+				JBB_LayersPanel.allowSerialize = true
+			}
 		end#def
 		def onTransactionRedo(model)
+			JBB_LayersPanel.allowSerialize = false
 			JBB_LayersPanel.dialog.execute_script("emptyOl();")
 			JBB_LayersPanel.getModelLayers(false)
 			JBB_LayersPanel.getActiveLayer()
 			JBB_LayersPanel.getCollapsedGroups()
+			done_18 = false
+			timer_18 = UI.start_timer(0, false) {
+				next if done_18
+				done_18 = true
+				JBB_LayersPanel.allowSerialize = true
+			}
 		end#def
 	end#class
 

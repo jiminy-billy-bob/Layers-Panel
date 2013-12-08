@@ -12,8 +12,12 @@ module JBB_LayersPanel
 #-----------------------------------------------------------------------------
 
 	if WIN
-
-		require 'jbb_layers_panel/z_win32api/Win32API.so'
+		
+		if RUBY_VERSION.to_i < 2
+			require 'jbb_layers_panel/z_win32api/Win32API.so'
+		else 
+			require 'Win32API'
+		end#if
 
 		WS_CAPTION  = 0x00C00000
 		WS_EX_TOOLWINDOW = 0x00000080
@@ -46,7 +50,7 @@ module JBB_LayersPanel
 	
 #-----------------------------------------------------------------------------
 	
-	@lpversion = "0.9"
+	@lpversion = "0.9.1"
 	@store = "ps"
 	
 	@isActive = true
