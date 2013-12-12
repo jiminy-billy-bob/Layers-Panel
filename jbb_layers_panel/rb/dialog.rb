@@ -302,7 +302,7 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("addHiddenLayerFromJS") do
 			@model.start_operation("Add layer", true)
 			layer = @layers.add @layers.unique_name
-			layer.page_behavior=(LAYER_HIDDEN_BY_DEFAULT | LAYER_IS_HIDDEN_ON_NEW_PAGES)
+			layer.page_behavior=(LAYER_IS_HIDDEN_ON_NEW_PAGES)
 			@model.commit_operation
 		end#callback addLayerFromJS
 
