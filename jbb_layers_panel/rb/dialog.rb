@@ -303,6 +303,13 @@ module JBB_LayersPanel
 			@model.start_operation("Add layer", true)
 			layer = @layers.add @layers.unique_name
 			layer.page_behavior=(LAYER_IS_HIDDEN_ON_NEW_PAGES)
+			@model.pages.each do |page|
+				if page == @model.pages.selected_page
+					page.set_visibility(layer, true)
+				else
+					page.set_visibility(layer, false)
+				end#if
+			end#each
 			@model.commit_operation
 		end#callback addLayerFromJS
 
