@@ -176,6 +176,10 @@ background: url("./img/fire_16.png") no-repeat 5px 5px;
 background: url("./img/kt_icon.png") no-repeat 1px 1px;
 }
 
+#ks{
+background: url("./img/keyshot_icon.png") no-repeat 5px 5px;
+}
+
 #indigo{
 background: url("./img/IndigoLogo.gif") no-repeat 1px 1px;
 }

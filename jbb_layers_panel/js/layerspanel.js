@@ -725,6 +725,11 @@
 			$('.kerkythea').show();
 			skpCallback('skp:useRenderEngine@kt')
 		}
+		else if(engine == "ks"){
+			$('#renderListButton span').text('KeyShot');
+			$('.keyshot').show();
+			skpCallback('skp:useRenderEngine@ks')
+		}
 		else if(engine == "indigo"){
 			$('#renderListButton span').text('Indigo');
 			$('.indigo').show();
@@ -1185,6 +1190,10 @@ $(document).ready(function(){
 		useRenderEngine("kt");
 	});
 	
+	$('#useKS').click(function() {
+		useRenderEngine("ks");
+	});
+	
 	$('#useIndigo').click(function() {
 		useRenderEngine("indigo");
 	});
@@ -1202,6 +1211,8 @@ $(document).ready(function(){
 	$('#mxfire').click(function() {triggerRender('mxfire')});
 	
 	$('#kt').click(function() {triggerRender('kt')});
+	
+	$('#ks').click(function() {triggerRender('ks')});
 	
 	$('#indigo').click(function() {triggerRender('indigo')});
 	

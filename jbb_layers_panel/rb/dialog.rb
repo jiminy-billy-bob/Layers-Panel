@@ -736,6 +736,15 @@ module JBB_LayersPanel
 					rescue
 						UI.messagebox("Kerkythea is not installed on this system, or is disabled.")
 					end
+				elsif engine == "ks"
+					begin
+						if not $ks4_instance
+							$ks4_instance = KeyShot4::KeyShot4Exporter.new
+						end
+						$ks4_instance.ks4export ""
+					rescue
+						UI.messagebox("KeyShot is not installed on this system, or is disabled.")
+					end
 				elsif engine == "indigo"
 					begin
 						SkIndigo.export(0,true,nil,true)
