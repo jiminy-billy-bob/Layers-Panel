@@ -226,6 +226,24 @@ module JBB_LayersPanel
 			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
 		end#if
 	end#def
+
+	def self.resize(width, height)
+		#Extracted and modified from TT's SKUI project
+		#http://github.com/thomthom/SKUI
+		@dialog.set_size(width, height)
+		@dialog.execute_script("getDialogSize();")
+		jsonSize = @dialog.get_element_value("dialogSize")
+		sizeHash = self.jsonToHash(jsonSize)
+		dialog_width = sizeHash['width'].to_i
+		dialog_height = sizeHash['height'].to_i
+		adjust_width  = width  - dialog_width
+		adjust_height = height - dialog_height
+		unless adjust_width == 0 && adjust_height == 0
+			new_width  = width  + adjust_width
+			new_height = height + adjust_height
+			@dialog.set_size( new_width, new_height )
+		end
+	end#def
 	
 	
 	
@@ -921,13 +939,14 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("minimizeDialog") do |wdl, size|
 			sizeHash = self.jsonToHash(size)
-			@dialog.set_size(sizeHash['width'].to_i + 16, 37)
+			self.resize(sizeHash['width'].to_i, 4)
 			@heightBeforeMinimize = sizeHash['height']
 		end#callback render
 
-		@dialog.add_bridge_callback("maximizeDialog") do |wdl, size|
-			sizeHash = self.jsonToHash(size)
-			@dialog.set_size(sizeHash['width'].to_i + 16, @heightBeforeMinimize + 34)
+		@dialog.add_bridge_callback("maximizeDialog") do |wdl, width|
+			width = width.to_i
+			height = @heightBeforeMinimize
+			self.resize(width, height)
 		end#callback render
 		
 		

@@ -11,6 +11,12 @@
 		$('#olsortable').empty();
 		addLayerFromRuby("Layer0", "0", undefined, false)
 	}
+
+	function getDialogSize() {
+		var size = { "height":$(window).height(), "width":$(window).width() }; //Json
+		var jsonSize = $.toJSON( size );
+		$('#dialogSize').val(jsonSize);
+	}
 	
 //-------------
 
@@ -1124,14 +1130,14 @@ $(document).ready(function(){
 	////////////// HEADER ////////////////
 	
 	$('#minimize').click(function () {
-		var size = { "height":$( window ).height(), "width":$( window ).width() }; //Json
+		var size = { "height":$(window).height(), "width":$(window).width() }; //Json
 		var jsonSize = $.toJSON( size );
 		
 		if($(window).height() > 5){
 			skpCallback('skp:minimizeDialog@' + jsonSize);
 		}
 		else {
-			skpCallback('skp:maximizeDialog@' + jsonSize);
+			skpCallback('skp:maximizeDialog@' + $(window).width());
 		}
 	});
 	
