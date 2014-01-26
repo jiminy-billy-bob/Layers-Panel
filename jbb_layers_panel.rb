@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 #
 # Layers Panel
-# Version beta 0.9.1
+# Version beta 0.10
 #
 #-------------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ require 'extensions.rb'
 lp_ext = SketchupExtension.new 'Layers Panel', 'jbb_layers_panel/layers_panel.rb'
 
 lp_ext.creator     = 'Thomas Hauchecorne, Chips Architecture'
-lp_ext.version     = 'beta 0.9.1'
+lp_ext.version     = 'beta 0.10'
 lp_ext.copyright   = 'Thomas Hauchecorne © 2013'
 lp_ext.description = 'Replaces Sketchup\'s layers window, with nesting/sorting/grouping/locking features.'
 
@@ -43,13 +43,13 @@ begin
 	path = File.dirname( __FILE__ ) + "/layers_panel.rb"
 	File.delete(path)
 rescue
-	puts "Could not delete 'layers_panel.rb'"
+	# puts "Could not delete 'layers_panel.rb'"
 else
 end
 begin
 	path = File.dirname( __FILE__ ) + "/Layers Panel.rb"
 	File.delete(path)
 rescue
-	puts "Could not delete 'Layers Panel.rb'"
+	# puts "Could not delete 'Layers Panel.rb'"
 else
 end

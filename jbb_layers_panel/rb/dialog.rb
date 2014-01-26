@@ -329,7 +329,14 @@ module JBB_LayersPanel
 				end#if
 			end#each
 			@model.commit_operation
-		end#callback addLayerFromJS
+		end#callback addHiddenLayerFromJS
+
+		@dialog.add_bridge_callback("addHiddenLayer2FromJS") do
+			@model.start_operation("Add layer", true)
+			layer = @layers.add @layers.unique_name
+			layer.page_behavior=(LAYER_IS_HIDDEN_ON_NEW_PAGES)
+			@model.commit_operation
+		end#callback addHiddenLayer2FromJS
 
 		@dialog.add_bridge_callback("renameLayerFromJS") do |wdl, layerNameS|
 			@model.start_operation("Rename layer", true)

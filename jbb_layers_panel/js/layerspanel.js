@@ -126,8 +126,11 @@
 	
 	
 	function addLayerFromJS(hidden) {
-		if(hidden){
+		if(hidden == 1){
 			skpCallback('skp:addHiddenLayerFromJS');
+		}
+		else if(hidden == 2){
+			skpCallback('skp:addHiddenLayer2FromJS');
 		}
 		else {
 			skpCallback('skp:addLayerFromJS');
@@ -1309,7 +1312,7 @@ $(document).ready(function(){
 		timeoutId = setTimeout(function() {
 			$('#menuLayer').show();
 			preventLayerAdd = true;
-		}, 500);
+		}, 300);
 	}).bind('mouseup mouseleave', function() {
 		clearTimeout(timeoutId);
 		setTimeout(function() {preventLayerAdd = false;}, 10);
@@ -1350,7 +1353,11 @@ $(document).ready(function(){
 	
 	// Add a new Hidden Layer
 	$('#newHiddenLayer').click(function () {
-		addLayerFromJS(true);
+		addLayerFromJS(1);
+		$('#menuLayer').hide();
+	});
+	$('#newHiddenLayer2').click(function () {
+		addLayerFromJS(2);
 		$('#menuLayer').hide();
 	});
 	
