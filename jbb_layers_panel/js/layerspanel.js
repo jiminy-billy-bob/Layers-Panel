@@ -3,6 +3,11 @@
 	
 /////////////// BASE FUNCTIONS /////////////
 
+	var WIN=false;
+	var MAC=false;
+	if (navigator.appVersion.indexOf("Win")!=-1) WIN=true;
+	else if (navigator.appVersion.indexOf("Mac")!=-1) MAC=true;
+
 	function reloadDialog() {
 		location.reload();
 	}
@@ -938,7 +943,7 @@ $(document).ready(function(){
 	$(document).on('click', '.visibility', function (e) {
 		var item = $(this).parent().parent();
 		
-		if (e.ctrlKey) {
+		if ((e.ctrlKey||e.metaKey)) {
 			unHide(item, true, undefined);
 			item.parent().children("li").each(function() {
 				hide($(this), undefined, undefined, false);
@@ -1384,13 +1389,13 @@ $(document).ready(function(){
 	////////////// UNDO REDO ////////////////
 	
 	$(document).keydown(function(e){
-		if( e.which === 90 && e.ctrlKey ){
+		if( e.which === 90 && (e.ctrlKey||e.metaKey) ){
 			skpCallback('skp:undo');
 		}          
 	}); 
 	
 	$(document).keydown(function(e){
-		if( e.which === 89 && e.ctrlKey ){
+		if( e.which === 89 && (e.ctrlKey||e.metaKey) ){
 			skpCallback('skp:redo');
 		}          
 	}); 
@@ -1398,29 +1403,28 @@ $(document).ready(function(){
 	////////////// SHORTCUTS ////////////////
 	
 	$(document).keydown(function(e){ // CTRL A
-		if( e.which === 65 && e.ctrlKey){
+		if( e.which === 65 && (e.ctrlKey||e.metaKey)){
 			$(".lidiv").addClass("ui-selected");
 		}          
 	}); 
 	
 	$(document).keydown(function(e){ // CTRL G
-		if( e.which === 71 && e.ctrlKey && !e.shiftKey ){
+		if( e.which === 71 && (e.ctrlKey||e.metaKey) && !e.shiftKey ){
 			groupLayers();
 		}          
 	}); 
 	
 	$(document).keydown(function(e){ // CTRL SHIFT G
-		if( e.which === 71 && e.ctrlKey && e.shiftKey ){
+		if( e.which === 71 && (e.ctrlKey||e.metaKey) && e.shiftKey ){
 			unGroupLayers();
 		}          
 	}); 
 	
 	$(document).keydown(function(e){ // CTRL E
-		if( e.which === 69 && e.ctrlKey){
+		if( e.which === 69 && (e.ctrlKey||e.metaKey)){
 			mergeLayers();
 		}          
 	}); 
-	
 	
 	//////////////
 	
