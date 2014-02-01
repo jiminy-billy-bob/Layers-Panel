@@ -89,6 +89,11 @@ module JBB_LayersPanel
 						JBB_LayersPanel.storeSerialize
 					JBB_LayersPanel.model.commit_operation
 				end#if
+				if layer.name == "Google Earth Snapshot"
+					UI.start_timer(0, false) {
+						JBB_LayersPanel.dialog.execute_script("reloadDialog();")
+					}
+				end#if
 			}
 		end#onLayerAdded
 		
