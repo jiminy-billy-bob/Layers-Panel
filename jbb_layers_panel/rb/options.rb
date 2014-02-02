@@ -8,7 +8,6 @@ module JBB_LayersPanel
 	def self.createDialogOptions
 		@dialogOptions = WebdialogBridge.new("Layers Panel options", false, "LayersPanelOptions", 250, 100, 300, 200, false)
 		@dialogOptions.set_size(270,280)
-		# @html_path3 = File.dirname( __FILE__ ) + "/options.html"
 		@dialogOptions.set_file(@html_path3)
 		
 		@dialogOptions.add_bridge_callback("startup") do  |wdl, startup|
@@ -37,15 +36,6 @@ module JBB_LayersPanel
 			end
 		end#callback
 		
-		# @dialogOptions.add_bridge_callback("displayIE") do  |wdl, display|
-			# # puts display
-			# if display == "true"
-				# Sketchup.write_default("jbb_layers_panel", "display_IE", true)
-			# else
-				# Sketchup.write_default("jbb_layers_panel", "display_IE", false)
-			# end
-		# end#callback
-		
 		@dialogOptions.add_bridge_callback("autoUpdate") do  |wdl, autoUpdate|
 			# puts autoUpdate
 			if autoUpdate == "true"
@@ -69,7 +59,6 @@ module JBB_LayersPanel
 			startup = Sketchup.read_default("jbb_layers_panel", "startup")
 			displayRender = Sketchup.read_default("jbb_layers_panel", "display_render")
 			displayWarning = Sketchup.read_default("jbb_layers_panel", "display_warning")
-			# displayIE = Sketchup.read_default("jbb_layers_panel", "display_IE")
 			autoUpdate = Sketchup.read_default("jbb_layers_panel", "auto_update")
 			
 			if startup == true
@@ -81,9 +70,6 @@ module JBB_LayersPanel
 			if displayWarning == false
 				@dialogOptions.execute_script("uncheckWarning()")
 			end#if
-			# if displayIE == false
-				# @dialogOptions.execute_script("uncheckIE()")
-			# end#if
 			if autoUpdate == true
 				@dialogOptions.execute_script("checkUpdate()")
 			end#if
