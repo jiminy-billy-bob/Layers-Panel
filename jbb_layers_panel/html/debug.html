@@ -48,7 +48,9 @@
 			}
 		
 			function debugLayerIDs() {
-				skpCallback('skp:debugLayersIDs@');
+				if(confirm("This will fix duplicate layer IDs, but some layers may lose their order in the list. (Not a big deal, really...)\nDo you want to continue?")){
+					skpCallback('skp:debugLayersIDs@');
+				}
 			}
 		
 			$(document).ready(function(){

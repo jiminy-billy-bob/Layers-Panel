@@ -9,7 +9,7 @@ module JBB_LayersPanel
 			if layer.deleted? == false
 				# puts 'onchangeentity ' + layer.name
 				if layer.get_attribute("jbb_layerspanel", "ID") != nil #Verify entity exists (onChangeEntity mistrigger)
-					puts layer.name
+					# puts layer.name
 					if layer == JBB_LayersPanel.layers[0]
 						layerId = 0
 					else
@@ -332,6 +332,31 @@ module JBB_LayersPanel
 
 
 
+	### VIEWOBSERVER ### ------------------------------------------------------
+
+	#Track active model change
+	class JBB_LP_ViewObserver < Sketchup::ViewObserver
+		def onViewChanged(view) 
+			if MAC
+				# puts Sketchup.active_model.definitions.entityID
+				if JBB_LayersPanel.lastActiveModelID != Sketchup.active_model.definitions.entityID
+					JBB_LayersPanel.resetVariables
+					JBB_LayersPanel.dialogStartup #Reload main dialog
+				end#if
+				JBB_LayersPanel.lastActiveModelID = Sketchup.active_model.definitions.entityID
+			end#if
+		end
+	end#def
+	
+	if MAC
+		@jbb_lp_viewObserver = JBB_LP_ViewObserver.new
+
+		# Attach the observer
+		@model.active_view.add_observer(@jbb_lp_viewObserver)
+	end#if
+
+
+
 	### APPOBSERVER ### ------------------------------------------------------
 
 	class JBB_LP_AppObserver < Sketchup::AppObserver
@@ -368,6 +393,10 @@ module JBB_LayersPanel
 			JBB_LayersPanel.model.add_observer(JBB_LayersPanel.jbb_lp_modelObserver)
 			JBB_LayersPanel.model.pages.add_observer(JBB_LayersPanel.jbb_lp_pagesObserver)
 			JBB_LayersPanel.layers.add_observer(JBB_LayersPanel.jbb_lp_layersObserver)
+			
+			if MAC #Track active model change
+				JBB_LayersPanel.model.active_view.add_observer(JBB_LayersPanel.jbb_lp_viewObserver)
+			end#if
 			
 			JBB_LayersPanel.layers.each{|layer|
 				layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)

@@ -17,6 +17,12 @@ module JBB_LayersPanel
 		end#if
 	end#def
 	
+	def self.resetVariables
+		@model = Sketchup.active_model
+		@layers = @model.layers
+		@layerDictID = @model.get_attribute("jbb_layerspanel", "layerDictID")
+	end#def
+	
 	
 	### LAYER SERIALIZE ### ------------------------------------------------------
 	

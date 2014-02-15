@@ -45,6 +45,7 @@ module JBB_LayersPanel
 					}
 					
 				@dialogDebug.execute_script("reloadDialog();")
+				self.dialogStartup #Reload main dialog
 			@model.commit_operation
 		end#callback
 	end#def

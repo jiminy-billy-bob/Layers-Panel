@@ -50,7 +50,7 @@ module JBB_LayersPanel
 	
 #-----------------------------------------------------------------------------
 	
-	@lpversion = "0.10.1"
+	@lpversion = "0.10.2"
 	@store = "ps"
 	
 	@isActive = true
@@ -74,6 +74,9 @@ module JBB_LayersPanel
 	@jbb_lp_appObserver = nil
 	@jbb_lp_entityObserver = nil
 	@jbb_lp_layersObserver = nil
+	@jbb_lp_viewObserver = nil
+	
+	@lastActiveModelID = nil
 	
 	@html_path = File.dirname( __FILE__ ) + "/html/layers Panel.html"
 	@html_path2 = File.dirname( __FILE__ ) + "/html/warning.html"
@@ -81,7 +84,7 @@ module JBB_LayersPanel
 	@html_path4 = File.dirname( __FILE__ ) + "/html/debug.html"
 	
 	class << self
-		attr_accessor :isActive, :model, :layers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver
+		attr_accessor :isActive, :model, :layers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :lastActiveModelID
 	end
   
 	
