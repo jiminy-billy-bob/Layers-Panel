@@ -82,6 +82,7 @@ module JBB_LayersPanel
 		lp_menu = window_menu.add_submenu("Layers Panel")
 		lp_menu.add_item( cmd_toggle_layerspanel_dlg )
 		lp_menu.add_item( "Options" ) { JBB_LayersPanel.show_layerspanel_dlg_options }
+		lp_menu.add_item( "Debug" ) { JBB_LayersPanel.show_layerspanel_dlg_debug }
 		
 		layerspanel_tb = UI::Toolbar.new "Layers Panel"
 		layerspanel_tb.add_item cmd_toggle_layerspanel_dlg

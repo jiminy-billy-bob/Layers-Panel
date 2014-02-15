@@ -9,7 +9,7 @@ module JBB_LayersPanel
 			if layer.deleted? == false
 				# puts 'onchangeentity ' + layer.name
 				if layer.get_attribute("jbb_layerspanel", "ID") != nil #Verify entity exists (onChangeEntity mistrigger)
-					# puts layer.name
+					puts layer.name
 					if layer == JBB_LayersPanel.layers[0]
 						layerId = 0
 					else
@@ -136,60 +136,6 @@ module JBB_LayersPanel
 
 	# Attach the observer.
 	@layers.add_observer(@jbb_lp_layersObserver)
-
-
-
-	### APPOBSERVER ### ------------------------------------------------------
-
-	class JBB_LP_AppObserver < Sketchup::AppObserver
-
-		def onNewModel(newModel)
-			done_05 = false
-			timer_05 = UI.start_timer(0, false) {
-				next if done_05
-				done_05 = true
-				JBB_LayersPanel.openedModel(newModel)
-			}
-		end#def
-
-		def onOpenModel(newModel)
-			done_06 = false
-			timer_06 = UI.start_timer(0, false) {
-				next if done_06
-				done_06 = true
-				JBB_LayersPanel.openedModel(newModel)
-			}
-		end#def
-
-	end#class
-
-	def self.openedModel(newModel)
-		@model.start_operation("Initialize Layers Panel", true)
-			self.createDialog
-			
-			JBB_LayersPanel.model = newModel
-			JBB_LayersPanel.layers = newModel.layers
-			
-			JBB_LayersPanel.layerDictID = nil
-			
-			JBB_LayersPanel.model.add_observer(@jbb_lp_modelObserver)
-			JBB_LayersPanel.model.pages.add_observer(@jbb_lp_pagesObserver)
-			JBB_LayersPanel.layers.add_observer(@jbb_lp_layersObserver)
-			
-			JBB_LayersPanel.layers.each{|layer|
-				layer.remove_observer(@jbb_lp_entityObserver) #Reset observer to make sure layer is watched
-				layer.add_observer(@jbb_lp_entityObserver)
-				layer.set_attribute("jbb_layerspanel", "observer", 1)
-			}
-			
-			JBB_LayersPanel.dialog.execute_script("reloadDialog();")
-		@model.commit_operation
-	end#def
-
-	@jbb_lp_appObserver = JBB_LP_AppObserver.new
-
-	# Attach the observer
-	Sketchup.add_observer(@jbb_lp_appObserver)
 
 
 
@@ -383,6 +329,59 @@ module JBB_LayersPanel
 
 	# Attach the observer
 	@model.pages.add_observer(@jbb_lp_pagesObserver)
+
+
+
+	### APPOBSERVER ### ------------------------------------------------------
+
+	class JBB_LP_AppObserver < Sketchup::AppObserver
+
+		def onNewModel(newModel)
+			done_05 = false
+			timer_05 = UI.start_timer(0, false) {
+				next if done_05
+				done_05 = true
+				JBB_LayersPanel.openedModel(newModel)
+			}
+		end#def
+
+		def onOpenModel(newModel)
+			done_06 = false
+			timer_06 = UI.start_timer(0, false) {
+				next if done_06
+				done_06 = true
+				JBB_LayersPanel.openedModel(newModel)
+			}
+		end#def
+
+	end#class
+
+	def self.openedModel(newModel)
+		@model.start_operation("Initialize Layers Panel", true)
+			self.createDialog
+			puts "yep"
+			JBB_LayersPanel.model = newModel
+			JBB_LayersPanel.layers = newModel.layers
+			
+			JBB_LayersPanel.layerDictID = nil
+			
+			JBB_LayersPanel.model.add_observer(JBB_LayersPanel.jbb_lp_modelObserver)
+			JBB_LayersPanel.model.pages.add_observer(JBB_LayersPanel.jbb_lp_pagesObserver)
+			JBB_LayersPanel.layers.add_observer(JBB_LayersPanel.jbb_lp_layersObserver)
+			
+			JBB_LayersPanel.layers.each{|layer|
+				layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)
+				layer.set_attribute("jbb_layerspanel", "observer", 1)
+			}
+			
+			JBB_LayersPanel.dialog.execute_script("reloadDialog();")
+		@model.commit_operation
+	end#def
+
+	@jbb_lp_appObserver = JBB_LP_AppObserver.new
+
+	# Attach the observer
+	Sketchup.add_observer(@jbb_lp_appObserver)
 
 
 end#module

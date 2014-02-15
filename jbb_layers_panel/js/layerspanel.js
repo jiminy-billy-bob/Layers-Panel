@@ -1310,6 +1310,10 @@ $(document).ready(function(){
 		skpCallback('skp:openOptionsDialog');
 	});
 	
+	$('#debug').click(function() {
+		skpCallback('skp:openDebugDialog');
+	});
+	
 	
 	// Layer menu
 	var timeoutId = 0;

@@ -928,6 +928,10 @@ module JBB_LayersPanel
 			self.show_layerspanel_dlg_options
 		end#callback
 
+		@dialog.add_bridge_callback("openDebugDialog") do
+			self.show_layerspanel_dlg_debug
+		end#callback
+
 		@dialog.add_bridge_callback("undo") do
 			Sketchup.send_action("editUndo:")
 		end#callback 

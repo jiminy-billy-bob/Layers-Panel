@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-compatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="../css/debug.css" rel="stylesheet" type="text/css">
+
+	</head>
+	<body>
+		<fieldset>
+			<legend>Layer IDs</legend>
+			<div id="layersIDs1">No issues detected with layer IDs.</div>
+			<div id="layersIDs2"><b>Some layers have duplicate IDs. <a href="#" title="Click here to remove duplicate IDs" onclick="debugLayerIDs();">Click here to fix it.</a></b></div><br/>
+			<div id="dictID">Current dictID : </div><br/>
+			<div id="layers"></div>
+		</fieldset>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/bridge.js"></script>
+		<script type="text/javascript">
+			function reloadDialog() {
+				location.reload();
+			}
+			
+			function getDictID(dictID) {
+				$('#dictID').append(dictID);
+			}
+			
+			function addLayer(layerName, layerID) {
+				var warning = false;
+				if($('#layer_'+layerID).length){
+					$('#layer_'+layerID).addClass("warning");
+					warning = true;
+					$('#layersIDs1').hide();
+					$('#layersIDs2').show();
+				}
+				
+				if (warning) {
+					var layerStr = '<div id="layer_' + layerID + '" class="layer warning">' + layerID + ' : ' + layerName + '</div>'
+				}
+				else {
+					var layerStr = '<div id="layer_' + layerID + '" class="layer">' + layerID + ' : ' + layerName + '</div>'
+				}
+				$('#layers').append(layerStr);
+				
+				$('.warning').first().attr('id', 'firstWarning');
+				location.hash = "#firstWarning";
+			}
+		
+			function debugLayerIDs() {
+				skpCallback('skp:debugLayersIDs@');
+			}
+		
+			$(document).ready(function(){
+				skpCallback('skp:getLayersIDs@');
+			});
+		</script>
+	</body>
+</html>
