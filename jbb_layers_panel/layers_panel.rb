@@ -75,6 +75,7 @@ module JBB_LayersPanel
 	@jbb_lp_entityObserver = nil
 	@jbb_lp_layersObserver = nil
 	@jbb_lp_viewObserver = nil
+	@jbb_lp_renderingOptionsObserver = nil
 	
 	@lastActiveModelID = nil
 	
@@ -82,9 +83,10 @@ module JBB_LayersPanel
 	@html_path2 = File.dirname( __FILE__ ) + "/html/warning.html"
 	@html_path3 = File.dirname( __FILE__ ) + "/html/options.html"
 	@html_path4 = File.dirname( __FILE__ ) + "/html/debug.html"
+	@html_path5 = File.dirname( __FILE__ ) + "/html/color.html"
 	
 	class << self
-		attr_accessor :isActive, :model, :layers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :lastActiveModelID
+		attr_accessor :isActive, :model, :layers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
 	end
   
 	
@@ -102,6 +104,8 @@ module JBB_LayersPanel
 	require 'jbb_layers_panel/rb/options.rb'
 	
 	require 'jbb_layers_panel/rb/debug.rb'
+	
+	require 'jbb_layers_panel/rb/color.rb'
 	
 	
 	

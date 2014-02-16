@@ -9,6 +9,7 @@ module JBB_LayersPanel
 		self.getModelLayers(false)
 		self.getActiveLayer()
 		self.getCollapsedGroups()
+		self.getLayerColors()
 		self.getRenderEngine
 		self.checkRenderToolbar
 		self.iframeTrack
@@ -160,6 +161,25 @@ module JBB_LayersPanel
 				end#if
 			end#if
 		end#each
+	end#def
+
+	def self.getLayerColors()
+		if RUBY_VERSION.to_i >= 2
+			@layers.each{|layer| 
+					self.setColorFromRuby(layer)
+				}
+		end#if
+	end#def
+	
+	def self.setColorFromRuby(layer)
+		color = layer.color.to_s.sub(/[,]\s{1,}\d{1,}\)/, ')').sub(/(Color)/, "rgb") #Get rid of alpha, and replace "Color" by "rgb"
+		if layer == @layers[0]
+			layerID = 0
+		else
+			layerID = layer.get_attribute("jbb_layerspanel", "ID")
+		end#if
+		setColorFromRuby = "setColorFromRuby('#{layerID}', '#{color}');"
+		@dialog.execute_script(setColorFromRuby)
 	end#def
 
 	def self.getActiveLayer()
@@ -374,6 +394,25 @@ module JBB_LayersPanel
 					break
 				end#if
 			}
+		end#callback
+
+		@dialog.add_bridge_callback("pickColor") do |wdl, layerID|
+			if RUBY_VERSION.to_i >= 2
+				self.show_layerspanel_dlg_color
+				done = false
+				timer = UI.start_timer(0, false) {
+					next if done
+					done = true
+					@layers.each{|layer| 
+						if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
+							# color = layer.color.to_s.sub(/[,]\s{1,}\d{1,}\)/, ')').sub(/(Color)/, "") #Get rid of alpha and "Color"
+							getLayerColor = "getLayerColor('#{layerID}', '#{layer.color.red}', '#{layer.color.green}', '#{layer.color.blue}');"
+							@dialogColor.execute_script(getLayerColor)
+							break
+						end#if
+					}
+				}
+			end#if
 		end#callback
 
 		@dialog.add_bridge_callback("lockFromJS") do |wdl, layerId|
@@ -958,6 +997,14 @@ module JBB_LayersPanel
 			width = width.to_i
 			height = @heightBeforeMinimize
 			self.resize(width, height)
+		end#callback render
+
+		@dialog.add_bridge_callback("colorByLayer") do |wdl, action|
+			if @model.rendering_options["DisplayColorByLayer"] == true
+				@model.rendering_options["DisplayColorByLayer"] = false
+			else
+				@model.rendering_options["DisplayColorByLayer"] = true
+			end#if
 		end#callback render
 		
 		

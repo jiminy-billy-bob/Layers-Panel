@@ -81,6 +81,9 @@ module JBB_LayersPanel
 							JBB_LayersPanel.dialog.execute_script(addLayerFromRuby)
 							showLayerFromRuby = "showLayerFromRuby('#{layerIdForJS}');"
 							JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
+							if RUBY_VERSION.to_i >= 2
+								JBB_LayersPanel.setColorFromRuby(layer)
+							end#if
 						end#if
 					JBB_LayersPanel.model.commit_operation #Necessary...
 					JBB_LayersPanel.model.start_operation("Add layer.", true, false, true) #Necessary...
@@ -148,6 +151,7 @@ module JBB_LayersPanel
 			JBB_LayersPanel.getModelLayers(false)
 			JBB_LayersPanel.getActiveLayer()
 			JBB_LayersPanel.getCollapsedGroups()
+			JBB_LayersPanel.getLayerColors()
 			done_19 = false
 			timer_19 = UI.start_timer(0, false) {
 				next if done_19
@@ -161,6 +165,7 @@ module JBB_LayersPanel
 			JBB_LayersPanel.getModelLayers(false)
 			JBB_LayersPanel.getActiveLayer()
 			JBB_LayersPanel.getCollapsedGroups()
+			JBB_LayersPanel.getLayerColors()
 			done_18 = false
 			timer_18 = UI.start_timer(0, false) {
 				next if done_18
@@ -332,6 +337,28 @@ module JBB_LayersPanel
 
 
 
+	### RENDERINGOPTIONSOBSERVER ### ------------------------------------------------------
+
+	#Track active model change
+	class JBB_LP_RenderingOptionsObserver < Sketchup::RenderingOptionsObserver
+		def onRenderingOptionsChanged(renderoptions, type)
+			if type == 16
+				if JBB_LayersPanel.model.rendering_options["DisplayColorByLayer"] == true
+					JBB_LayersPanel.dialog.execute_script("toogleColorsButton(true);")
+				else
+					JBB_LayersPanel.dialog.execute_script("toogleColorsButton(false);")
+				end#if
+			end#if
+		end
+	end#def
+	
+	@jbb_lp_renderingOptionsObserver = JBB_LP_RenderingOptionsObserver.new
+
+	# Attach the observer
+	@model.rendering_options.add_observer(@jbb_lp_renderingOptionsObserver)
+
+
+
 	### VIEWOBSERVER ### ------------------------------------------------------
 
 	#Track active model change
@@ -384,7 +411,7 @@ module JBB_LayersPanel
 	def self.openedModel(newModel)
 		@model.start_operation("Initialize Layers Panel", true)
 			self.createDialog
-			puts "yep"
+			# puts "yep"
 			JBB_LayersPanel.model = newModel
 			JBB_LayersPanel.layers = newModel.layers
 			

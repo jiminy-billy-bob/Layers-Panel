@@ -188,8 +188,6 @@
 			}
 		}
 		
-		// unHide($('#group_'+groupID), true);
-		
 		if (allowSerialize == true) {
 			storeSerialize();
 		}
@@ -226,8 +224,6 @@
 	
 	function unGroupLayers() { // Ungroup selected group
 		if($(".ui-selected").length){
-			// parentOl = $(".ui-selected:first").parent().parent();
-			// parentOl.children(".group").each(function() {
 			$(".ui-selected").each(function() {
 				var item = $(this).parent();
 				if (isGroup(item) && !item.parent().parent().children(".lidiv").is(".ui-selected")) { // If group && not nested in selected
@@ -241,7 +237,6 @@
 						item.children("ol").children("li").insertBefore(item);
 						item.empty().remove();
 					}
-					// item.hide();
 					skpCallback('skp:unGroupLayers@');
 				}
 			});
@@ -260,7 +255,6 @@
 	}
 	
 	function renameLayerFromRuby(layerID, layerName) {
-		// alert('layerName');
 		$("#layer_" + layerID).children("div").children(".layerName").children(".layerNameText").text(layerName);
 	}
 	
@@ -274,11 +268,25 @@
 	}
 	
 	function collapseFromRuby(groupID) {
-		// alert(groupID);
-		// $("#group_" + groupID).children(".disclose").click();
 		$("#group_" + groupID).removeClass('mjs-nestedSortable-expanded').addClass('mjs-nestedSortable-collapsed');
 		
 	}
+	
+	
+//-------------
+	
+	
+	// function setColorFromRuby(layerID, color) {
+		// $("#layer_" + layerID).find(".handle, .handle0").css( "background-color", color );
+	// }
+	
+	// function toogleColorsButton(check){
+		// if(check == true){
+			// $("#colors").parent().addClass('footerElementChecked');
+		// } else {
+			// $("#colors").parent().removeClass('footerElementChecked');
+		// }
+	// }
 	
 	
 //-------------
@@ -371,7 +379,6 @@
 				layerID = $(this).parent().attr('id');
 				layerID = layerID.replace('layer_', '')
 				deleteLayerFromJS(layerID, deleteGeom, currentLayer); 
-				// alert (currentLayer);
 			}
 		});
 		
@@ -412,7 +419,6 @@
 	
 	function deleteLayerFromRuby(layerID) {
 		$("#layer_" + layerID).empty().remove();
-		// storeSerialize();
 	}
 	
 	function mergeLayers() {
@@ -442,7 +448,6 @@
 				item.empty().remove();
 			}
 		});
-		// alert(layerIDs);
 		skpCallback('skp:mergeLayers@' + layerIDs);
 	}
 	
@@ -597,7 +602,6 @@
 				if (ruby != true){
 					layerID = item.attr('id').replace('layer_', '');
 					showLayerFromJS(layerID);
-					// skpCallback('skp:unHideByGroup@' + layerID);
 				}
 			}
 		}
@@ -817,10 +821,6 @@
 		$('body').append(iframe);
 	}
 	
-	// function update() {
-		// $('#update').show();
-	// }
-	
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -835,13 +835,6 @@ $(document).ready(function(){
 	makeUnselectable(document);
 	
 	skpCallback('skp:startup@');
-	
-	// getModelLayers(false);
-	// getActiveLayer();
-	// getRenderEngine();
-	
-	// window.location = 'skp:checkIEwarning@';
-	// window.location = 'skp:checkRenderToolbar@';
 	
 	
 
@@ -862,14 +855,21 @@ $(document).ready(function(){
 
 			isTree: true,
 			expandOnHover: 500
-		})
-		.selectable({cancel: ".visibility, .rendering, .active, .handle, .disclose, .inputName, .layerNameText", filter: ".lidiv"});
+		});
+		
+	$('#layers').selectable({cancel: ".visibility, .rendering, .active, .handle, .disclose, .inputName, .layerNameText", filter: ".lidiv"});
 	
 	
 
 	$(document).bind("contextmenu", function(e) { // Disable right-click
 		return false;
 	});
+
+	// $(document).on('contextmenu', '.handle, .handle0', function (e) {
+		// var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
+		// skpCallback('skp:pickColor@' + layerID);
+	// });
+	
 	
 	// $(function(){
 		// $.contextMenu({
@@ -911,7 +911,6 @@ $(document).ready(function(){
 			}
 		}
 	});
-	
 	
 	$(document).on('click', '.disclose', function (e) {
 		var groupID = $(this).parent().parent().attr('id').replace('group_', '');
@@ -986,7 +985,6 @@ $(document).ready(function(){
 	});
 	
 	$(document).on('click', '.active', function (e) {
-		// layerName = $(this).parent().children(".layerName").children(".layerNameText").text();
 		layerID = $(this).parent().parent().attr('id');
 		layerID = layerID.replace('layer_', '');
 		
@@ -1041,7 +1039,6 @@ $(document).ready(function(){
 		}
 		
 		skpCallback('skp:sortItem@')
-		// storeSerialize();
 	});
 	
 	
@@ -1352,6 +1349,12 @@ $(document).ready(function(){
     });
 	
 	
+	// Use color by layer
+	$('#colors').click(function () {
+		skpCallback('skp:colorByLayer');
+	});
+	
+	
 	// Add a new Layer
 	var preventLayerAdd = false;
 	$('#newLayer').click(function () {
@@ -1436,25 +1439,10 @@ $(document).ready(function(){
 	
 	//////////////
 	
-	// window.location = 'skp:iframeTrack';
-	
-	//////////////
-	
 	$(window).resize(function(){
 		$('#layersContainer').css({
 			height: $(window).height() - headerHeight
 		});
 	});
 	$(window).resize();
-	
-	// var Browser = {
-	  // Version: function() {
-		// var version = 999; // we assume a sane browser
-		// if (navigator.appVersion.indexOf("MSIE") != -1)
-		  // // bah, IE again, lets downgrade version number
-		  // version = parseFloat(navigator.appVersion.split("MSIE")[1]);
-		// return version;
-	  // }
-	// }
-	// alert(Browser.Version());
 });

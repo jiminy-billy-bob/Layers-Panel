@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-compatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="../css/color.css" rel="stylesheet" type="text/css">
+
+	</head>
+	<body>
+		<input type="hidden" id="layerID"></input>
+		<div id="jPicker"></div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/jquery.json-2.4.min.js"></script>
+		<script src="../js/bridge.js"></script>
+		<script src="../js/jpicker.js"></script>
+		<script type="text/javascript">
+			function getLayerColor(layerID, red, green, blue) {
+				$('#layerID').val(layerID);
+				$('#jPicker').jPicker();
+				$.jPicker.List[0].color.active.val('rgb', { r:red, g:green, b:blue});
+			}
+			
+			$(document).on('click', '.Ok', function(){
+				var rgb = $.jPicker.List[0].color.active.val('rgb');
+				var colors = { "layerID":$('#layerID').val(), "red":rgb.r , "green":rgb.g , "blue":rgb.b }; //Json
+				var jsonColors = $.toJSON( colors );
+				
+				skpCallback('skp:setLayerColor@' + jsonColors);
+			});
+			
+			$(document).on('click', '.Cancel', function(){
+				skpCallback('skp:closeDialog@');
+			});
+		</script>
+	</body>
+</html>
