@@ -39,17 +39,12 @@ lp_ext.description = 'Replaces Sketchup\'s layers window, with nesting/sorting/g
 Sketchup.register_extension lp_ext, true
 
 
-begin
-	path = File.dirname( __FILE__ ) + "/layers_panel.rb"
+path = File.dirname( __FILE__ ) + "/layers_panel.rb"
+if File.exists?(path)
 	File.delete(path)
-rescue
-	# puts "Could not delete 'layers_panel.rb'"
-else
-end
-begin
-	path = File.dirname( __FILE__ ) + "/Layers Panel.rb"
+end#if
+
+path = File.dirname( __FILE__ ) + "/Layers Panel.rb"
+if File.exists?(path)
 	File.delete(path)
-rescue
-	# puts "Could not delete 'Layers Panel.rb'"
-else
-end
+end#if
