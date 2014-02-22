@@ -55,9 +55,6 @@ module JBB_LayersPanel
 
 	@jbb_lp_entityObserver = JBB_LP_EntityObserver.new
 
-	# Attach the observer to layer0
-	@layers[0].add_observer(@jbb_lp_entityObserver)
-
 
 
 	### LAYERSOBSERVER ### ------------------------------------------------------
@@ -85,10 +82,7 @@ module JBB_LayersPanel
 								JBB_LayersPanel.setColorFromRuby(layer)
 							end#if
 						end#if
-					JBB_LayersPanel.model.commit_operation #Necessary...
-					JBB_LayersPanel.model.start_operation("Add layer.", true, false, true) #Necessary...
-						layer.set_attribute("jbb_layerspanel", "observer", 1)
-						layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)
+						JBB_LayersPanel.checkEntityObserver(layer)
 						JBB_LayersPanel.storeSerialize
 					JBB_LayersPanel.model.commit_operation
 				end#if
@@ -137,15 +131,13 @@ module JBB_LayersPanel
 
 	@jbb_lp_layersObserver = JBB_LP_layersObserver.new
 
-	# Attach the observer.
-	@layers.add_observer(@jbb_lp_layersObserver)
-
 
 
 	### MODELOBSERVER ### ------------------------------------------------------
 
 	class JBB_LP_ModelObserver < Sketchup::ModelObserver
 		def onTransactionUndo(model)
+			puts "undo"
 			JBB_LayersPanel.allowSerialize = false
 			JBB_LayersPanel.dialog.execute_script("emptyOl();")
 			JBB_LayersPanel.getModelLayers(false)
@@ -160,6 +152,7 @@ module JBB_LayersPanel
 			}
 		end#def
 		def onTransactionRedo(model)
+			puts "redo"
 			JBB_LayersPanel.allowSerialize = false
 			JBB_LayersPanel.dialog.execute_script("emptyOl();")
 			JBB_LayersPanel.getModelLayers(false)
@@ -176,9 +169,6 @@ module JBB_LayersPanel
 	end#class
 
 	@jbb_lp_modelObserver = JBB_LP_ModelObserver.new
-
-	# Attach the observer
-	@model.add_observer(@jbb_lp_modelObserver)
 
 
 
@@ -332,9 +322,6 @@ module JBB_LayersPanel
 
 	@jbb_lp_pagesObserver = JBB_LP_PagesObserver.new
 
-	# Attach the observer
-	@model.pages.add_observer(@jbb_lp_pagesObserver)
-
 
 
 	### RENDERINGOPTIONSOBSERVER ### ------------------------------------------------------
@@ -353,9 +340,6 @@ module JBB_LayersPanel
 	end#def
 	
 	@jbb_lp_renderingOptionsObserver = JBB_LP_RenderingOptionsObserver.new
-
-	# Attach the observer
-	@model.rendering_options.add_observer(@jbb_lp_renderingOptionsObserver)
 
 
 
@@ -377,9 +361,6 @@ module JBB_LayersPanel
 	
 	if MAC
 		@jbb_lp_viewObserver = JBB_LP_ViewObserver.new
-
-		# Attach the observer
-		@model.active_view.add_observer(@jbb_lp_viewObserver)
 	end#if
 
 
@@ -409,29 +390,26 @@ module JBB_LayersPanel
 	end#class
 
 	def self.openedModel(newModel)
-		@model.start_operation("Initialize Layers Panel", true)
-			self.createDialog
-			# puts "yep"
-			JBB_LayersPanel.model = newModel
-			JBB_LayersPanel.layers = newModel.layers
-			
-			JBB_LayersPanel.layerDictID = nil
-			
-			JBB_LayersPanel.model.add_observer(JBB_LayersPanel.jbb_lp_modelObserver)
-			JBB_LayersPanel.model.pages.add_observer(JBB_LayersPanel.jbb_lp_pagesObserver)
-			JBB_LayersPanel.layers.add_observer(JBB_LayersPanel.jbb_lp_layersObserver)
-			
-			if MAC #Track active model change
-				JBB_LayersPanel.model.active_view.add_observer(JBB_LayersPanel.jbb_lp_viewObserver)
-			end#if
-			
-			JBB_LayersPanel.layers.each{|layer|
-				layer.add_observer(JBB_LayersPanel.jbb_lp_entityObserver)
-				layer.set_attribute("jbb_layerspanel", "observer", 1)
-			}
-			
-			JBB_LayersPanel.dialog.execute_script("reloadDialog();")
-		@model.commit_operation
+		self.createDialog
+		JBB_LayersPanel.model = newModel
+		JBB_LayersPanel.layers = newModel.layers
+		
+		JBB_LayersPanel.layerDictID = nil
+		
+		JBB_LayersPanel.model.add_observer(JBB_LayersPanel.jbb_lp_modelObserver)
+		JBB_LayersPanel.model.pages.add_observer(JBB_LayersPanel.jbb_lp_pagesObserver)
+		JBB_LayersPanel.layers.add_observer(JBB_LayersPanel.jbb_lp_layersObserver)
+		@model.rendering_options.add_observer(@jbb_lp_renderingOptionsObserver)
+		
+		if MAC #Track active model change
+			JBB_LayersPanel.model.active_view.add_observer(JBB_LayersPanel.jbb_lp_viewObserver)
+		end#if
+		
+		JBB_LayersPanel.layers.each{|layer|
+			JBB_LayersPanel.checkEntityObserver(layer)
+		}
+		
+		JBB_LayersPanel.dialog.execute_script("reloadDialog();")
 	end#def
 
 	@jbb_lp_appObserver = JBB_LP_AppObserver.new

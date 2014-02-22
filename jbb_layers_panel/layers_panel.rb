@@ -57,6 +57,7 @@ module JBB_LayersPanel
 	
 	@model = Sketchup.active_model
 	@layers = @model.layers
+	@entityObservers = Hash.new
 	@layerDictID = nil
 	@dialog = nil
 	@allowSerialize = true
@@ -86,7 +87,7 @@ module JBB_LayersPanel
 	@html_path5 = File.dirname( __FILE__ ) + "/html/color.html"
 	
 	class << self
-		attr_accessor :isActive, :model, :layers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
+		attr_accessor :isActive, :model, :layers, :entityObservers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
 	end
   
 	

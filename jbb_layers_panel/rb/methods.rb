@@ -45,13 +45,21 @@ module JBB_LayersPanel
 	end#def
 	
 	def self.IdLayer(layer) #Give a unique custom id to a layer
-			if layer.get_attribute("jbb_layerspanel", "ID") != nil 
-				#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
-			else
-				layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
-				# puts "layerDictID " + @layerDictID.to_s
-				self.incLayerDictID
-			end#if
+		if layer.get_attribute("jbb_layerspanel", "ID") != nil 
+			#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
+		else
+			layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
+			# puts "layerDictID " + @layerDictID.to_s
+			self.incLayerDictID
+		end#if
+	end#def
+	
+	def self.checkEntityObserver(layer) #check if layer has observer, else attach to it
+		if @entityObservers[layer.entityID] != true
+			@entityObservers[layer.entityID] = true
+			layer.add_observer(@jbb_lp_entityObserver)
+			# puts layer.name
+		end#if
 	end#def
 	
 	

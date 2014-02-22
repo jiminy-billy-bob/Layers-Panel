@@ -101,22 +101,7 @@ module JBB_LayersPanel
 					@dialog.execute_script(hideLayerFromRuby)
 				end#if
 				
-				if layer.get_attribute("jbb_layerspanel", "observer") != 1
-					if firstOp == true
-						@model.start_operation("Add layer observer", true)
-							layer.add_observer(@jbb_lp_entityObserver)
-							layer.set_attribute("jbb_layerspanel", "observer", 1)
-							# puts 'observer ' + layer.name
-						@model.commit_operation 
-						firstOp = false
-					else
-						@model.start_operation("Add layer observer", true, false, true)
-							layer.add_observer(@jbb_lp_entityObserver)
-							layer.set_attribute("jbb_layerspanel", "observer", 1)
-							# puts 'observer ' + layer.name
-						@model.commit_operation 
-					end#if
-				end#if
+				self.checkEntityObserver(layer)
 			end#if
 		}
 		
@@ -365,9 +350,7 @@ module JBB_LayersPanel
 			newLayerName = hashLayerNames['newLayerName']
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
-					layer.remove_observer(@jbb_lp_entityObserver) #Reset observer to make sure layer is watched
-					layer.add_observer(@jbb_lp_entityObserver)
-					layer.set_attribute("jbb_layerspanel", "observer", 1)
+					self.checkEntityObserver(layer)
 					layer.name = newLayerName
 					break
 				end#if
