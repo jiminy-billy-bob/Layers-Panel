@@ -137,7 +137,7 @@ module JBB_LayersPanel
 
 	class JBB_LP_ModelObserver < Sketchup::ModelObserver
 		def onTransactionUndo(model)
-			puts "undo"
+			# puts "undo"
 			JBB_LayersPanel.allowSerialize = false
 			JBB_LayersPanel.dialog.execute_script("emptyOl();")
 			JBB_LayersPanel.getModelLayers(false)
@@ -152,7 +152,7 @@ module JBB_LayersPanel
 			}
 		end#def
 		def onTransactionRedo(model)
-			puts "redo"
+			# puts "redo"
 			JBB_LayersPanel.allowSerialize = false
 			JBB_LayersPanel.dialog.execute_script("emptyOl();")
 			JBB_LayersPanel.getModelLayers(false)

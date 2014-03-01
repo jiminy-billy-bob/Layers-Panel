@@ -276,17 +276,17 @@
 //-------------
 	
 	
-	// function setColorFromRuby(layerID, color) {
-		// $("#layer_" + layerID).find(".handle, .handle0").css( "background-color", color );
-	// }
+	function setColorFromRuby(layerID, color) {
+		$("#layer_" + layerID).find(".handle, .handle0").css( "background-color", color );
+	}
 	
-	// function toogleColorsButton(check){
-		// if(check == true){
-			// $("#colors").parent().addClass('footerElementChecked');
-		// } else {
-			// $("#colors").parent().removeClass('footerElementChecked');
-		// }
-	// }
+	function toogleColorsButton(check){
+		if(check == true){
+			$("#colors").parent().addClass('footerElementChecked');
+		} else {
+			$("#colors").parent().removeClass('footerElementChecked');
+		}
+	}
 	
 	
 //-------------
@@ -865,10 +865,10 @@ $(document).ready(function(){
 		return false;
 	});
 
-	// $(document).on('contextmenu', '.handle, .handle0', function (e) {
-		// var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
-		// skpCallback('skp:pickColor@' + layerID);
-	// });
+	$(document).on('contextmenu', '.handle, .handle0', function (e) {
+		var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
+		skpCallback('skp:pickColor@' + layerID);
+	});
 	
 	
 	// $(function(){
