@@ -221,11 +221,8 @@ module JBB_LayersPanel
 	end#def
 
 	def self.storeSerialize
-		@dialog.execute_script("storeSerialize();")
-	end#def
-
-	def self.storeSerialize2
 		if @allowSerialize == true
+			@dialog.execute_script("storeSerialize();")
 			serialized = @dialog.get_element_value("serialize")
 			# puts serialized
 			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
@@ -544,7 +541,8 @@ module JBB_LayersPanel
 			@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
 		end#callback addGroup
 
-		@dialog.add_bridge_callback("addGroupEnd") do |wdl, groupName|
+		@dialog.add_bridge_callback("addGroupEnd") do |wdl, allowSerialize|
+			allowSerialize == "true" ? self.storeSerialize :
 			@model.commit_operation
 		end#callback addGroup
 

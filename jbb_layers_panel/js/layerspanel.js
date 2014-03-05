@@ -188,11 +188,7 @@
 			}
 		}
 		
-		if (allowSerialize == true) {
-			storeSerialize();
-		}
-		
-		skpCallback('skp:addGroupEnd@');
+		skpCallback('skp:addGroupEnd@' + allowSerialize);
 		allowSerialize = true;
 		return groupID;
 	}
@@ -791,7 +787,7 @@
 		if (allowSerialize == true) {
 			serialized = $('ol.sortable').nestedSortable('serialize');
 			$('#serialize').val(serialized);
-			skpCallback('skp:storeSerialize2@');
+			// skpCallback('skp:storeSerialize2@');
 		}
 	}
 	
