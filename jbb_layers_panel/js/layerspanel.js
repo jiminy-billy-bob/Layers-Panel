@@ -853,7 +853,19 @@ $(document).ready(function(){
 			expandOnHover: 500
 		});
 		
-	$('#layers').selectable({cancel: ".visibility, .rendering, .active, .handle, .disclose, .inputName, .layerNameText", filter: ".lidiv"});
+	$('#layers').selectable({
+		cancel: ".visibility, .rendering, .active, .handle, .disclose, .inputName, .layerNameText", 
+		filter: ".lidiv",
+		selecting: function(e, ui) { // Enable shift-click selection
+			var curr = $(ui.selecting.tagName, e.target).index(ui.selecting); // get selecting item index
+			if(e.shiftKey && prev > -1) { // if shift key was pressed and there is previous - select them all
+				$(ui.selecting.tagName, e.target).slice(Math.min(prev, curr), 1 + Math.max(prev, curr)).filter(".lidiv").addClass('ui-selected');
+				prev = -1; // and reset prev
+			} else {
+				prev = curr; // othervise just save prev
+			}
+		}
+	});
 	
 	
 
@@ -1398,7 +1410,8 @@ $(document).ready(function(){
 	
 	
 	$('#print').click(function() {
-		alert($("#olsortable").html());
+		// alert($("#olsortable").html());
+		window.prompt("Copy to clipboard: Ctrl+C, Enter", $("#olsortable").html());
 	});
 	
 	
