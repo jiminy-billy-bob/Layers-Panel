@@ -1005,6 +1005,19 @@ $(document).ready(function(){
 	
 	$( "ol.sortable" ).on( "sortstop", function( event, ui ) { // When an item is sorted
 		allowDeselect = true;
+		
+		lastSorted = ui.item;
+		if(ui.item.children(".lidiv").hasClass("ui-selected")){ // If sorted item is selected, sort all other selected
+			$(".ui-selected").each(function(e){
+				if(!$(this).parent().is(ui.item)){ // If not sorted item
+					if ($(this).parents("ol").parents().children(".ui-selected").length > 0){ // If nested in selected group, do nothing
+					} else { // Else, sort it
+						$(this).parent().insertAfter(lastSorted)
+						lastSorted = $(this).parent();
+					}
+				}
+			});
+		}
 	
 		if (ui.item.parents('.hiddenGroup').length > 0) { // If nested in hiddenGroup
 			if (ui.item.children(".lidiv").children(".visibility").hasClass("visible")) { //if item visible
