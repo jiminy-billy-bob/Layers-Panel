@@ -68,11 +68,13 @@ module JBB_LayersPanel
 				next if done_02
 				done_02 = true
 				if JBB_LayersPanel.allowSerialize == true
-					JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
+					if Sketchup.active_model.tools.active_tool_name != 'PasteTool'
+						JBB_LayersPanel.model.start_operation("Add layer", true, true, true)
+					end#if
+						JBB_LayersPanel.layers.each {| l | layer = l }
 						JBB_LayersPanel.initializeLayerDictID
 						JBB_LayersPanel.IdLayer(layer)
 						if JBB_LayersPanel.dialog
-							JBB_LayersPanel.layers.each {| l | layer = l }
 							layerIdForJS = layer.get_attribute("jbb_layerspanel", "ID")
 							addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerIdForJS}');"
 							JBB_LayersPanel.dialog.execute_script(addLayerFromRuby)
@@ -84,7 +86,9 @@ module JBB_LayersPanel
 						end#if
 						JBB_LayersPanel.checkEntityObserver(layer)
 						JBB_LayersPanel.storeSerialize
-					JBB_LayersPanel.model.commit_operation
+					if Sketchup.active_model.tools.active_tool_name != 'PasteTool'
+						JBB_LayersPanel.model.commit_operation
+					end#if
 				end#if
 				if layer.name == "Google Earth Snapshot"
 					UI.start_timer(0, false) {
