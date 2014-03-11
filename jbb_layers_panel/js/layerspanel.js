@@ -1159,11 +1159,19 @@ $(document).ready(function(){
 		var size = { "height":$(window).height(), "width":$(window).width() }; //Json
 		var jsonSize = $.toJSON( size );
 		
-		if($(window).height() > 5){
+		if($(window).height() > 10){
 			skpCallback('skp:minimizeDialog@' + jsonSize);
 		}
 		else {
 			skpCallback('skp:maximizeDialog@' + $(window).width());
+		}
+	});
+	$(window).resize(function(){
+		if($(window).height() > 10){
+			$('#minimize').css({height: '3px'});
+		}
+		else {
+			$('#minimize').css({height: '10px'});
 		}
 	});
 	

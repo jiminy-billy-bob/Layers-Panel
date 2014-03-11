@@ -245,6 +245,23 @@ module JBB_LayersPanel
 			new_height = height + adjust_height
 			@dialog.set_size( new_width, new_height )
 		end
+		#Correct height when target height is less than border height
+		@dialog.execute_script("getDialogSize();")
+		jsonSize = @dialog.get_element_value("dialogSize")
+		sizeHash = self.jsonToHash(jsonSize)
+		dialog_height = sizeHash['height'].to_i
+		adjust_height = height - dialog_height
+		i = 1
+		while adjust_height != 0
+			new_height = height + adjust_height + i
+			@dialog.set_size( new_width, new_height )
+			@dialog.execute_script("getDialogSize();")
+			jsonSize = @dialog.get_element_value("dialogSize")
+			sizeHash = self.jsonToHash(jsonSize)
+			dialog_height = sizeHash['height'].to_i
+			adjust_height = height - dialog_height
+			i += 1
+		end
 	end#def
 	
 	
@@ -970,7 +987,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("minimizeDialog") do |wdl, size|
 			sizeHash = self.jsonToHash(size)
-			self.resize(sizeHash['width'].to_i, 4)
+			self.resize(sizeHash['width'].to_i, 10)
 			@heightBeforeMinimize = sizeHash['height']
 		end#callback render
 
