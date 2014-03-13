@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 #
 # Layers Panel
-# Version 1.0.2
+# Version 1.0.3
 #
 #-------------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ require 'extensions.rb'
 lp_ext = SketchupExtension.new 'Layers Panel', 'jbb_layers_panel/layers_panel.rb'
 
 lp_ext.creator     = 'Thomas Hauchecorne, Chips Architecture'
-lp_ext.version     = '1.0.2'
+lp_ext.version     = '1.0.3'
 lp_ext.copyright   = 'Thomas Hauchecorne © 2014'
 lp_ext.description = 'Replaces Sketchup\'s layers window, with nesting/sorting/grouping/locking features.'
 

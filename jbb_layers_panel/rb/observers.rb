@@ -55,6 +55,11 @@ module JBB_LayersPanel
 
 	@jbb_lp_entityObserver = JBB_LP_EntityObserver.new
 
+	if MAC
+		# Attach the observer to layer0
+		@layers[0].add_observer(@jbb_lp_entityObserver)
+	end#if
+
 
 
 	### LAYERSOBSERVER ### ------------------------------------------------------
@@ -135,6 +140,11 @@ module JBB_LayersPanel
 
 	@jbb_lp_layersObserver = JBB_LP_layersObserver.new
 
+	if MAC
+		# Attach the observer.
+		@layers.add_observer(@jbb_lp_layersObserver)
+	end#if
+
 
 
 	### MODELOBSERVER ### ------------------------------------------------------
@@ -173,6 +183,11 @@ module JBB_LayersPanel
 	end#class
 
 	@jbb_lp_modelObserver = JBB_LP_ModelObserver.new
+
+	if MAC
+		# Attach the observer
+		@model.add_observer(@jbb_lp_modelObserver)
+	end#if
 
 
 
@@ -326,6 +341,11 @@ module JBB_LayersPanel
 
 	@jbb_lp_pagesObserver = JBB_LP_PagesObserver.new
 
+	if MAC
+		# Attach the observer
+		@model.pages.add_observer(@jbb_lp_pagesObserver)
+	end#if
+
 
 
 	### RENDERINGOPTIONSOBSERVER ### ------------------------------------------------------
@@ -344,6 +364,11 @@ module JBB_LayersPanel
 	end#def
 	
 	@jbb_lp_renderingOptionsObserver = JBB_LP_RenderingOptionsObserver.new
+	
+	if MAC
+		# Attach the observer
+		@model.rendering_options.add_observer(@jbb_lp_renderingOptionsObserver)
+	end#if
 
 
 
@@ -365,6 +390,9 @@ module JBB_LayersPanel
 	
 	if MAC
 		@jbb_lp_viewObserver = JBB_LP_ViewObserver.new
+
+		# Attach the observer
+		@model.active_view.add_observer(@jbb_lp_viewObserver)
 	end#if
 
 
