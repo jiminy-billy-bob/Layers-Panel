@@ -723,8 +723,10 @@ module JBB_LayersPanel
 				
 				#Create dummy layer and make it active, to allow visibility change of current active layer
 				activeLayer = @model.active_layer #Store current active layer to revert later
-				dummyLayer = @layers.add @layers.unique_name("Dummy layer")
-				@model.active_layer = dummyLayer
+				if engine != "podium" #Podium doesn't like this for some reason... So layer0 will always be rendered on Podium
+					dummyLayer = @layers.add @layers.unique_name("Dummy layer")
+					@model.active_layer = dummyLayer
+				end#if
 				
 				#Get current dict (model or current scene)
 				if @model.pages.selected_page == nil
@@ -754,7 +756,6 @@ module JBB_LayersPanel
 						layer.visible = true
 					end#if
 				}
-				
 			
 				if engine == "vray"
 					begin
@@ -814,10 +815,15 @@ module JBB_LayersPanel
 						UI.messagebox("Indigo is not installed on this system, or is disabled.")
 					end
 				elsif engine == "podium"
+					@Podium = false
 					begin
-						Podium::render
+						Podium::const_get "Podium" #Check if podium is initialized
+						@Podium = true
 					rescue
 						UI.messagebox("Podium is not installed on this system, or is disabled.")
+					end
+					if @Podium
+						Podium::render
 					end
 				end#if
 
@@ -841,7 +847,9 @@ module JBB_LayersPanel
 				timer_01 = UI.start_timer(0, false) {
 					next if done
 					done = true
-					self.deleteLayer(dummyLayer)
+					if engine != "podium" #Podium doesn't like this for some reason...
+						self.deleteLayer(dummyLayer)
+					end#if
 				}
 			@model.commit_operation
 		end#callback triggerRender
