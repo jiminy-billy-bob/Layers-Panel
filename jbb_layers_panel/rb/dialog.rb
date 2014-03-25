@@ -810,7 +810,7 @@ module JBB_LayersPanel
 					end
 				elsif engine == "indigo"
 					begin
-						SkIndigo.export(0,true,nil,true)
+						SkIndigo.export(0,true,nil,true,false)
 					rescue
 						UI.messagebox("Indigo is not installed on this system, or is disabled.")
 					end

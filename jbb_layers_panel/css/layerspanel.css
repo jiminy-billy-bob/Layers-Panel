@@ -322,6 +322,18 @@ margin: 4px;
 height: 13px;
 }
 
+#helpers{
+list-style-type: none;
+position: absolute;
+}
+
+.group > ol{
+list-style-type: none;
+}
+
+.ui-sortable-helper{
+}
+
 .mjs-nestedSortable-error {
 background: #fbe3e4;
 border-color: transparent;
@@ -330,7 +342,7 @@ border-color: transparent;
 ol {
 margin: 0;
 padding: 0;
-padding-left: 30px;
+padding-left: 12px;
 }
 
 ol.sortable, ol.sortable ol {

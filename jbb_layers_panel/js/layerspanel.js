@@ -832,27 +832,7 @@ $(document).ready(function(){
 	
 	skpCallback('skp:startup@');
 	
-	
-
-	$('ol.sortable')
-		.nestedSortable({
-			forcePlaceholderSize: true,
-			handle: '.handle',
-			helper:	'clone',
-			items: 'li',
-			opacity: .6,
-			placeholder: 'placeholder',
-			revert: 150,
-			tabSize: 18,
-			tolerance: 'pointer',
-			toleranceElement: '> div',
-			
-			containment: $('#layersContainer'),
-
-			isTree: true,
-			expandOnHover: 500
-		});
-		
+	var selectedItems = [];
 	$('#layers').selectable({
 		cancel: ".visibility, .rendering, .active, .handle, .disclose, .inputName, .layerNameText", 
 		filter: ".lidiv",
@@ -864,10 +844,10 @@ $(document).ready(function(){
 			} else {
 				prev = curr; // othervise just save prev
 			}
+		},
+		stop: function(event, ui) {
 		}
 	});
-	
-	
 
 	$(document).bind("contextmenu", function(e) { // Disable right-click
 		return false;
@@ -993,71 +973,148 @@ $(document).ready(function(){
 	});
 	
 	$(document).on('click', '.active', function (e) {
-		layerID = $(this).parent().parent().attr('id');
-		layerID = layerID.replace('layer_', '');
+		activeLayerID = $(this).parent().parent().attr('id');
+		activeLayerID = activeLayerID.replace('layer_', '');
 		
 		if ($(this).parent().children(".visibility").hasClass("hidden")) { // Layer hidden
-			showLayerFromJS(layerID);
-			$(this).parent().children(".visibility").toggleClass("hidden").toggleClass("visible");
+			showLayerFromJS(activeLayerID);
 		}
 		
 		$(".active").removeClass("enabled").addClass("disabled");
 		$(this).toggleClass("enabled").toggleClass("disabled");
-		setActiveLayerFromJS(layerID);
+		setActiveLayerFromJS(activeLayerID);
 	});
+	
 	
 
 	
 	////////////// SORTING /////////////////
 	allowDeselect = true;
 	
+	$('ol.sortable')
+		.nestedSortable({
+			delay: 100,
+			forcePlaceholderSize: true,
+			handle: '.handle',
+			helper:	'clone',
+			items: 'li',
+			opacity: .6,
+			placeholder: 'placeholder',
+			revert: 0,
+			tabSize: 18,
+			tolerance: 'pointer',
+			toleranceElement: '> div',
+			
+			containment: $('#layersContainer'),
+
+			isTree: true,
+			expandOnHover: 500
+		});
+		
+	var selected;
+	$(document).on('mousedown', '.handle', function (e) {
+		selected = false;
+		if($(this).parent().hasClass("ui-selected")){
+			selected = true;
+		}
+		
+		if(selected == true){
+			$('body').append('<div id="helpers"></div>'); // Create helpers container
+			$('#helpers').css({
+				position: "absolute",
+				left:  e.pageX-10,
+				top:   e.pageY-10
+			});
+			$(".ui-selected").each(function(e){
+				if (!$(this).parent().hasClass("sorted")){ // If not already in #helpers (Usefull when mouseup outside dialog)
+					if ($(this).parents("ol").parents().children(".ui-selected").length > 0){ // If nested in selected group, do nothing
+					} else { // Else, put it in the helpers container
+						$(this).parent().clone().addClass("sorted").css({
+							width: $(this).parent().width(),
+							opacity: 0.6
+						}).appendTo("#helpers"); // Put them in helpers container
+					}
+				}
+			});
+		}
+	});
+	
 	$( "ol.sortable" ).on( "sortstart", function( event, ui ) { // When an item is sorted
 		allowDeselect = false;
+		
+		if(selected == true){
+			ui.helper.remove();
+			ui.item.remove();
+			$(".ui-selected").parent().not(".sorted").each(function(){
+				if ($(this).parents(".sorted").length > 0){
+				} else { $(this).remove(); }
+			});
+		}
+	});
+	
+	$( "ol.sortable" ).on( "sort", function( e, ui ) { // When an item is sorted
+		if(selected == true){
+			$('#helpers').css({
+				position: "absolute",
+				left:  e.pageX-10,
+				top:   e.pageY-10
+			});
+		}
+	});
+	
+	$( "ol.sortable" ).on( "sortbeforestop", function( e, ui ) {
+		if(selected == true){
+			lastSorted = ui.placeholder;
+			$("#helpers").children().each(function(e){
+				$(this).removeAttr('style').insertAfter(lastSorted);
+				lastSorted = $(this);
+			});
+			$('#helpers').remove(); // Destroy the helpers container
+			// $(".ui-selected").parent().not(".sorted").each(function(){
+				// if ($(this).parents(".sorted").length > 0){
+				// } else { $(this).remove(); }
+			// });
+		}
 	});
 	
 	$( "ol.sortable" ).on( "sortstop", function( event, ui ) { // When an item is sorted
 		allowDeselect = true;
 		
-		lastSorted = ui.item;
-		if(ui.item.children(".lidiv").hasClass("ui-selected")){ // If sorted item is selected, sort all other selected
-			$(".ui-selected").each(function(e){
-				if(!$(this).parent().is(ui.item)){ // If not sorted item
-					if ($(this).parents("ol").parents().children(".ui-selected").length > 0){ // If nested in selected group, do nothing
-					} else { // Else, sort it
-						$(this).parent().insertAfter(lastSorted)
-						lastSorted = $(this).parent();
-					}
+		if(selected == false){
+			ui.item.addClass("sorted");
+		}
+		
+		$(".sorted").each(function(e){
+			if ($(this).parents('.hiddenGroup').length > 0) { // If nested in hiddenGroup
+				if ($(this).children(".lidiv").children(".visibility").hasClass("visible")) { //if item visible
+					hide($(this), true);
 				}
-			});
-		}
-	
-		if (ui.item.parents('.hiddenGroup').length > 0) { // If nested in hiddenGroup
-			if (ui.item.children(".lidiv").children(".visibility").hasClass("visible")) { //if item visible
-				hide(ui.item, true);
 			}
-		}
-		else { //sorted outside group
-			if (ui.item.children(".lidiv").children(".visibility").hasClass("hiddenByGroup")) { //if item hiddenByGroup
-				unHide(ui.item);
+			else { //sorted outside group
+				if ($(this).children(".lidiv").children(".visibility").hasClass("hiddenByGroup")) { //if item hiddenByGroup
+					unHide($(this));
+				}
 			}
-		}
-		
-		if (ui.item.parents('.noRenderGroup').length > 0) { // If nested in noRenderGroup
-			if (ui.item.children(".lidiv").children(".rendering").hasClass("render")) { //if item render
-				noRender(ui.item, true);
+			
+			if ($(this).parents('.noRenderGroup').length > 0) { // If nested in noRenderGroup
+				if ($(this).children(".lidiv").children(".rendering").hasClass("render")) { //if item render
+					noRender($(this), true);
+				}
 			}
-		}
-		else { //sorted outside group
-			if (ui.item.children(".lidiv").children(".rendering").hasClass("noRenderByGroup")) { //if item noRenderByGroup
-				render(ui.item);
+			else { //sorted outside group
+				if ($(this).children(".lidiv").children(".rendering").hasClass("noRenderByGroup")) { //if item noRenderByGroup
+					render($(this));
+				}
 			}
-		}
-		
-		if(ui.item.hasClass("group")){
-			ui.item.removeClass("mjs-nestedSortable-leaf");
-			ui.item.addClass("mjs-nestedSortable-branch");
-			ui.item.addClass("mjs-nestedSortable-expanded");
-		}
+			
+			if($(this).hasClass("group")){
+				$(this).removeClass("mjs-nestedSortable-leaf");
+				$(this).addClass("mjs-nestedSortable-branch");
+				$(this).addClass("mjs-nestedSortable-expanded");
+			}
+			
+			$(this).removeClass("sorted");
+		});
 		
 		skpCallback('skp:sortItem@')
 	});
