@@ -48,9 +48,9 @@ module JBB_LayersPanel
 		if layer.get_attribute("jbb_layerspanel", "ID") != nil 
 			#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
 		else
+			self.incLayerDictID
 			layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
 			# puts "layerDictID " + @layerDictID.to_s
-			self.incLayerDictID
 		end#if
 	end#def
 	
@@ -95,6 +95,26 @@ module JBB_LayersPanel
 		@allowSerialize = true
 		@model.commit_operation 
 	end#def
-
+	
+	
+	### API ### ------------------------------------------------------
+	
+	def self.render?(layer)
+		layerId = layer.get_attribute("jbb_layerspanel", "ID")
+		
+		if @model.pages.selected_page == nil
+			context = @model
+		else
+			context = @model.pages.selected_page
+		end#if
+		
+		if context.get_attribute("jbb_layerspanel_render", layerId) == 0
+			return false
+		elsif context.get_attribute("jbb_layerspanel_render", layerId) == 1
+			return false
+		else
+			return true
+		end#if
+	end#def
 
 end#module
