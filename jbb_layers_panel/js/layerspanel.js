@@ -188,7 +188,9 @@
 			}
 		}
 		
-		skpCallback('skp:addGroupEnd@' + allowSerialize);
+		if (!groupID) { // groupID not set, new group created from js, else created from ruby
+			skpCallback('skp:addGroupEnd@' + allowSerialize);
+		}
 		allowSerialize = true;
 		return groupID;
 	}

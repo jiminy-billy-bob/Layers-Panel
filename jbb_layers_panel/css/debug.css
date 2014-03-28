@@ -26,14 +26,14 @@ position: relative;
 top: -2px;
 }
 
-#layers{
+#items{
 height: 200px;
 overflow-y: scroll;
 border: 1px solid #888;
 padding: 5px;
 }
 
-#layersIDs2{
+#itemsIDs2{
 display: none;
 background-color: orange;
 }

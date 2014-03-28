@@ -10,11 +10,11 @@
 	</head>
 	<body>
 		<fieldset>
-			<legend>Layer IDs</legend>
-			<div id="layersIDs1">No issues detected with layer IDs.</div>
-			<div id="layersIDs2"><b>Some layers have duplicate IDs. <a href="#" title="Click here to remove duplicate IDs" onclick="debugLayerIDs();">Click here to fix it.</a></b></div><br/>
+			<legend>Layer/group IDs</legend>
+			<div id="itemsIDs1">No issues detected with layer/group IDs.</div>
+			<div id="itemsIDs2"><b>Some layers/groups have duplicate IDs. <a href="#" title="Click here to remove duplicate IDs" onclick="debugItemIDs();">Click here to fix it.</a><br/>(You may need to click several times)</b></div><br/>
 			<div id="dictID">Current dictID : </div><br/>
-			<div id="layers"></div>
+			<div id="items"></div>
 		</fieldset>
 		<script src="../js/jquery.js"></script>
 		<script src="../js/bridge.js"></script>
@@ -27,35 +27,35 @@
 				$('#dictID').append(dictID);
 			}
 			
-			function addLayer(layerName, layerID) {
+			function addItem(itemName, itemID) {
 				var warning = false;
-				if($('#layer_'+layerID).length){
-					$('#layer_'+layerID).addClass("warning");
+				if($('#item_'+itemID).length){
+					$('#item_'+itemID).addClass("warning");
 					warning = true;
-					$('#layersIDs1').hide();
-					$('#layersIDs2').show();
+					$('#itemsIDs1').hide();
+					$('#itemsIDs2').show();
 				}
 				
 				if (warning) {
-					var layerStr = '<div id="layer_' + layerID + '" class="layer warning">' + layerID + ' : ' + layerName + '</div>'
+					var itemStr = '<div id="item_' + itemID + '" class="item warning">' + itemID + ' : ' + itemName + '</div>'
 				}
 				else {
-					var layerStr = '<div id="layer_' + layerID + '" class="layer">' + layerID + ' : ' + layerName + '</div>'
+					var itemStr = '<div id="item_' + itemID + '" class="item">' + itemID + ' : ' + itemName + '</div>'
 				}
-				$('#layers').append(layerStr);
+				$('#items').append(itemStr);
 				
 				$('.warning').first().attr('id', 'firstWarning');
 				location.hash = "#firstWarning";
 			}
 		
-			function debugLayerIDs() {
-				if(confirm("This will fix duplicate layer IDs, but some layers may lose their order in the list. (Not a big deal, really...)\nDo you want to continue?")){
-					skpCallback('skp:debugLayersIDs@');
+			function debugItemIDs() {
+				if(confirm("This will fix duplicate layer/group IDs, but some layers/groups may lose their order in the list. (Not a big deal, really...)\nDo you want to continue?")){
+					skpCallback('skp:debugItemsIDs@');
 				}
 			}
 		
 			$(document).ready(function(){
-				skpCallback('skp:getLayersIDs@');
+				skpCallback('skp:getItemsIDs@');
 			});
 		</script>
 	</body>

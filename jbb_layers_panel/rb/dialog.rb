@@ -14,6 +14,7 @@ module JBB_LayersPanel
 		self.checkRenderToolbar
 		self.iframeTrack
 		self.checkIEwarning
+		self.checkForIssues
 	end#def
 	
 	def self.getModelLayers(serialize)
@@ -262,6 +263,74 @@ module JBB_LayersPanel
 			adjust_height = height - dialog_height
 			i += 1
 		end
+	end#def
+	
+	def self.checkForIssues
+		issues = false
+		highestID = 0
+		serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized items
+		groups = serialized.to_s.scan(/group\[(\d+)\]/) #find groups, make an array of them
+		groups.each{|match| #Groups
+				if match[0].to_i > highestID.to_i
+					highestID = match[0].to_i
+				end#if
+			}
+		@layers.each{|layer| 
+				id = 0
+				if layer.get_attribute("jbb_layerspanel", "ID") != nil
+					id = layer.get_attribute("jbb_layerspanel", "ID").to_i
+				end#if
+				if id > highestID.to_i
+					highestID = id
+				end#if
+			}
+		
+		layerDictID = 1
+		if @model.get_attribute("jbb_layerspanel", "layerDictID") != nil
+			layerDictID = @model.get_attribute("jbb_layerspanel", "layerDictID")
+		end#if
+		if layerDictID < highestID.to_i
+			issues = 1
+		end#if
+		
+		ids = nil
+		ids = Array.new
+		
+		#Groups
+		serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized items
+		groups = serialized.to_s.scan(/group\[(\d+)\]/) #find groups, make an array of them
+		groups.each{|match| #Groups
+				id = match[0].to_i
+				name = "Group" #Default
+				if @model.get_attribute("jbb_layerspanel_groups", id) != nil
+					name = @model.get_attribute("jbb_layerspanel_groups", id)
+				end#if
+				if ids[id] != nil
+					issues = 2
+				end#if
+				ids[id] = name
+				"group[" + id.to_s + "]" #Replace id in serialized string
+			}
+		
+		#Layers
+		@layers.each{|layer| 
+				id = 0
+				if layer.get_attribute("jbb_layerspanel", "ID") != nil
+					id = layer.get_attribute("jbb_layerspanel", "ID").to_i
+				end#if
+				if ids[id] != nil
+					issues = 3
+				end#if
+				ids[id] = layer.name
+			}
+		
+		# puts issues
+		if issues
+			result = UI.messagebox('Layers Panel needs to be fixed. Click "OK" to open the debug dialog', MB_OKCANCEL)
+			if result == IDOK
+				self.show_layerspanel_dlg_debug
+			end
+		end#if
 	end#def
 	
 	
