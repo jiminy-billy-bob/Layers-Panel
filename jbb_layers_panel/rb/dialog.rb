@@ -576,8 +576,16 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback mergeLayers
 
+		@dialog.add_bridge_callback("startVisibilityOp") do |wdl, action|
+			@model.start_operation("Layer Visibility", true)
+		end#callback hideLayerFromJS
+
+		@dialog.add_bridge_callback("endVisibilityOp") do |wdl, action|
+			@model.commit_operation
+		end#callback hideLayerFromJS
+
 		@dialog.add_bridge_callback("hideLayerFromJS") do |wdl, layerId|
-			@model.start_operation("Hide layer", true)
+			# @model.start_operation("Hide layer", true)
 			# puts layerId
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
@@ -585,11 +593,11 @@ module JBB_LayersPanel
 					break
 				end#if
 			}
-			@model.commit_operation
+			# @model.commit_operation
 		end#callback hideLayerFromJS
 
 		@dialog.add_bridge_callback("showLayerFromJS") do |wdl, layerId|
-			@model.start_operation("Unhide layer", true)
+			# @model.start_operation("Unhide layer", true)
 			# puts layerId
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
@@ -597,11 +605,11 @@ module JBB_LayersPanel
 					break
 				end#if
 			}
-			@model.commit_operation
+			# @model.commit_operation
 		end#callback showLayerFromJS
 
 		@dialog.add_bridge_callback("hideByGroup") do |wdl, layerId|
-			@model.start_operation("Hide layer", true, false, true)
+			# @model.start_operation("Hide layer", true, false, true)
 			# puts layerId
 			if @model.pages.selected_page == nil
 				dict = @model
@@ -612,7 +620,7 @@ module JBB_LayersPanel
 			if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
 				dict.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 1)
 			end#if
-			@model.commit_operation
+			# @model.commit_operation
 		end#callback hideByGroup
 		
 		
@@ -669,7 +677,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("hideGroup") do |wdl, groupId|
 			# puts "Hide group " + groupId
-			@model.start_operation("Hide group layer", true)
+			# @model.start_operation("Hide group layer", true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
@@ -681,12 +689,12 @@ module JBB_LayersPanel
 				dict.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 1)
 			end#if
 			# puts "hide group"
-			@model.commit_operation
+			# @model.commit_operation
 		end#callback hideGroup
 
 		@dialog.add_bridge_callback("hideGroupByGroup") do |wdl, groupId|
 			# puts "HideByGroup group " + groupId
-			@model.start_operation("Hide group layer", true, false, true)
+			# @model.start_operation("Hide group layer", true, false, true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
@@ -697,12 +705,12 @@ module JBB_LayersPanel
 			if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
 				dict.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 2)
 			end#if
-			@model.commit_operation
+			# @model.commit_operation
 		end#callback hideGroupByGroup
 
 		@dialog.add_bridge_callback("unHideGroup") do |wdl, groupId|
 			# puts "Hide group " + groupId
-			@model.start_operation("Unhide group layer", true)
+			# @model.start_operation("Unhide group layer", true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
@@ -714,7 +722,7 @@ module JBB_LayersPanel
 				dict.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 0)
 			end#if
 			# puts "unhide group"
-			@model.commit_operation
+			# @model.commit_operation
 		end#callback unHideGroup
 
 		@dialog.add_bridge_callback("groupLayers") do |wdl, action|

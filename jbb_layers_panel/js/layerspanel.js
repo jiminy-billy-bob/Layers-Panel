@@ -930,6 +930,7 @@ $(document).ready(function(){
 	});
 	
 	$(document).on('click', '.visibility', function (e) {
+		skpCallback('skp:startVisibilityOp@');
 		var item = $(this).parent().parent();
 		
 		if ((e.ctrlKey||e.metaKey)) {
@@ -972,6 +973,7 @@ $(document).ready(function(){
 				unHide(item, true);
 			}
 		}
+		skpCallback('skp:endVisibilityOp@');
 	});
 	
 	$(document).on('click', '.active', function (e) {
