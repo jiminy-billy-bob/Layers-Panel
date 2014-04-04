@@ -562,10 +562,20 @@ background: url("./img/group.png") no-repeat 5px 5px;
 /******* MENU LAYER ******/
 
 #menuLayer {
-width: 140px;
+width: 160px;
 position: fixed;
 bottom: 22px;
 right: 4px;
+padding: 0 8px 8px 8px;
+}
+
+#menuLayer > div {
+margin: 8px 0 0 0;
+}
+
+.submitButton{
+margin-right: 5px;
+margin-left: 5px;
 }
 
 

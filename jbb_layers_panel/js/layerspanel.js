@@ -130,16 +130,12 @@
 //-------------
 	
 	
-	function addLayerFromJS(hidden) {
-		if(hidden == 1){
-			skpCallback('skp:addHiddenLayerFromJS');
-		}
-		else if(hidden == 2){
-			skpCallback('skp:addHiddenLayer2FromJS');
-		}
-		else {
-			skpCallback('skp:addLayerFromJS');
-		}
+	function addLayerFromJS() {
+		skpCallback('skp:addLayerFromJS');
+	}
+	
+	function getUniqueName(unique_name) {
+		$("#newLayerName").val(unique_name);
 	}
 	
 //-------------
@@ -1402,11 +1398,14 @@ $(document).ready(function(){
 	});
 	
 	
-	// Layer menu
+
+	////////////// LAYER MENU ////////////////
+	
 	var timeoutId = 0;
 	$('#newLayer').mousedown(function() {
 		timeoutId = setTimeout(function() {
 			$('#menuLayer').show();
+			skpCallback('skp:getUniqueName@');
 			preventLayerAdd = true;
 		}, 300);
 	}).bind('mouseup mouseleave', function() {
@@ -1422,6 +1421,37 @@ $(document).ready(function(){
 				container.hide();
 			}
 		}
+	});
+	
+	$('#okLayer').click(function() {
+		var name = $("#newLayerName").val();
+		if(name == ''){
+			$("#newLayerName").css("background-color", "orange");
+		}
+		else{
+			var only = false
+			if($('#onlyCurrent').is(':checked')){
+				only = true
+			}
+			var visibleExisting = false
+			if($('#visibleExisting').is(':checked')){
+				visibleExisting = true
+			}
+			var visibleNew = false
+			if($('#visibleNew').is(':checked')){
+				visibleNew = true
+			}
+			var params = { "name":name, "only":only, "visibleExisting":visibleExisting, "visibleNew":visibleNew }; //Json
+			params = $.toJSON( params );
+			skpCallback('skp:specialAddLayerFromJS@'+params);
+			$("#newLayerName").css("background-color", "white");
+			$('#menuLayer').hide();
+		}
+	});
+	
+	$('#cancelLayer').click(function() {
+		$("#newLayerName").css("background-color", "white");
+		$('#menuLayer').hide();
 	});
 
 
@@ -1451,16 +1481,6 @@ $(document).ready(function(){
 		if(preventLayerAdd == false){
 			addLayerFromJS();
 		}
-	});
-	
-	// Add a new Hidden Layer
-	$('#newHiddenLayer').click(function () {
-		addLayerFromJS(1);
-		$('#menuLayer').hide();
-	});
-	$('#newHiddenLayer2').click(function () {
-		addLayerFromJS(2);
-		$('#menuLayer').hide();
 	});
 	
 	

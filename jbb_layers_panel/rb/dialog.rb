@@ -405,26 +405,38 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback addLayerFromJS
 
-		@dialog.add_bridge_callback("addHiddenLayerFromJS") do
+		@dialog.add_bridge_callback("specialAddLayerFromJS") do |wdl, json|
 			@model.start_operation("Add layer", true)
-			layer = @layers.add @layers.unique_name
-			layer.page_behavior=(LAYER_IS_HIDDEN_ON_NEW_PAGES)
-			@model.pages.each do |page|
-				if page == @model.pages.selected_page
-					page.set_visibility(layer, true)
-				else
-					page.set_visibility(layer, false)
-				end#if
-			end#each
+			params = self.jsonToHash(json)
+			name = params['name']
+			visibleExisting = params['visibleExisting']
+			visibleNew = params['visibleNew']
+			if params['only'] == true
+				visibleExisting = false
+				visibleNew = false
+			end#if
+			unique_name = layers.unique_name name.to_s
+			layer = layers.add unique_name
+			if visibleExisting == false
+				@model.pages.each do |page|
+					if page == @model.pages.selected_page
+						page.set_visibility(layer, true)
+					else
+						page.set_visibility(layer, false)
+					end#if
+				end#each
+			end#if
+			if visibleNew == false
+				layer.page_behavior=(LAYER_IS_HIDDEN_ON_NEW_PAGES)
+			end#if
 			@model.commit_operation
-		end#callback addHiddenLayerFromJS
+		end#callback addLayerFromJS
 
-		@dialog.add_bridge_callback("addHiddenLayer2FromJS") do
-			@model.start_operation("Add layer", true)
-			layer = @layers.add @layers.unique_name
-			layer.page_behavior=(LAYER_IS_HIDDEN_ON_NEW_PAGES)
-			@model.commit_operation
-		end#callback addHiddenLayer2FromJS
+		@dialog.add_bridge_callback("getUniqueName") do
+			unique_name = layers.unique_name
+			getUniqueName = "getUniqueName('#{unique_name}');"
+			@dialog.execute_script(getUniqueName)
+		end#callback addLayerFromJS
 
 		@dialog.add_bridge_callback("renameLayerFromJS") do |wdl, layerNameS|
 			@model.start_operation("Rename layer", true)

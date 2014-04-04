@@ -78,8 +78,13 @@
 		
 		
 		<div class="menu" id="menuLayer">
-				<a href="#" id="newHiddenLayer" title="Add layer hidden by default in all other scenes" onclick="return false"><div class="menuElement">Add layer hidden in all other scenes</div></a>
-				<a href="#" id="newHiddenLayer2" title="Add layer hidden by default in new scenes" onclick="return false"><div class="menuElement">Add layer hidden in new scenes</div></a>
+			<div><input id="newLayerName" value="" type="text"/></div>
+			<div><input type="checkbox" name="onlyCurrent" id="onlyCurrent" value="onlyCurrent"><label for="onlyCurrent">Only visible in active scene</label></div>
+			<div><input type="radio" name="existing" id="visibleExisting" value="visibleExisting" checked="true"><label for="visibleExisting">Visible in existing scenes</label><br/>
+			<input type="radio" name="existing" id="hiddenExisting" value="hiddenExisting"><label for="hiddenExisting">Hidden in existing scenes</label></div>
+			<div><input type="radio" name="new" id="visibleNew" value="visibleNew" checked="true"><label for="visibleNew">Visible in new scenes</label><br/>
+			<input type="radio" name="new" id="hiddenNew" value="hiddenNew"><label for="hiddenNew">Hidden in new scenes</label></div>
+			<div id="submitButtons"><input type="submit" value="OK" id="okLayer" class="submitButton"/><input type="submit" value="Cancel" id="cancelLayer" class="submitButton"/></div>
 		</div>
 		
 		<!--[if lt IE 7 ]><div id="browser">Your Internet Explorer version is outdated, please <a href="http://www.google.com/search?q=internet+explorer" target="_blank">update it</a> to get Layers Panel working properly</div><![endif]-->
