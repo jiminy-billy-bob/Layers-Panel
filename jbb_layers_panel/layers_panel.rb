@@ -4,6 +4,8 @@ require 'sketchup.rb'
 
 module JBB_LayersPanel
 
+	require 'jbb_layers_panel/rb/dan-s_and_tig-s_fix_ruby_startup.rb'
+
 #-----------------------------------------------------------------------------
 
 	MAC = ( Object::RUBY_PLATFORM =~ /darwin/i ? true : false )
@@ -50,7 +52,7 @@ module JBB_LayersPanel
 	
 #-----------------------------------------------------------------------------
 	
-	@lpversion = "1.0.5"
+	@lpversion = "1.0.6"
 	@store = "ps"
 	
 	@isActive = true

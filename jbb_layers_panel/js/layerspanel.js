@@ -1423,6 +1423,16 @@ $(document).ready(function(){
 		}
 	});
 	
+	$('#onlyCurrent').bind('change', function(){        
+		if($('#onlyCurrent').is(':checked')){
+			$("#menuLayer").find(":radio").attr("disabled", "disabled");
+			$("#menuLayer").find("label").not("#onlyCurrentLabel").css("color", "#aaa");
+		} else {
+			$("#menuLayer").find(":radio").removeAttr("disabled");
+			$("#menuLayer").find("label").not("#onlyCurrentLabel").css("color", "");
+		}
+	});
+	
 	$('#okLayer').click(function() {
 		var name = $("#newLayerName").val();
 		if(name == ''){
@@ -1444,13 +1454,13 @@ $(document).ready(function(){
 			var params = { "name":name, "only":only, "visibleExisting":visibleExisting, "visibleNew":visibleNew }; //Json
 			params = $.toJSON( params );
 			skpCallback('skp:specialAddLayerFromJS@'+params);
-			$("#newLayerName").css("background-color", "white");
+			$("#newLayerName").css("background-color", "");
 			$('#menuLayer').hide();
 		}
 	});
 	
 	$('#cancelLayer').click(function() {
-		$("#newLayerName").css("background-color", "white");
+		$("#newLayerName").css("background-color", "");
 		$('#menuLayer').hide();
 	});
 

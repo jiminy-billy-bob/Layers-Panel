@@ -226,6 +226,7 @@ module JBB_LayersPanel
 				
 					JBB_LayersPanel.dialog.execute_script("emptyOl();")
 					JBB_LayersPanel.getModelLayers(false)
+					JBB_LayersPanel.getLayerColors()
 					JBB_LayersPanel.getActiveLayer()
 					JBB_LayersPanel.getCollapsedGroups()
 				}
