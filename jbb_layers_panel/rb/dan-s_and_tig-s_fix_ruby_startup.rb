@@ -14,7 +14,7 @@
 #  Drop in "Tools" folder - for v2014 MR0 use only...
 #
 
-if RUBY_PLATFORM !~ /darwin/i && Sketchup.version.to_i == 14
+if RUBY_PLATFORM !~ /darwin/i && Sketchup.version == "14.0.4900"
 
   fix = false
 
