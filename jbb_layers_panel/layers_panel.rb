@@ -52,7 +52,7 @@ module JBB_LayersPanel
 	
 #-----------------------------------------------------------------------------
 	
-	@lpversion = "1.0.6"
+	@lpversion = "1.1.0"
 	@store = "ps"
 	
 	@isActive = true
@@ -62,7 +62,9 @@ module JBB_LayersPanel
 	@entityObservers = Hash.new
 	@layerDictID = nil
 	@dialog = nil
+	@dialogStates = nil
 	@allowSerialize = true
+	@allowStatesChange = true
 	@previousPageDict = nil
 	@previousPageDict2 = nil
 	@previousPageDict3 = nil
@@ -70,7 +72,8 @@ module JBB_LayersPanel
 	@check = nil
 	@selectedPageLayers = nil
 	@timerCheckUpdate = nil
-	@heightBeforeMinimize = 300
+	@previousState = nil
+	@heightBeforeMinimize = @heightBeforeMinimizeStates = 300
 	
 	@jbb_lp_pagesObserver = nil
 	@jbb_lp_modelObserver = nil
@@ -87,9 +90,10 @@ module JBB_LayersPanel
 	@html_path3 = File.dirname( __FILE__ ) + "/html/options.html"
 	@html_path4 = File.dirname( __FILE__ ) + "/html/debug.html"
 	@html_path5 = File.dirname( __FILE__ ) + "/html/color.html"
+	@html_path6 = File.dirname( __FILE__ ) + "/html/states.html"
 	
 	class << self
-		attr_accessor :isActive, :model, :layers, :entityObservers, :layerDictID, :dialog, :allowSerialize, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
+		attr_accessor :isActive, :model, :layers, :entityObservers, :layerDictID, :dialog, :dialogStates, :allowSerialize, :allowStatesChange, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :previousState, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
 	end
   
 	
@@ -110,6 +114,8 @@ module JBB_LayersPanel
 	
 	require 'jbb_layers_panel/rb/color.rb'
 	
+	require 'jbb_layers_panel/rb/states.rb'
+	
 	
 	
 	### STARTUP TRIGGERS ### ------------------------------------------------------
@@ -123,6 +129,7 @@ module JBB_LayersPanel
 	if Sketchup.read_default("jbb_layers_panel", "startup") == true
 		self.showDialog(@dialog)
 		self.make_toolwindow_frame("Layers Panel")
+		self.createDialogStates
 	end#if
 	
 end#module

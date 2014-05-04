@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Stateatible" content="IE=edge"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-stateatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="../js/jquery-ui.css" rel="stylesheet" type="text/css">
+		<link href="../js/jquery.contextMenu.css" rel="stylesheet" type="text/css">
+		<link href="../css/layerspanel.css" rel="stylesheet" type="text/css">
+		<link href="../css/states.css" rel="stylesheet" type="text/css">
+		
+		<!--[if lte IE 8]>
+		  <style type="text/css">
+		  .menu {
+			filter:progid:DXImageTransform.Microsoft.Shadow(color='#aaaaaa', Direction=135, Strength=5);
+			zoom: 1;
+		  } 
+		  </style>
+		<![endif]-->
+
+	</head>
+	<body style="cursor: auto;" class="unselectable">
+		
+		<input id="serialize" value="" type="hidden"/>
+		<input id="dialogSize" value="" type="hidden"/>
+		
+		<div id="header">
+			<div title="Resize window" id="minimize"></div>
+		</div>
+		
+		<div id="statesContainer">
+			<div id="statesContainer2">
+				<div id="states">
+					<li id="state_0" class="state" unselectable="on">
+						<div class="lidiv" unselectable="on">
+							<div class="handle0" unselectable="on"></div>
+							<div class="active enabled" unselectable="on"></div>
+							<span class="stateName">
+								<span class="stateNameText" unselectable="on"><i>Last model state</i></span>
+							</span>
+						</div>
+					</li>
+					<ol id="olsortable" class="sortable ui-sortable">
+					</ol>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div id="footer" unselectable="on">
+			<div id="footer2" unselectable="on">
+				<a href="#" title="Delete state(s) and move content to current state" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="trash" class="trash" unselectable="on"></div></div></a>
+				<a href="#" title="Add state" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="newState" unselectable="on"></div></div></a>
+				<a href="#" title="Add group" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="newGroup" unselectable="on"></div></div></a>
+				<a href="#" title="Update selected state" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div id="update" unselectable="on"></div></div></a>
+				<!--<a  id="print" href="#" title="Print" onclick="return false"><div class='footerElement footerElementRight' unselectable="on"><div unselectable="on"></div></div></a>-->
+			</div>
+		</div>
+			
+		<script src="../js/jquery.js"></script>
+		<script src="../js/jquery-ui.min.js"></script>
+		<script src="../js/jquery.json-2.4.min.js"></script>
+		<script src="../js/jquery.mjs.nestedSortable.js"></script>
+		<script src="../js/jquery.contextMenu.js"></script>
+		<script src="../js/bridge.js"></script>
+		<script src="../js/states.js"></script>
+		
+		
+	</body>
+</html>

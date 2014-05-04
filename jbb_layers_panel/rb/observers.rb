@@ -5,6 +5,8 @@ module JBB_LayersPanel
 	#Watches for layers to be hidden or renamed (Which layers observer doesn't support)
 
 	class JBB_LP_EntityObserver < Sketchup::EntityObserver
+		@lastVisibleLayers = []
+		
 		def onChangeEntity(layer)
 			if layer.deleted? == false
 				# puts 'onchangeentity ' + layer.name
@@ -47,6 +49,18 @@ module JBB_LayersPanel
 								# puts "update " + JBB_LayersPanel.model.pages.selected_page.name
 							end#if
 						}
+					end#if
+					
+					if JBB_LayersPanel.allowStatesChange
+						visibleLayers = []
+						JBB_LayersPanel.layers.each{|layer|
+							visibleLayers << layer if layer.visible?
+						}
+						if @lastVisibleLayers != visibleLayers
+							JBB_LayersPanel.dialogStates.execute_script("visibilityChanged();")
+							JBB_LayersPanel.previousState = 0
+						end#if
+						@lastVisibleLayers = visibleLayers
 					end#if
 				end#if
 			end#if
@@ -152,33 +166,13 @@ module JBB_LayersPanel
 	class JBB_LP_ModelObserver < Sketchup::ModelObserver
 		def onTransactionUndo(model)
 			# puts "undo"
-			JBB_LayersPanel.allowSerialize = false
-			JBB_LayersPanel.dialog.execute_script("emptyOl();")
-			JBB_LayersPanel.getModelLayers(false)
-			JBB_LayersPanel.getActiveLayer()
-			JBB_LayersPanel.getCollapsedGroups()
-			JBB_LayersPanel.getLayerColors()
-			done_19 = false
-			timer_19 = UI.start_timer(0, false) {
-				next if done_19
-				done_19 = true
-				JBB_LayersPanel.allowSerialize = true
-			}
+			JBB_LayersPanel.refreshDialog
+			JBB_LayersPanel.refreshStatesDialog
 		end#def
 		def onTransactionRedo(model)
 			# puts "redo"
-			JBB_LayersPanel.allowSerialize = false
-			JBB_LayersPanel.dialog.execute_script("emptyOl();")
-			JBB_LayersPanel.getModelLayers(false)
-			JBB_LayersPanel.getActiveLayer()
-			JBB_LayersPanel.getCollapsedGroups()
-			JBB_LayersPanel.getLayerColors()
-			done_18 = false
-			timer_18 = UI.start_timer(0, false) {
-				next if done_18
-				done_18 = true
-				JBB_LayersPanel.allowSerialize = true
-			}
+			JBB_LayersPanel.refreshDialog
+			JBB_LayersPanel.refreshStatesDialog
 		end#def
 	end#class
 

@@ -8,12 +8,21 @@ module JBB_LayersPanel
 	def self.toggle_layerspanel_dlg
 		if @dialog && @dialog.visible?
 			@dialog.close
-			# @dialog = nil
 			false
 		else
 			self.createDialog
 			self.showDialog(@dialog)
 			self.make_toolwindow_frame("Layers Panel")
+			true
+		end#if
+	end#def
+	
+	def self.toggle_states_dlg
+		if @dialogStates && @dialogStates.visible?
+			self.close_layerspanel_dlg_states
+			false
+		else
+			self.show_layerspanel_dlg_states
 			true
 		end#if
 	end#def
@@ -60,8 +69,8 @@ module JBB_LayersPanel
 		end#if
 	end#def
 	
-	def self.layerspanel_dlg_validation_proc
-		if @dialog && @dialog.visible?
+	def self.layerspanel_dlg_validation_proc(dialog)
+		if dialog && dialog.visible?
 			MF_CHECKED
 		else
 			MF_UNCHECKED
@@ -75,17 +84,27 @@ module JBB_LayersPanel
 		cmd.small_icon = "../lp_16.png"
 		cmd.large_icon = "../lp_24.png"
 		cmd.tooltip = 'Layers Panel'
-		cmd.set_validation_proc { self.layerspanel_dlg_validation_proc }
+		cmd.set_validation_proc { self.layerspanel_dlg_validation_proc(@dialog) }
 		cmd_toggle_layerspanel_dlg = cmd
+		
+		cmd2 = UI::Command.new( 'Layer States' ) { self.toggle_states_dlg }
+		cmd2.status_bar_text = 'Show or hide the Layer States Panel.'
+		cmd2.small_icon = "../lps_16.png"
+		cmd2.large_icon = "../lps_24.png"
+		cmd2.tooltip = 'Layer States'
+		cmd2.set_validation_proc { self.layerspanel_dlg_validation_proc(@dialogStates) }
+		cmd_toggle_states_dlg = cmd2
 
 		window_menu = UI.menu("Window")
 		lp_menu = window_menu.add_submenu("Layers Panel")
 		lp_menu.add_item( cmd_toggle_layerspanel_dlg )
+		lp_menu.add_item( cmd_toggle_states_dlg )
 		lp_menu.add_item( "Options" ) { JBB_LayersPanel.show_layerspanel_dlg_options }
 		lp_menu.add_item( "Debug" ) { JBB_LayersPanel.show_layerspanel_dlg_debug }
 		
 		layerspanel_tb = UI::Toolbar.new "Layers Panel"
 		layerspanel_tb.add_item cmd_toggle_layerspanel_dlg
+		layerspanel_tb.add_item cmd_toggle_states_dlg
 		if WIN
 			layerspanel_tb.show
 		end#if

@@ -17,6 +17,21 @@ module JBB_LayersPanel
 		self.checkForIssues
 	end#def
 	
+	def self.refreshDialog
+		@allowSerialize = false
+		@dialog.execute_script("emptyOl();")
+		self.getModelLayers(false)
+		self.getActiveLayer()
+		self.getCollapsedGroups()
+		self.getLayerColors()
+		done = false
+		timer = UI.start_timer(0, false) {
+			next if done
+			done = true
+			@allowSerialize = true
+		}
+	end#def
+	
 	def self.getModelLayers(serialize)
 		serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized layers
 		matches = serialized.to_s.scan(/(layer|group)\[(\d+)\]\=(\d+|null)/) #make an array of it
@@ -178,17 +193,43 @@ module JBB_LayersPanel
 			@dialog.execute_script(setActiveLayerFromRuby)
 	end#def
 
-	def self.unHideByGroup(layerId)
-		if @model.pages.selected_page == nil
-			dict = @model
-		else
-			dict = @model.pages.selected_page
-		end#if
-		dict.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 0)
+	def self.hideByGroup(layerId)
+		context = self.currentContext
+		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 1)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			dict.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 0)
+			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 1)
 		end#if
 		# puts layer.name + " unhidden by group"
+	end#def
+
+	def self.unHideByGroup(layerId)
+		context = self.currentContext
+		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 0)
+		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
+			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 0)
+		end#if
+		# puts layer.name + " unhidden by group"
+	end#def
+		
+	def self.hideGroup(groupId, byGroup)
+		context = self.currentContext
+		if byGroup
+			value = 2
+		else
+			value = 1
+		end#if
+		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, value)
+		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
+			context.set_attribute("jbb_layerspanel_hiddenGroups", groupId, value)
+		end#if
+	end#def
+		
+	def self.unHideGroup(groupId)
+		context = self.currentContext
+		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, 0)
+		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
+			context.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 0)
+		end#if
 	end#def
 
 	def self.getRenderEngine
@@ -337,18 +378,6 @@ module JBB_LayersPanel
 	
 	
 	### WEBDIALOG & CALLBACKS ### ------------------------------------------------------
-
-	class WebdialogBridge < UI::WebDialog
-
-		def add_bridge_callback(callback, &block)
-			add_action_callback(callback) do  |webdialog, params|
-				# puts "add_bridge_callback(#{callback}) { |#{params}| }"
-				block.call(webdialog, params)
-				execute_script('skpCallbackReceived();')
-			end
-		end
-
-	end # WebdialogBridge
 
 
 	# Create the WebDialog instance
@@ -621,18 +650,7 @@ module JBB_LayersPanel
 		end#callback showLayerFromJS
 
 		@dialog.add_bridge_callback("hideByGroup") do |wdl, layerId|
-			# @model.start_operation("Hide layer", true, false, true)
-			# puts layerId
-			if @model.pages.selected_page == nil
-				dict = @model
-			else
-				dict = @model.pages.selected_page
-			end#if
-			dict.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 1)
-			if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-				dict.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 1)
-			end#if
-			# @model.commit_operation
+			self.hideByGroup(layerId)
 		end#callback hideByGroup
 		
 		
@@ -645,6 +663,8 @@ module JBB_LayersPanel
 			# puts groupName
 			# puts @layerDictID
 			@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
+			@dialogStates.execute_script("visibilityChanged();")
+			@previousState = 0
 		end#callback addGroup
 
 		@dialog.add_bridge_callback("addGroupEnd") do |wdl, allowSerialize|
@@ -672,6 +692,8 @@ module JBB_LayersPanel
 				dict = @model.pages.selected_page
 			end#if
 			dict.set_attribute("jbb_layerspanel_collapseGroups", groupId, 1)
+			@dialogStates.execute_script("visibilityChanged();")
+			@previousState = 0
 			@model.commit_operation
 		end#callback collapseGroup
 
@@ -684,76 +706,50 @@ module JBB_LayersPanel
 				dict = @model.pages.selected_page
 			end#if
 			dict.set_attribute("jbb_layerspanel_collapseGroups", groupId, 0)
+			@dialogStates.execute_script("visibilityChanged();")
+			@previousState = 0
 			@model.commit_operation
 		end#callback expandGroup
 
 		@dialog.add_bridge_callback("hideGroup") do |wdl, groupId|
-			# puts "Hide group " + groupId
-			# @model.start_operation("Hide group layer", true)
-			if @model.pages.selected_page == nil
-				dict = @model
-			else
-				dict = @model.pages.selected_page
-				# puts 'hide - current page : ' + @model.pages.selected_page.name
-			end#if
-			dict.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, 1)
-			if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-				dict.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 1)
-			end#if
-			# puts "hide group"
-			# @model.commit_operation
+			self.hideGroup(groupId, false)
+			@dialogStates.execute_script("visibilityChanged();")
+			@previousState = 0
 		end#callback hideGroup
 
 		@dialog.add_bridge_callback("hideGroupByGroup") do |wdl, groupId|
-			# puts "HideByGroup group " + groupId
-			# @model.start_operation("Hide group layer", true, false, true)
-			if @model.pages.selected_page == nil
-				dict = @model
-			else
-				dict = @model.pages.selected_page
-				# puts 'hidebygroup - current page : ' + @model.pages.selected_page.name
-			end#if
-			dict.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, 2)
-			if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-				dict.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 2)
-			end#if
-			# @model.commit_operation
+			self.hideGroup(groupId, true)
 		end#callback hideGroupByGroup
 
 		@dialog.add_bridge_callback("unHideGroup") do |wdl, groupId|
-			# puts "Hide group " + groupId
-			# @model.start_operation("Unhide group layer", true)
-			if @model.pages.selected_page == nil
-				dict = @model
-			else
-				dict = @model.pages.selected_page
-				# puts 'unhide - current page : ' + @model.pages.selected_page.name
-			end#if
-			dict.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, 0)
-			if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-				dict.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 0)
-			end#if
-			# puts "unhide group"
-			# @model.commit_operation
+			self.unHideGroup(groupId)
+			@dialogStates.execute_script("visibilityChanged();")
+			@previousState = 0
 		end#callback unHideGroup
 
 		@dialog.add_bridge_callback("groupLayers") do |wdl, action|
 			@model.start_operation("Group layers", true, false, true) #merges with previous "Add group" operation
 				self.storeSerialize
+				@dialogStates.execute_script("visibilityChanged();")
+				@previousState = 0
 			@model.commit_operation
 		end#callback groupLayers
 
 		@dialog.add_bridge_callback("unGroupLayers") do |wdl, action|
 			@model.start_operation("Ungroup layers", true)
 				self.storeSerialize
+				@dialogStates.execute_script("visibilityChanged();")
+				@previousState = 0
 			@model.commit_operation
 		end#callback unGroupLayers
 
 		@dialog.add_bridge_callback("purgeGroups") do |wdl, action|
 			@model.start_operation("Purge groups", true)
 				self.storeSerialize
+				@dialogStates.execute_script("visibilityChanged();")
+				@previousState = 0
 			@model.commit_operation
-		end#callback unGroupLayers
+		end#callback
 		
 		
 		### Render ### ------------------------------------------------------
@@ -808,7 +804,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("triggerRender") do |wdl, engine|
 			# puts "render"
-			@model.start_operation("test", true)
+			@model.start_operation("Render", true)
 				
 				#Create dummy layer and make it active, to allow visibility change of current active layer
 				activeLayer = @model.active_layer #Store current active layer to revert later
@@ -1027,6 +1023,8 @@ module JBB_LayersPanel
 				group.erase! ### erase! the temporary layer user, use set as was.
 			end#if
 			self.storeSerialize
+			@dialogStates.execute_script("visibilityChanged();")
+			@previousState = 0
 			@model.commit_operation
 		end#callback purgeLayersFromJS
 

@@ -22,6 +22,24 @@ module JBB_LayersPanel
 		@layers = @model.layers
 		@layerDictID = @model.get_attribute("jbb_layerspanel", "layerDictID")
 	end#def
+
+	class WebdialogBridge < UI::WebDialog
+		def add_bridge_callback(callback, &block)
+			add_action_callback(callback) do  |webdialog, params|
+				# puts "add_bridge_callback(#{callback}) { |#{params}| }"
+				block.call(webdialog, params)
+				execute_script('skpCallbackReceived();')
+			end
+		end
+	end # WebdialogBridge
+	
+	def self.currentContext
+		if @model.pages.selected_page == nil
+			return @model
+		else
+			return @model.pages.selected_page
+		end#if
+	end#def
 	
 	
 	### LAYER SERIALIZE ### ------------------------------------------------------

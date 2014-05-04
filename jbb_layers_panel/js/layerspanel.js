@@ -129,7 +129,6 @@
 	
 //-------------
 	
-	
 	function addLayerFromJS() {
 		skpCallback('skp:addLayerFromJS');
 	}
@@ -144,8 +143,12 @@
 	function addGroup(groupName, groupID, parentID, appendToSelected) {
 	
 		allowSerialize = false;
-	
+		var newGroup = false;
 		if (!groupID) { // groupID not set, new group created from js, else created from ruby
+			newGroup = true;
+		}
+		
+		if (newGroup) {
 			//Check if Group nb exists
 			var groupNb = 1;
 			while (true) {
@@ -184,7 +187,7 @@
 			}
 		}
 		
-		if (!groupID) { // groupID not set, new group created from js, else created from ruby
+		if (newGroup) {
 			skpCallback('skp:addGroupEnd@' + allowSerialize);
 		}
 		allowSerialize = true;
@@ -852,8 +855,10 @@ $(document).ready(function(){
 	});
 
 	$(document).on('contextmenu', '.handle, .handle0', function (e) {
-		var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
-		skpCallback('skp:pickColor@' + layerID);
+		if ($(this).parent().parent().hasClass("layer")){
+			var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
+			skpCallback('skp:pickColor@' + layerID);
+		}
 	});
 	
 	
@@ -1018,7 +1023,7 @@ $(document).ready(function(){
 			selected = true;
 		}
 		
-		if(selected == true){
+		if(selected == true && e.which == 1){ //e.which == 1 is left-click only
 			$('body').append('<div id="helpers"></div>'); // Create helpers container
 			$('#helpers').css({
 				position: "absolute",

@@ -1,0 +1,62 @@
+
+body {
+margin: 5px 0 30px 0;
+}
+
+
+#trash {
+background: url("./img/trash.png") no-repeat 6px 0px;
+}
+
+#newState {
+background: url("./img/layer.png") no-repeat 6px 0px;
+width: 25px;
+height: 100%;
+float: right;
+}
+
+#update {
+background: url("./img/update.png") no-repeat 5px 1px;
+width: 25px;
+height: 100%;
+float: right;
+}
+
+#statesContainer {
+position: fixed;
+width: 200%;
+margin: -20px;
+}
+
+#statesContainer2 {
+height: 100%;
+width: 50%;
+margin: 20px;
+padding: 0 0 30px 0;
+overflow-y: scroll;
+}
+
+#states {
+height: 100%;
+}
+
+.stateName {
+display: block;
+padding: 3px 0 0 8px;
+height: 22px;
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+
+#state_0{
+background-color: red;
+margin: 0;
+padding: 0;
+}
+
+#state_0 > .lidiv {
+background: url("./img/layer0.png");
+margin-top: -15px;
+padding: 0;
+}
