@@ -40,6 +40,11 @@ overflow-y: scroll;
 height: 100%;
 }
 
+.state {
+margin: 0;
+padding: 0;
+}
+
 .stateName {
 display: block;
 padding: 3px 0 0 8px;
@@ -50,13 +55,12 @@ text-overflow: ellipsis;
 }
 
 #state_0{
-background-color: red;
 margin: 0;
 padding: 0;
+list-style-type: none;
 }
 
 #state_0 > .lidiv {
 background: url("./img/layer0.png");
-margin-top: -15px;
 padding: 0;
 }

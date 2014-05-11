@@ -1115,7 +1115,6 @@ $(document).ready(function(){
 			if($(this).hasClass("group")){
 				$(this).removeClass("mjs-nestedSortable-leaf");
 				$(this).addClass("mjs-nestedSortable-branch");
-				$(this).addClass("mjs-nestedSortable-expanded");
 			}
 			
 			$(this).removeClass("sorted");
@@ -1406,15 +1405,15 @@ $(document).ready(function(){
 
 	////////////// LAYER MENU ////////////////
 	
-	var timeoutId = 0;
+	var timeoutID = 0;
 	$('#newLayer').mousedown(function() {
-		timeoutId = setTimeout(function() {
+		timeoutID = setTimeout(function() {
 			$('#menuLayer').show();
 			skpCallback('skp:getUniqueName@');
 			preventLayerAdd = true;
 		}, 300);
 	}).bind('mouseup mouseleave', function() {
-		clearTimeout(timeoutId);
+		clearTimeout(timeoutID);
 		setTimeout(function() {preventLayerAdd = false;}, 10);
 	});
 	$(document).mouseup(function (e){ // Hide menu on click-outside

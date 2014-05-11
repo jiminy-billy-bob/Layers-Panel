@@ -91,7 +91,7 @@ module JBB_LayersPanel
 		self.statesDialogStartup
 	end#def
 	
-	def self.updateState(stateId)
+	def self.updateState(stateID)
 		context = self.currentContext
 		visibleLayers = Array.new
 		visibleGroups = Array.new
@@ -99,34 +99,34 @@ module JBB_LayersPanel
 		hiddenByGroupsGroups = Array.new
 		collapsedGroups = Array.new
 		@layers.each{|layer|
-			layerId = layer.get_attribute("jbb_layerspanel", "ID")
+			layerID = layer.get_attribute("jbb_layerspanel", "ID")
 			if layer.visible?
 				visibleLayers.push(layer.get_attribute("jbb_layerspanel", "ID").to_i)
-			elsif context.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId) == 1
+			elsif context.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID) == 1
 				hiddenByGroupsLayers.push(layer.get_attribute("jbb_layerspanel", "ID").to_i)
 			end#if
 		}
 		groups = context.attribute_dictionaries["jbb_layerspanel_groups"]
 		if groups != nil
-			groups.each { | groupId, value |
-				if context.get_attribute("jbb_layerspanel_tempHiddenGroups", groupId).to_i == 1
-				elsif context.get_attribute("jbb_layerspanel_tempHiddenGroups", groupId).to_i == 2
-					hiddenByGroupsGroups.push(groupId.to_i)
+			groups.each { | groupID, value |
+				if context.get_attribute("jbb_layerspanel_tempHiddenGroups", groupID).to_i == 1
+				elsif context.get_attribute("jbb_layerspanel_tempHiddenGroups", groupID).to_i == 2
+					hiddenByGroupsGroups.push(groupID.to_i)
 				else
-					visibleGroups.push(groupId.to_i)
+					visibleGroups.push(groupID.to_i)
 				end#if
-				if context.get_attribute("jbb_layerspanel_collapseGroups", groupId).to_i == 1
-					collapsedGroups.push(groupId.to_i)
+				if context.get_attribute("jbb_layerspanel_collapseGroups", groupID).to_i == 1
+					collapsedGroups.push(groupID.to_i)
 				end#if
 			}
 		end#if
 		
-		@model.set_attribute("jbb_layerspanel_states", stateId.to_s + "activeLayerId", @model.active_layer.get_attribute("jbb_layerspanel", "ID").to_i)
-		@model.set_attribute("jbb_layerspanel_states", stateId.to_s + "visibleLayers", visibleLayers)
-		@model.set_attribute("jbb_layerspanel_states", stateId.to_s + "visibleGroups", visibleGroups)
-		@model.set_attribute("jbb_layerspanel_states", stateId.to_s + "hiddenByGroupsLayers", hiddenByGroupsLayers)
-		@model.set_attribute("jbb_layerspanel_states", stateId.to_s + "hiddenByGroupsGroups", hiddenByGroupsGroups)
-		@model.set_attribute("jbb_layerspanel_states", stateId.to_s + "collapsedGroups", collapsedGroups)
+		@model.set_attribute("jbb_layerspanel_states", stateID.to_s + "activeLayerID", @model.active_layer.get_attribute("jbb_layerspanel", "ID").to_i)
+		@model.set_attribute("jbb_layerspanel_states", stateID.to_s + "visibleLayers", visibleLayers)
+		@model.set_attribute("jbb_layerspanel_states", stateID.to_s + "visibleGroups", visibleGroups)
+		@model.set_attribute("jbb_layerspanel_states", stateID.to_s + "hiddenByGroupsLayers", hiddenByGroupsLayers)
+		@model.set_attribute("jbb_layerspanel_states", stateID.to_s + "hiddenByGroupsGroups", hiddenByGroupsGroups)
+		@model.set_attribute("jbb_layerspanel_states", stateID.to_s + "collapsedGroups", collapsedGroups)
 	end#def
 
 	def self.getCollapsedStatesGroups()
@@ -190,21 +190,21 @@ module JBB_LayersPanel
 		end#callback 
 		
 		@previousState = 0
-		@dialogStates.add_bridge_callback("setActiveStateFromJS") do |wdl, stateId|
+		@dialogStates.add_bridge_callback("setActiveStateFromJS") do |wdl, stateID|
 			@allowStatesChange = false
 			@model.start_operation("Change layers state", true)
-			if stateId.to_i != 0 && @previousState == 0
+			if stateID.to_i != 0 && @previousState == 0
 				self.updateState(0)
 			end#if
 			
-			if @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "visibleLayers") != nil #Make sure there is something to read
+			if @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "visibleLayers") != nil #Make sure there is something to read
 				context = self.currentContext
 				groups = context.attribute_dictionaries["jbb_layerspanel_groups"]
 				
 				#Set active layer
-				activeLayerId = @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "activeLayerId")
+				activeLayerID = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "activeLayerID")
 				@layers.each{|layer| 
-					if layer.get_attribute("jbb_layerspanel", "ID").to_i == activeLayerId.to_i
+					if layer.get_attribute("jbb_layerspanel", "ID").to_i == activeLayerID.to_i
 						layer.visible = true
 						@model.active_layer = layer
 						break
@@ -217,75 +217,75 @@ module JBB_LayersPanel
 					self.unHideByGroup(layer.get_attribute("jbb_layerspanel", "ID").to_i)
 				}
 				if groups != nil
-					groups.each { | groupId, value |
-						self.hideGroup(groupId, false)
+					groups.each { | groupID, value |
+						self.hideGroup(groupID, false)
 					}
 				end#if
 				
-				visibleLayers = @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "visibleLayers")
-				visibleGroups = @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "visibleGroups")
-				hiddenByGroupsLayers = @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "hiddenByGroupsLayers")
-				hiddenByGroupsGroups = @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "hiddenByGroupsGroups")
-				collapsedGroups = @model.get_attribute("jbb_layerspanel_states", stateId.to_s + "collapsedGroups")
+				visibleLayers = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "visibleLayers")
+				visibleGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "visibleGroups")
+				hiddenByGroupsLayers = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "hiddenByGroupsLayers")
+				hiddenByGroupsGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "hiddenByGroupsGroups")
+				collapsedGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "collapsedGroups")
 				
 				#Unhide visible layers and groups
-				visibleLayers.each{|layerId|
+				visibleLayers.each{|layerID|
 					@layers.each{|layer| 
-						if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+						if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 							layer.visible = true
 							break
 						end#if
 					}
 				}
-				visibleGroups.each{|groupId|
-					self.unHideGroup(groupId)
+				visibleGroups.each{|groupID|
+					self.unHideGroup(groupID)
 				}
 				
 				#Set hiddenByGroup tags
-				hiddenByGroupsLayers.each{|layerId|
+				hiddenByGroupsLayers.each{|layerID|
 					@layers.each{|layer| 
-						if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+						if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 							self.hideByGroup(layer.get_attribute("jbb_layerspanel", "ID").to_i)
 							break
 						end#if
 					}
 				}
-				hiddenByGroupsGroups.each{|groupId|
-					self.hideGroup(groupId, true)
+				hiddenByGroupsGroups.each{|groupID|
+					self.hideGroup(groupID, true)
 				}
 				
 				#Expand all groups
 				if context.attribute_dictionaries["jbb_layerspanel_collapseGroups"] != nil
-					context.attribute_dictionaries["jbb_layerspanel_collapseGroups"].each{|groupId, value|
-						context.set_attribute("jbb_layerspanel_collapseGroups", groupId, 0)
+					context.attribute_dictionaries["jbb_layerspanel_collapseGroups"].each{|groupID, value|
+						context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0)
 					}
 				end#if
 				#Collapse groups
-				collapsedGroups.each{|groupId|
-					context.set_attribute("jbb_layerspanel_collapseGroups", groupId, 1)
+				collapsedGroups.each{|groupID|
+					context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1)
 				}
 				
 				self.refreshDialog
 			end#if
 			@model.commit_operation
 			@allowStatesChange = true
-			@previousState = stateId.to_i
+			@previousState = stateID.to_i
 		end#callback
 
-		@dialogStates.add_bridge_callback("updateState") do |wdl, stateId|
+		@dialogStates.add_bridge_callback("updateState") do |wdl, stateID|
 			@model.start_operation("Update State", true)
-			self.updateState(stateId)
+			self.updateState(stateID)
 			@model.commit_operation
 		end#callback 
 
 		@dialogStates.add_bridge_callback("renameState") do |wdl, renameState|
 			@model.start_operation("Rename layer state", true)
 			hashState = self.jsonToHash(renameState)
-			stateId = hashState['stateID']
-			# puts stateId
+			stateID = hashState['stateID']
+			# puts stateID
 			newStateName = hashState['newStateName']
 			# puts newStateName
-			@model.set_attribute("jbb_layerspanel_states", stateId, newStateName) #Store new state's name from ID
+			@model.set_attribute("jbb_layerspanel_states", stateID, newStateName) #Store new state's name from ID
 			@model.commit_operation
 		end#callback
 		
@@ -314,22 +314,22 @@ module JBB_LayersPanel
 		end#callback
 
 		@dialogStates.add_bridge_callback("unGroupStates") do |wdl, action|
-			@model.start_operation("Group layer states", true)
+			@model.start_operation("Ungroup layer states", true)
 				self.storeStateSerialize
 			@model.commit_operation
 		end#callback
 
-		@dialogStates.add_bridge_callback("collapseGroup") do |wdl, groupId|
-			# puts "collapse " + groupId
+		@dialogStates.add_bridge_callback("collapseGroup") do |wdl, groupID|
+			# puts "collapse " + groupID
 			@model.start_operation("Collapse group layer", true)
-			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupId, 1)
+			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 1)
 			@model.commit_operation
 		end#callback
 
-		@dialogStates.add_bridge_callback("expandGroup") do |wdl, groupId|
-			# puts "expand " + groupId
+		@dialogStates.add_bridge_callback("expandGroup") do |wdl, groupID|
+			# puts "expand " + groupID
 			@model.start_operation("Expand group layer", true)
-			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupId, 0)
+			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 0)
 			@model.commit_operation
 		end#callback
 
@@ -340,11 +340,11 @@ module JBB_LayersPanel
 		@dialogStates.add_bridge_callback("renameGroup") do |wdl, renameGroup|
 			@model.start_operation("Rename layer state group", true)
 			hashGroup = self.jsonToHash(renameGroup)
-			groupId = hashGroup['groupID']
-			# puts groupId
+			groupID = hashGroup['groupID']
+			# puts groupID
 			newGroupName = hashGroup['newGroupName']
 			# puts newGroupName
-			@model.set_attribute("jbb_layerspanel_statesGroups", groupId, newGroupName) #Store new group's name from ID
+			@model.set_attribute("jbb_layerspanel_statesGroups", groupID, newGroupName) #Store new group's name from ID
 			@model.commit_operation
 		end#callback
 		
@@ -357,11 +357,6 @@ module JBB_LayersPanel
 			end#if
 			sendStateDictID = "receiveStateDictID('#{@stateDictID}');"
 			@dialogStates.execute_script(sendStateDictID)
-		end#callback
-		
-		@dialogStates.add_bridge_callback("close") do  |wdl, display|
-			JBB_LayersPanel.close_layerspanel_dlg_states
-			JBB_LayersPanel.dialogStates.execute_script("reloadDialog();")
 		end#callback
 
 		@dialogStates.add_bridge_callback("minimizeDialog") do |wdl, size|

@@ -62,7 +62,7 @@ module JBB_LayersPanel
 		end#if
 	end#def
 	
-	def self.IdLayer(layer) #Give a unique custom id to a layer
+	def self.IDLayer(layer) #Give a unique custom id to a layer
 		if layer.get_attribute("jbb_layerspanel", "ID") != nil 
 			#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
 		else
@@ -117,22 +117,40 @@ module JBB_LayersPanel
 	
 	### API ### ------------------------------------------------------
 	
+	def self.getLayerByID(layerID)
+		@layers.each{|layer| 
+			if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i #if layer's dict ID == match ID
+				return layer
+				break
+			end#if
+		}
+	end#def
+	
+	def self.getLayerID(layer)
+		return layer.get_attribute("jbb_layerspanel", "ID").to_i
+	end#def
+	
 	def self.render?(layer)
-		layerId = layer.get_attribute("jbb_layerspanel", "ID")
-		
-		if @model.pages.selected_page == nil
-			context = @model
-		else
-			context = @model.pages.selected_page
-		end#if
-		
-		if context.get_attribute("jbb_layerspanel_render", layerId) == 0
+		layerID = layer.get_attribute("jbb_layerspanel", "ID")
+		context = self.currentContext
+		if context.get_attribute("jbb_layerspanel_render", layerID) == 0
 			return false
-		elsif context.get_attribute("jbb_layerspanel_render", layerId) == 1
+		elsif context.get_attribute("jbb_layerspanel_render", layerID) == 1
 			return false
 		else
 			return true
 		end#if
+	end#def
+	
+	def self.setRenderBehav(layer, bool)
+		layerID = layer.get_attribute("jbb_layerspanel", "ID")
+		context = self.currentContext
+		if bool == false
+			context.set_attribute("jbb_layerspanel_render", layerID, 0)
+		else
+			context.set_attribute("jbb_layerspanel_render", layerID, 2)
+		end#if
+		self.refreshDialog
 	end#def
 
 end#module

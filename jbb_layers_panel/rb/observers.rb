@@ -13,13 +13,13 @@ module JBB_LayersPanel
 				if layer.get_attribute("jbb_layerspanel", "ID") != nil #Verify entity exists (onChangeEntity mistrigger)
 					# puts layer.name
 					if layer == JBB_LayersPanel.layers[0]
-						layerId = 0
+						layerID = 0
 					else
-						layerId = layer.get_attribute("jbb_layerspanel", "ID")
+						layerID = layer.get_attribute("jbb_layerspanel", "ID")
 					end#if
 					
 					if layer.visible?
-						showLayerFromRuby = "showLayerFromRuby('#{layerId}');"
+						showLayerFromRuby = "showLayerFromRuby('#{layerID}');"
 						JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
 						done_04b = false
 						timer_04b = UI.start_timer(0, false) {
@@ -27,16 +27,16 @@ module JBB_LayersPanel
 							done_04b = true
 							if JBB_LayersPanel.allowSerialize == true
 								JBB_LayersPanel.model.start_operation("Unhide layer", true, false, true)
-								JBB_LayersPanel.unHideByGroup(layerId)
+								JBB_LayersPanel.unHideByGroup(layerID)
 								JBB_LayersPanel.model.commit_operation
 							end#if
 						}
 					else
-						hideLayerFromRuby = "hideLayerFromRuby('#{layerId}');"
+						hideLayerFromRuby = "hideLayerFromRuby('#{layerID}');"
 						JBB_LayersPanel.dialog.execute_script(hideLayerFromRuby)
 					end#if
 					
-					renameLayerFromRuby = "renameLayerFromRuby('#{layerId}', '#{layer.name}');"
+					renameLayerFromRuby = "renameLayerFromRuby('#{layerID}', '#{layer.name}');"
 					JBB_LayersPanel.dialog.execute_script(renameLayerFromRuby)
 					
 					if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
@@ -92,12 +92,12 @@ module JBB_LayersPanel
 					end#if
 						JBB_LayersPanel.layers.each {| l | layer = l }
 						JBB_LayersPanel.initializeLayerDictID
-						JBB_LayersPanel.IdLayer(layer)
+						JBB_LayersPanel.IDLayer(layer)
 						if JBB_LayersPanel.dialog
-							layerIdForJS = layer.get_attribute("jbb_layerspanel", "ID")
-							addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerIdForJS}');"
+							layerIDForJS = layer.get_attribute("jbb_layerspanel", "ID")
+							addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerIDForJS}');"
 							JBB_LayersPanel.dialog.execute_script(addLayerFromRuby)
-							showLayerFromRuby = "showLayerFromRuby('#{layerIdForJS}');"
+							showLayerFromRuby = "showLayerFromRuby('#{layerIDForJS}');"
 							JBB_LayersPanel.dialog.execute_script(showLayerFromRuby)
 							if RUBY_VERSION.to_i >= 2
 								JBB_LayersPanel.setColorFromRuby(layer)
@@ -118,8 +118,8 @@ module JBB_LayersPanel
 		end#onLayerAdded
 		
 		def onLayerRemoved(layers, layer)
-			layerId = layer.get_attribute("jbb_layerspanel", "ID")
-			deleteLayerFromRuby = "deleteLayerFromRuby('#{layerId}');"
+			layerID = layer.get_attribute("jbb_layerspanel", "ID")
+			deleteLayerFromRuby = "deleteLayerFromRuby('#{layerID}');"
 			JBB_LayersPanel.dialog.execute_script(deleteLayerFromRuby)
 			done_03 = false
 			timer_03 = UI.start_timer(0, false) {
@@ -377,6 +377,7 @@ module JBB_LayersPanel
 				if JBB_LayersPanel.lastActiveModelID != Sketchup.active_model.definitions.entityID
 					JBB_LayersPanel.resetVariables
 					JBB_LayersPanel.dialogStartup #Reload main dialog
+					JBB_LayersPanel.refreshStatesDialog #Reload states dialog
 				end#if
 				JBB_LayersPanel.lastActiveModelID = Sketchup.active_model.definitions.entityID
 			end#if

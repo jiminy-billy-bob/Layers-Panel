@@ -71,12 +71,12 @@ module JBB_LayersPanel
 			dict = @model.pages.selected_page
 		end#if
 		begin
-			dict.attribute_dictionaries["jbb_layerspanel_tempHiddenGroups"].each { | groupId, value |
+			dict.attribute_dictionaries["jbb_layerspanel_tempHiddenGroups"].each { | groupID, value |
 				if value == 1
-					hideGroupFromRuby = "hideGroupFromRuby('#{groupId}');"
+					hideGroupFromRuby = "hideGroupFromRuby('#{groupID}');"
 					@dialog.execute_script(hideGroupFromRuby)
 				elsif value == 2
-					hideGroupFromRuby = "hideGroupFromRuby('#{groupId}', true);"
+					hideGroupFromRuby = "hideGroupFromRuby('#{groupID}', true);"
 					@dialog.execute_script(hideGroupFromRuby)
 				end#if
 			}
@@ -93,27 +93,27 @@ module JBB_LayersPanel
 					if firstOp == true
 						@model.start_operation("Layers Panel ID", true)
 							self.initializeLayerDictID
-							self.IdLayer(layer)
+							self.IDLayer(layer)
 						@model.commit_operation
 						firstOp = false
 					else
 						@model.start_operation("Layers Panel ID", true, false, true)
-							self.IdLayer(layer)
+							self.IDLayer(layer)
 						@model.commit_operation
 					end#if
 				end#if
 				
-				layerId = layer.get_attribute("jbb_layerspanel", "ID")
-				addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerId}', undefined, false);"
+				layerID = layer.get_attribute("jbb_layerspanel", "ID")
+				addLayerFromRuby = "addLayerFromRuby('#{layer.name}', '#{layerID}', undefined, false);"
 				@dialog.execute_script(addLayerFromRuby)
 				if layer.visible?
-					showLayerFromRuby = "showLayerFromRuby('#{layerId}');"
+					showLayerFromRuby = "showLayerFromRuby('#{layerID}');"
 					@dialog.execute_script(showLayerFromRuby)
-				elsif dict.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId) == 1
-					hideByGroupFromRuby = "hideByGroupFromRuby('#{layerId}');"
+				elsif dict.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID) == 1
+					hideByGroupFromRuby = "hideByGroupFromRuby('#{layerID}');"
 					@dialog.execute_script(hideByGroupFromRuby)
 				else
-					hideLayerFromRuby = "hideLayerFromRuby('#{layerId}');"
+					hideLayerFromRuby = "hideLayerFromRuby('#{layerID}');"
 					@dialog.execute_script(hideLayerFromRuby)
 				end#if
 				
@@ -123,12 +123,12 @@ module JBB_LayersPanel
 		
 		#Render/noRender layers and groups
 		begin
-			dict.attribute_dictionaries["jbb_layerspanel_render"].each { | itemId, value |
+			dict.attribute_dictionaries["jbb_layerspanel_render"].each { | itemID, value |
 				if value == 0
-					hideGroupFromRuby = "noRenderFromRuby('#{itemId}');"
+					hideGroupFromRuby = "noRenderFromRuby('#{itemID}');"
 					@dialog.execute_script(hideGroupFromRuby)
 				elsif value == 1
-					hideGroupFromRuby = "noRenderFromRuby('#{itemId}', true);"
+					hideGroupFromRuby = "noRenderFromRuby('#{itemID}', true);"
 					@dialog.execute_script(hideGroupFromRuby)
 				end#if
 			}
@@ -193,42 +193,42 @@ module JBB_LayersPanel
 			@dialog.execute_script(setActiveLayerFromRuby)
 	end#def
 
-	def self.hideByGroup(layerId)
+	def self.hideByGroup(layerID)
 		context = self.currentContext
-		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 1)
+		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID, 1)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 1)
+			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerID, 1)
 		end#if
 		# puts layer.name + " unhidden by group"
 	end#def
 
-	def self.unHideByGroup(layerId)
+	def self.unHideByGroup(layerID)
 		context = self.currentContext
-		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 0)
+		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID, 0)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerId, 0)
+			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerID, 0)
 		end#if
 		# puts layer.name + " unhidden by group"
 	end#def
 		
-	def self.hideGroup(groupId, byGroup)
+	def self.hideGroup(groupID, byGroup)
 		context = self.currentContext
 		if byGroup
 			value = 2
 		else
 			value = 1
 		end#if
-		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, value)
+		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupID, value)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenGroups", groupId, value)
+			context.set_attribute("jbb_layerspanel_hiddenGroups", groupID, value)
 		end#if
 	end#def
 		
-	def self.unHideGroup(groupId)
+	def self.unHideGroup(groupID)
 		context = self.currentContext
-		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupId, 0)
+		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupID, 0)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenGroups", groupId, 0)
+			context.set_attribute("jbb_layerspanel_hiddenGroups", groupID, 0)
 		end#if
 	end#def
 
@@ -412,13 +412,13 @@ module JBB_LayersPanel
 			self.getActiveLayer()
 		end#callback getModelLayers
 
-		@dialog.add_bridge_callback("setActiveLayerFromJS") do  |wdl, layerId|
-			# puts layerId
+		@dialog.add_bridge_callback("setActiveLayerFromJS") do  |wdl, layerID|
+			# puts layerID
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					@model.active_layer = layer
 					
-					showLayerFromRuby = "showLayerFromRuby('#{layerId}');"
+					showLayerFromRuby = "showLayerFromRuby('#{layerID}');"
 					@dialog.execute_script(showLayerFromRuby)
 					break
 				end#if
@@ -470,10 +470,10 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("renameLayerFromJS") do |wdl, layerNameS|
 			@model.start_operation("Rename layer", true)
 			hashLayerNames = self.jsonToHash(layerNameS)
-			layerId = hashLayerNames['layerID']
+			layerID = hashLayerNames['layerID']
 			newLayerName = hashLayerNames['newLayerName']
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					self.checkEntityObserver(layer)
 					layer.name = newLayerName
 					break
@@ -483,10 +483,10 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback renameLayerFromJS
 
-		@dialog.add_bridge_callback("checkLayerForContent") do |wdl, layerId|
-			# puts layerId
+		@dialog.add_bridge_callback("checkLayerForContent") do |wdl, layerID|
+			# puts layerID
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					layerHasContent = false
 					
 					allents=[]
@@ -496,7 +496,7 @@ module JBB_LayersPanel
 						layerHasContent = true
 					end#if
 					
-					checkLayerForContent = "checkLayerForContent('#{layerId}', '#{layerHasContent}');"
+					checkLayerForContent = "checkLayerForContent('#{layerID}', '#{layerHasContent}');"
 					@dialog.execute_script(checkLayerForContent)
 					break
 				end#if
@@ -522,10 +522,10 @@ module JBB_LayersPanel
 			end#if
 		end#callback
 
-		@dialog.add_bridge_callback("lockFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("lockFromJS") do |wdl, layerID|
 			@model.start_operation("Lock layer", true)
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					layer.set_attribute("jbb_layerspanel", "lock", 1)
 					# puts layer.name + " locked"
 					break
@@ -534,10 +534,10 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback
 
-		@dialog.add_bridge_callback("unlockFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("unlockFromJS") do |wdl, layerID|
 			@model.start_operation("Unlock layer", true)
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					layer.set_attribute("jbb_layerspanel", "lock", 0)
 					# puts layer.name + " unlocked"
 					break
@@ -546,27 +546,27 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback
 
-		@dialog.add_bridge_callback("deleteLayerFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("deleteLayerFromJS") do |wdl, layerID|
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					self.deleteLayer(layer)
 					break
 				end#if
 			}
 		end#callback deleteLayerFromJS
 
-		@dialog.add_bridge_callback("deleteLayerToCurrentFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("deleteLayerToCurrentFromJS") do |wdl, layerID|
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					self.deleteLayer(layer, false, true)
 					break
 				end#if
 			}
 		end#callback deleteLayerToCurrentFromJS
 
-		@dialog.add_bridge_callback("deleteLayer&GeomFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("deleteLayer&GeomFromJS") do |wdl, layerID|
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					self.deleteLayer(layer, true)
 					break
 				end#if
@@ -625,11 +625,11 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback hideLayerFromJS
 
-		@dialog.add_bridge_callback("hideLayerFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("hideLayerFromJS") do |wdl, layerID|
 			# @model.start_operation("Hide layer", true)
-			# puts layerId
+			# puts layerID
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					layer.visible = false
 					break
 				end#if
@@ -637,11 +637,11 @@ module JBB_LayersPanel
 			# @model.commit_operation
 		end#callback hideLayerFromJS
 
-		@dialog.add_bridge_callback("showLayerFromJS") do |wdl, layerId|
+		@dialog.add_bridge_callback("showLayerFromJS") do |wdl, layerID|
 			# @model.start_operation("Unhide layer", true)
-			# puts layerId
+			# puts layerID
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					layer.visible = true
 					break
 				end#if
@@ -649,8 +649,8 @@ module JBB_LayersPanel
 			# @model.commit_operation
 		end#callback showLayerFromJS
 
-		@dialog.add_bridge_callback("hideByGroup") do |wdl, layerId|
-			self.hideByGroup(layerId)
+		@dialog.add_bridge_callback("hideByGroup") do |wdl, layerID|
+			self.hideByGroup(layerID)
 		end#callback hideByGroup
 		
 		
@@ -675,54 +675,54 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("renameGroup") do |wdl, renameGroup|
 			@model.start_operation("Rename group layer", true)
 			hashGroup = self.jsonToHash(renameGroup)
-			groupId = hashGroup['groupID']
-			# puts groupId
+			groupID = hashGroup['groupID']
+			# puts groupID
 			newGroupName = hashGroup['newGroupName']
 			# puts newGroupName
-			@model.set_attribute("jbb_layerspanel_groups", groupId, newGroupName) #Store new group's name from ID
+			@model.set_attribute("jbb_layerspanel_groups", groupID, newGroupName) #Store new group's name from ID
 			@model.commit_operation
 		end#callback renameGroup
 
-		@dialog.add_bridge_callback("collapseGroup") do |wdl, groupId|
-			# puts "collapse " + groupId
+		@dialog.add_bridge_callback("collapseGroup") do |wdl, groupID|
+			# puts "collapse " + groupID
 			@model.start_operation("Collapse group layer", true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_collapseGroups", groupId, 1)
+			dict.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1)
 			@dialogStates.execute_script("visibilityChanged();")
 			@previousState = 0
 			@model.commit_operation
 		end#callback collapseGroup
 
-		@dialog.add_bridge_callback("expandGroup") do |wdl, groupId|
-			# puts "expand " + groupId
+		@dialog.add_bridge_callback("expandGroup") do |wdl, groupID|
+			# puts "expand " + groupID
 			@model.start_operation("Expand group layer", true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_collapseGroups", groupId, 0)
+			dict.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0)
 			@dialogStates.execute_script("visibilityChanged();")
 			@previousState = 0
 			@model.commit_operation
 		end#callback expandGroup
 
-		@dialog.add_bridge_callback("hideGroup") do |wdl, groupId|
-			self.hideGroup(groupId, false)
+		@dialog.add_bridge_callback("hideGroup") do |wdl, groupID|
+			self.hideGroup(groupID, false)
 			@dialogStates.execute_script("visibilityChanged();")
 			@previousState = 0
 		end#callback hideGroup
 
-		@dialog.add_bridge_callback("hideGroupByGroup") do |wdl, groupId|
-			self.hideGroup(groupId, true)
+		@dialog.add_bridge_callback("hideGroupByGroup") do |wdl, groupID|
+			self.hideGroup(groupID, true)
 		end#callback hideGroupByGroup
 
-		@dialog.add_bridge_callback("unHideGroup") do |wdl, groupId|
-			self.unHideGroup(groupId)
+		@dialog.add_bridge_callback("unHideGroup") do |wdl, groupID|
+			self.unHideGroup(groupID)
 			@dialogStates.execute_script("visibilityChanged();")
 			@previousState = 0
 		end#callback unHideGroup
@@ -766,39 +766,39 @@ module JBB_LayersPanel
 			self.checkRenderToolbar
 		end#callback render
 
-		@dialog.add_bridge_callback("render") do |wdl, itemId|
-			# puts "Render item " + itemId
+		@dialog.add_bridge_callback("render") do |wdl, itemID|
+			# puts "Render item " + itemID
 			@model.start_operation("Render layer", true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_render", itemId, 2)
+			dict.set_attribute("jbb_layerspanel_render", itemID, 2)
 			@model.commit_operation
 		end#callback render
 
-		@dialog.add_bridge_callback("noRender") do |wdl, itemId|
-			# puts "noRender item " + itemId
+		@dialog.add_bridge_callback("noRender") do |wdl, itemID|
+			# puts "noRender item " + itemID
 			@model.start_operation("noRender layer", true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_render", itemId, 0)
+			dict.set_attribute("jbb_layerspanel_render", itemID, 0)
 			@model.commit_operation
 		end#callback noRender
 
-		@dialog.add_bridge_callback("noRenderByGroup") do |wdl, itemId|
-			# puts "noRenderByGroup item " + itemId
+		@dialog.add_bridge_callback("noRenderByGroup") do |wdl, itemID|
+			# puts "noRenderByGroup item " + itemID
 			@model.start_operation("noRenderByGroup layer", true, false, true)
 			if @model.pages.selected_page == nil
 				dict = @model
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_render", itemId, 1)
+			dict.set_attribute("jbb_layerspanel_render", itemID, 1)
 			@model.commit_operation
 		end#callback noRenderByGroup
 
@@ -822,20 +822,20 @@ module JBB_LayersPanel
 
 				#Change layers visibility
 				@layers.each{|layer|
-					layerId = layer.get_attribute("jbb_layerspanel", "ID")
+					layerID = layer.get_attribute("jbb_layerspanel", "ID")
 					
 					#Store current visibility to revert later
 					if layer.visible?
 						layer.set_attribute("jbb_layerspanel", "visibilityBeforeRender", 2)
-					elsif dict.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId) == 1
+					elsif dict.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID) == 1
 						layer.set_attribute("jbb_layerspanel", "visibilityBeforeRender", 1)
 					else
 						layer.set_attribute("jbb_layerspanel", "visibilityBeforeRender", 0)
 					end#if
 					
-					if dict.get_attribute("jbb_layerspanel_render", layerId) == 0
+					if dict.get_attribute("jbb_layerspanel_render", layerID) == 0
 						layer.visible = false
-					elsif dict.get_attribute("jbb_layerspanel_render", layerId) == 1
+					elsif dict.get_attribute("jbb_layerspanel_render", layerID) == 1
 						layer.visible = false
 					else
 						layer.visible = true
@@ -915,11 +915,11 @@ module JBB_LayersPanel
 				
 				#Revert layers visibility
 				@layers.each{|layer|
-					layerId = layer.get_attribute("jbb_layerspanel", "ID")
+					layerID = layer.get_attribute("jbb_layerspanel", "ID")
 					if layer.get_attribute("jbb_layerspanel", "visibilityBeforeRender") == 0
 						layer.visible = false
 					elsif layer.get_attribute("jbb_layerspanel", "visibilityBeforeRender") == 1
-						dict.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerId, 1)
+						dict.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID, 1)
 						layer.visible = false
 					elsif layer.get_attribute("jbb_layerspanel", "visibilityBeforeRender") == 2
 						layer.visible = true
@@ -942,7 +942,7 @@ module JBB_LayersPanel
 		
 		### Misc ### ------------------------------------------------------
 
-		@dialog.add_bridge_callback("getSelectionLayer") do |wdl, layerId|
+		@dialog.add_bridge_callback("getSelectionLayer") do |wdl, layerID|
 			selection = @model.selection
 			if selection.empty?
 				UI.messagebox("Please select an object")
@@ -962,20 +962,20 @@ module JBB_LayersPanel
 			else selection.length == 1
 				@model.start_operation("Highlight selection's layer", true)
 					selection.each { |entity| 
-						layerId = entity.layer.get_attribute("jbb_layerspanel", "ID")
-						hightlightLayer = "hightlightLayer('#{layerId}');"
+						layerID = entity.layer.get_attribute("jbb_layerspanel", "ID")
+						hightlightLayer = "hightlightLayer('#{layerID}');"
 						@dialog.execute_script(hightlightLayer)
 					}
 				@model.commit_operation
 			end#if
 		end#callback
 
-		@dialog.add_bridge_callback("selectFromLayer") do |wdl, layerId|
+		@dialog.add_bridge_callback("selectFromLayer") do |wdl, layerID|
 			@model.start_operation("Select highlighted layer's entities", true)
 			selection = @model.selection
 			entities = @model.active_entities
 			@layers.each{|layer| 
-				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					entities.each { |entity| 
 						if entity.layer == layer
 							selection.add entity
@@ -987,14 +987,14 @@ module JBB_LayersPanel
 			@model.commit_operation
 		end#callback
 
-		@dialog.add_bridge_callback("moveSelection") do |wdl, layerId|
+		@dialog.add_bridge_callback("moveSelection") do |wdl, layerID|
 			selection = @model.selection
 			if selection.empty?
 				UI.messagebox("Please select at least one object")
 			else
 				@model.start_operation("Move selection to hilighted layer", true)
 				@layers.each{|layer| 
-					if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerId.to_i
+					if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 						selection.each{|e|
 							e.layer=layer
 						}
