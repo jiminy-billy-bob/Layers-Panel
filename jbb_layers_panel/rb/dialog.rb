@@ -663,7 +663,7 @@ module JBB_LayersPanel
 			# puts groupName
 			# puts @layerDictID
 			@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
-			@dialogStates.execute_script("visibilityChanged();")
+			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 		end#callback addGroup
 
@@ -692,7 +692,7 @@ module JBB_LayersPanel
 				dict = @model.pages.selected_page
 			end#if
 			dict.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1)
-			@dialogStates.execute_script("visibilityChanged();")
+			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 			@model.commit_operation
 		end#callback collapseGroup
@@ -706,14 +706,14 @@ module JBB_LayersPanel
 				dict = @model.pages.selected_page
 			end#if
 			dict.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0)
-			@dialogStates.execute_script("visibilityChanged();")
+			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 			@model.commit_operation
 		end#callback expandGroup
 
 		@dialog.add_bridge_callback("hideGroup") do |wdl, groupID|
 			self.hideGroup(groupID, false)
-			@dialogStates.execute_script("visibilityChanged();")
+			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 		end#callback hideGroup
 
@@ -723,14 +723,14 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("unHideGroup") do |wdl, groupID|
 			self.unHideGroup(groupID)
-			@dialogStates.execute_script("visibilityChanged();")
+			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 		end#callback unHideGroup
 
 		@dialog.add_bridge_callback("groupLayers") do |wdl, action|
 			@model.start_operation("Group layers", true, false, true) #merges with previous "Add group" operation
 				self.storeSerialize
-				@dialogStates.execute_script("visibilityChanged();")
+				@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 				@previousState = 0
 			@model.commit_operation
 		end#callback groupLayers
@@ -738,7 +738,7 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("unGroupLayers") do |wdl, action|
 			@model.start_operation("Ungroup layers", true)
 				self.storeSerialize
-				@dialogStates.execute_script("visibilityChanged();")
+				@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 				@previousState = 0
 			@model.commit_operation
 		end#callback unGroupLayers
@@ -746,7 +746,7 @@ module JBB_LayersPanel
 		@dialog.add_bridge_callback("purgeGroups") do |wdl, action|
 			@model.start_operation("Purge groups", true)
 				self.storeSerialize
-				@dialogStates.execute_script("visibilityChanged();")
+				@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 				@previousState = 0
 			@model.commit_operation
 		end#callback
@@ -1023,7 +1023,7 @@ module JBB_LayersPanel
 				group.erase! ### erase! the temporary layer user, use set as was.
 			end#if
 			self.storeSerialize
-			@dialogStates.execute_script("visibilityChanged();")
+			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 			@model.commit_operation
 		end#callback purgeLayersFromJS

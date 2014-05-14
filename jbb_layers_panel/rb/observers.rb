@@ -57,7 +57,7 @@ module JBB_LayersPanel
 							visibleLayers << layer if layer.visible?
 						}
 						if @lastVisibleLayers != visibleLayers
-							JBB_LayersPanel.dialogStates.execute_script("visibilityChanged();")
+							JBB_LayersPanel.dialogStates.execute_script("visibilityChanged();") if JBB_LayersPanel.dialogStates != nil
 							JBB_LayersPanel.previousState = 0
 						end#if
 						@lastVisibleLayers = visibleLayers
