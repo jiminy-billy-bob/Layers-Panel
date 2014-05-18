@@ -251,7 +251,7 @@ module JBB_LayersPanel
 		su = Sketchup.app_name
 		suversion = Sketchup.version
 		lang = Sketchup.get_locale
-		iframeTrack = "iframeTrack('#{@lpversion}', '#{su}', '#{suversion}', '#{lang}', '#{@store}');"
+		iframeTrack = "iframeTrack('#{@version}', '#{su}', '#{suversion}', '#{lang}', '#{@store}');"
 		@dialog.execute_script(iframeTrack)
 	end#def
 

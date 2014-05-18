@@ -1,7 +1,6 @@
 #-------------------------------------------------------------------------------
 #
 # Layers Panel
-# Version 1.1.0
 #
 #-------------------------------------------------------------------------------
 #
@@ -24,27 +23,34 @@
 #
 #-------------------------------------------------------------------------------
 
-require 'sketchup.rb'
-require 'extensions.rb'
+module JBB_LayersPanel
 
-#-------------------------------------------------------------------------------
+	require 'sketchup.rb'
+	require 'extensions.rb'
 
-lp_ext = SketchupExtension.new 'Layers Panel', 'jbb_layers_panel/layers_panel.rb'
+	#-------------------------------------------------------------------------------
+	
+	@version = "1.1.1"
+	@store = "ps"
 
-lp_ext.creator     = 'Thomas Hauchecorne, Chips Architecture'
-lp_ext.version     = '1.1.0'
-lp_ext.copyright   = 'Thomas Hauchecorne © 2014'
-lp_ext.description = 'Replaces Sketchup\'s layers window, with nesting/sorting/grouping/locking features.'
+	lp_ext = SketchupExtension.new 'Layers Panel', 'jbb_layers_panel/layers_panel.rb'
 
-Sketchup.register_extension lp_ext, true
+	lp_ext.creator     = 'Thomas Hauchecorne, Chips Architecture'
+	lp_ext.version     = @version
+	lp_ext.copyright   = 'Thomas Hauchecorne © 2014'
+	lp_ext.description = 'Replaces Sketchup\'s layers window, with nesting/sorting/grouping/locking features.'
+
+	Sketchup.register_extension lp_ext, true
 
 
-path = File.dirname( __FILE__ ) + "/layers_panel.rb"
-if File.exists?(path)
-	File.delete(path)
-end#if
+	path = File.dirname( __FILE__ ) + "/layers_panel.rb"
+	if File.exists?(path)
+		File.delete(path)
+	end#if
 
-path = File.dirname( __FILE__ ) + "/Layers Panel.rb"
-if File.exists?(path)
-	File.delete(path)
-end#if
+	path = File.dirname( __FILE__ ) + "/Layers Panel.rb"
+	if File.exists?(path)
+		File.delete(path)
+	end#if
+
+end#module

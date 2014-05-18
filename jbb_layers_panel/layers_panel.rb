@@ -52,8 +52,14 @@ module JBB_LayersPanel
 	
 #-----------------------------------------------------------------------------
 	
-	@lpversion = "1.1.0"
-	@store = "ps"
+	#Sketchucation API
+	@scfKey = 'JiBiBojabxz41322768h'
+	begin
+		SCFapi.store_event(@scfKey, 'Layers_Panel', 'Load')
+		@scfApi = true
+	rescue
+		@scfApi = false
+	end
 	
 	@isActive = true
 	
@@ -93,7 +99,7 @@ module JBB_LayersPanel
 	@html_path6 = File.dirname( __FILE__ ) + "/html/states.html"
 	
 	class << self
-		attr_accessor :isActive, :model, :layers, :entityObservers, :layerDictID, :dialog, :dialogStates, :allowSerialize, :allowStatesChange, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :previousState, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
+		attr_accessor :version, :scfKey, :scfApi, :isActive, :model, :layers, :entityObservers, :layerDictID, :dialog, :dialogStates, :allowSerialize, :allowStatesChange, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :previousState, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
 	end
   
 	

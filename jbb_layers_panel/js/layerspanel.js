@@ -1030,7 +1030,7 @@ $(document).ready(function(){
 				left:  e.pageX-10,
 				top:   e.pageY-10
 			});
-			$(".ui-selected").each(function(e){
+			$(".ui-selected").not("#lidiv0").each(function(e){
 				if (!$(this).parent().hasClass("sorted")){ // If not already in #helpers (Usefull when mouseup outside dialog)
 					if ($(this).parents("ol").parents().children(".ui-selected").length > 0){ // If nested in selected group, do nothing
 					} else { // Else, put it in the helpers container
@@ -1050,7 +1050,7 @@ $(document).ready(function(){
 		if(selected == true){
 			ui.helper.remove();
 			ui.item.remove();
-			$(".ui-selected").parent().not(".sorted").each(function(){
+			$(".ui-selected").parent().not(".sorted").not("#layer_0").each(function(){
 				if ($(this).parents(".sorted").length > 0){
 				} else { $(this).remove(); }
 			});

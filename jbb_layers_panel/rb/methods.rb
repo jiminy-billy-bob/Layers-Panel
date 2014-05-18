@@ -15,6 +15,7 @@ module JBB_LayersPanel
 		else
 			dialog.show()
 		end#if
+		SCFapi.store_event(@scfKey, 'Layers_Panel', 'Dialog', 'Open') if @scfApi
 	end#def
 	
 	def self.resetVariables
@@ -117,17 +118,182 @@ module JBB_LayersPanel
 	
 	### API ### ------------------------------------------------------
 	
-	def self.getLayerByID(layerID)
+	def self.is_active?
+		return true
+	end#def
+	
+	def self.add_group(groupName = nil)
+		if groupName == nil
+			highestNumber = 0
+			if @model.attribute_dictionaries["jbb_layerspanel_groups"] != nil
+				@model.attribute_dictionaries["jbb_layerspanel_groups"].each { | groupID, name |
+					number = (/Group\s(\d+)/).match(name)
+					number = number.captures[0].to_i if number != nil
+					highestNumber = number if number > highestNumber
+				}
+			end#if
+			highestNumber = highestNumber + 1
+			groupName = 'Group ' + highestNumber.to_s
+		end#if
+		
+		self.initializeLayerDictID
+		self.incLayerDictID
+		@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
+		
+		serialized = @model.get_attribute("jbb_layerspanel", "serialized")
+		serialized = "" if serialized == nil
+		serialized = serialized + 'group[' + @layerDictID.to_s + ']=null'
+		@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+		
+		self.refreshDialog
+		@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
+		@previousState = 0
+		
+		return @layerDictID
+	end#def
+	
+	def self.delete_group(groupID)
+		state = false
+		serialized = @model.get_attribute("jbb_layerspanel", "serialized").to_s
+		serialized.gsub!(/group\[#{groupID}\]\=(\d+|null)/) { |match| 
+			state = true if match
+			'' 
+		}
+		#Get rid of extra "&" (At the start/end of the string, or when there's two of them)
+		serialized.gsub!(/\A(&)/) { |match| 
+			''
+		}
+		serialized.gsub!(/(&)\z/) { |match| 
+			''
+		}
+		serialized.gsub!(/&{2}/) { |match| 
+			'&'
+		}
+		#Remove groupID as parent from other items
+		serialized.gsub!(/(layer|group)\[\d+\]\=#{groupID}/) { |match| 
+			match.gsub!(/\=#{groupID}/) { |match| '=null' } 
+		}
+		@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+		self.refreshDialog
+		return state
+	end#def
+	
+	def self.rename_group(groupID, groupName)
+		@model.set_attribute("jbb_layerspanel_groups", groupID, groupName.to_s)
+		self.refreshDialog
+		return true
+	end#def
+	
+	def self.get_layer_by_ID(layerID)
 		@layers.each{|layer| 
 			if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i #if layer's dict ID == match ID
 				return layer
 				break
 			end#if
 		}
+		return nil
 	end#def
 	
-	def self.getLayerID(layer)
+	def self.get_layerID(layer)
 		return layer.get_attribute("jbb_layerspanel", "ID").to_i
+	end#def
+	
+	def self.get_groupID_by_name(groupName)
+		ids = []
+		if @model.attribute_dictionaries["jbb_layerspanel_groups"] != nil
+			@model.attribute_dictionaries["jbb_layerspanel_groups"].each { | groupID, name |
+				if groupName == name
+					ids << groupID.to_i
+				end#if
+			}
+			if ids.length > 1
+				return ids
+			else
+				return ids[0]
+			end#if
+		end#if
+		return nil
+	end#def
+	
+	def self.get_group_name_by_ID(groupID)
+		return @model.get_attribute("jbb_layerspanel_groups", groupID)
+	end#def
+	
+	def self.nest_into(itemID, targetID)
+		item = target = nil
+		if itemID != targetID
+			serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized layers
+			target = (/(layer|group)\[#{targetID}\]\=(\d+|null)/).match(serialized) #Check that target exists
+			if target
+				serialized.to_s.gsub!(/(layer|group)\[#{itemID}\]\=(\d+|null)/) { |match| 
+					item = match
+					match.gsub!(/\=(\d+|null)/) { |m| '=' + targetID.to_s } #Replace item parent by target
+				}
+				@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+				self.sort_nextTo(itemID, targetID, "after", false)
+				self.refreshDialog
+			end#if
+		end#if
+		
+		if target && item && itemID != targetID
+			return true
+		else
+			return false
+		end#if
+	end#def
+	
+	def self.sort_before(itemID, targetID)
+		self.sort_nextTo(itemID, targetID, "before")
+	end#def
+	
+	def self.sort_after(itemID, targetID)
+		self.sort_nextTo(itemID, targetID, "after")
+	end#def
+	
+	def self.sort_nextTo(itemID, targetID, side, replaceParent = true)
+		if itemID != targetID
+			serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized layers
+			item = target = parent = nil
+			#Check that target exists
+			target = (/(layer|group)\[#{targetID}\]\=(\d+|null)/).match(serialized)
+			parent = target.captures[1] if target
+			#Erase item from the serialized string
+			if target
+				serialized.to_s.gsub!(/(layer|group)\[#{itemID}\]\=(\d+|null)/) { |match| 
+					item = match
+					item.gsub!(/\=(\d+|null)/) { |match| '=' + parent } if replaceParent #Replace item parent by target parent
+					''
+				}
+			end#if
+			if item && item != target
+				#Put item next to target
+				serialized.to_s.gsub!(/(layer|group)\[#{targetID}\]\=(\d+|null)/) { |match| 
+					if side == "before"
+						item + '&' + match
+					elsif side == "after"
+						match + '&' + item
+					end#if
+				}
+			end#if
+			#Get rid of extra "&" (At the start/end of the string, or when there's two of them)
+			serialized.to_s.gsub!(/\A(&)/) { |match| 
+				''
+			}
+			serialized.to_s.gsub!(/(&)\z/) { |match| 
+				''
+			}
+			serialized.to_s.gsub!(/&{2}/) { |match| 
+				'&'
+			}
+			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
+			self.refreshDialog
+		end#if
+		
+		if target && item && itemID != targetID
+			return true
+		else
+			return false
+		end#if
 	end#def
 	
 	def self.render?(layer)
@@ -142,7 +308,7 @@ module JBB_LayersPanel
 		end#if
 	end#def
 	
-	def self.setRenderBehav(layer, bool)
+	def self.set_render_behav(layer, bool)
 		layerID = layer.get_attribute("jbb_layerspanel", "ID")
 		context = self.currentContext
 		if bool == false
@@ -151,6 +317,7 @@ module JBB_LayersPanel
 			context.set_attribute("jbb_layerspanel_render", layerID, 2)
 		end#if
 		self.refreshDialog
+		return nil
 	end#def
 
 end#module
