@@ -444,8 +444,8 @@ module JBB_LayersPanel
 				visibleExisting = false
 				visibleNew = false
 			end#if
-			unique_name = layers.unique_name name.to_s
-			layer = layers.add unique_name
+			unique_name = @layers.unique_name name.to_s
+			layer = @layers.add unique_name
 			if visibleExisting == false
 				@model.pages.each do |page|
 					if page == @model.pages.selected_page
@@ -462,16 +462,16 @@ module JBB_LayersPanel
 		end#callback addLayerFromJS
 
 		@dialog.add_bridge_callback("getUniqueName") do
-			unique_name = layers.unique_name
+			unique_name = @layers.unique_name
 			getUniqueName = "getUniqueName('#{unique_name}');"
 			@dialog.execute_script(getUniqueName)
 		end#callback addLayerFromJS
 
-		@dialog.add_bridge_callback("renameLayerFromJS") do |wdl, layerNameS|
+		@dialog.add_bridge_callback("renameLayerFromJS") do |wdl, json|
 			@model.start_operation("Rename layer", true)
-			hashLayerNames = self.jsonToHash(layerNameS)
-			layerID = hashLayerNames['layerID']
-			newLayerName = hashLayerNames['newLayerName']
+			hash = self.jsonToHash(json)
+			layerID = hash['layerID']
+			newLayerName = hash['newLayerName']
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
 					self.checkEntityObserver(layer)

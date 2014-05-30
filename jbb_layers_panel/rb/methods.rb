@@ -4,6 +4,7 @@ module JBB_LayersPanel
 	
 	
 	def self.jsonToHash(string)
+		string = string.to_s.gsub('/',"\\").gsub('\\\\',"\\") #This is for unicode values
 		hashString = eval( string.inspect.gsub(':','=>') ) #Convert Json string to hash string
 		hash = eval(hashString) #Convert hash string to proper hash object
 		return hash

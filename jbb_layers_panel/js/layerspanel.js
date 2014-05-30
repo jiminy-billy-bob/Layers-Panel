@@ -23,6 +23,28 @@
 		$('#dialogSize').val(jsonSize);
 	}
 	
+	//The following is from John "driven" Boundy
+	/* Creates a uppercase hex number with at least length digits from a given number */
+	function fixedHex(number, length){
+		var str = number.toString(16).toUpperCase();
+		while(str.length < length)
+			str = "0" + str;
+		return str;
+	}
+	/* Creates a unicode literal based on the string. nts: UTF-8 is an encoding - Unicode is a character set*/
+	function unicodeLiteral(str){
+		var i;
+		var result = "";
+		for( i = 0; i < str.length; ++i){
+			/* You should probably replace this by an isASCII test */
+			if(str.charCodeAt(i) > 126 || str.charCodeAt(i) < 32)
+				result += "\\\\" + "u" + fixedHex(str.charCodeAt(i),4);
+			else
+				result += str[i];
+		}
+		return result;
+	}
+	
 //-------------
 
 	var allowSerialize = true;
@@ -247,6 +269,7 @@
 	
 		var layerNameS = { "layerID":layerID, "newLayerName":newLayerName }; //Json
 		var JsonLayerNameS = $.toJSON( layerNameS );
+		JsonLayerNameS = unicodeLiteral(JsonLayerNameS);
 		skpCallback('skp:renameLayerFromJS@' + JsonLayerNameS);
 		
 	}
@@ -260,6 +283,7 @@
 		groupID = groupID.replace('group_', '')
 		var renameGroup = { "groupID":groupID, "newGroupName":newGroupName }; //Json
 		var renameGroup2 = $.toJSON( renameGroup );
+		renameGroup2 = unicodeLiteral(renameGroup2);
 		skpCallback('skp:renameGroup@' + renameGroup2);
 		
 	}
@@ -1457,6 +1481,7 @@ $(document).ready(function(){
 			}
 			var params = { "name":name, "only":only, "visibleExisting":visibleExisting, "visibleNew":visibleNew }; //Json
 			params = $.toJSON( params );
+			params = unicodeLiteral(params);
 			skpCallback('skp:specialAddLayerFromJS@'+params);
 			$("#newLayerName").css("background-color", "");
 			$('#menuLayer').hide();
