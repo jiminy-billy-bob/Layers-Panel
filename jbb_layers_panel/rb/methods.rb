@@ -10,9 +10,22 @@ module JBB_LayersPanel
 		return hash
 	end#def
 	
-	def self.showDialog(dialog)
-		if MAC
+	def self.showDialog(dialog, mainDialog = false)
+		if OSX
 			dialog.show_modal()
+			if mainDialog
+				width = Sketchup.read_default("jbb_layers_panel", "dialog_width")
+				height = Sketchup.read_default("jbb_layers_panel", "dialog_height")
+				width = 215 if width == nil
+				height = 300 if height == nil
+				dialog.set_size(width,height)
+				
+				x = Sketchup.read_default("jbb_layers_panel", "dialog_x")
+				y = Sketchup.read_default("jbb_layers_panel", "dialog_y")
+				x = 300 if x == nil
+				y = 200 if y == nil
+				dialog.set_position(x,y)
+			end#if
 		else
 			dialog.show()
 		end#if
@@ -243,15 +256,15 @@ module JBB_LayersPanel
 		end#if
 	end#def
 	
-	def self.sort_before(itemID, targetID)
-		self.sort_nextTo(itemID, targetID, "before")
+	def self.move_before(itemID, targetID)
+		self.move_nextTo(itemID, targetID, "before")
 	end#def
 	
-	def self.sort_after(itemID, targetID)
-		self.sort_nextTo(itemID, targetID, "after")
+	def self.move_after(itemID, targetID)
+		self.move_nextTo(itemID, targetID, "after")
 	end#def
 	
-	def self.sort_nextTo(itemID, targetID, side, replaceParent = true)
+	def self.move_nextTo(itemID, targetID, side, replaceParent = true)
 		if itemID != targetID
 			serialized = @model.get_attribute("jbb_layerspanel", "serialized") #retreive string of serialized layers
 			item = target = parent = nil

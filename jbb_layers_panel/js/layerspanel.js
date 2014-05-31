@@ -4,9 +4,9 @@
 /////////////// BASE FUNCTIONS /////////////
 
 	var WIN=false;
-	var MAC=false;
+	var OSX=false;
 	if (navigator.appVersion.indexOf("Win")!=-1) WIN=true;
-	else if (navigator.appVersion.indexOf("Mac")!=-1) MAC=true;
+	else if (navigator.appVersion.indexOf("Mac")!=-1) OSX=true;
 
 	function reloadDialog() {
 		location.reload();
@@ -21,6 +21,12 @@
 		var size = { "height":$(window).height(), "width":$(window).width() }; //Json
 		var jsonSize = $.toJSON( size );
 		$('#dialogSize').val(jsonSize);
+	}
+	
+	function getDialogPosition() {
+		var position = { "x":window.screenX, "y":window.screenY }; //Json
+		var jsonPosition = $.toJSON( position );
+		$('#dialogPosition').val(jsonPosition);
 	}
 	
 	//The following is from John "driven" Boundy

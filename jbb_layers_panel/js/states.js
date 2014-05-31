@@ -4,9 +4,9 @@
 /////////////// BASE FUNCTIONS /////////////
 
 	var WIN=false;
-	var MAC=false;
+	var OSX=false;
 	if (navigator.appVersion.indexOf("Win")!=-1) WIN=true;
-	else if (navigator.appVersion.indexOf("Mac")!=-1) MAC=true;
+	else if (navigator.appVersion.indexOf("Mac")!=-1) OSX=true;
 
 	function reloadDialog() {
 		location.reload();

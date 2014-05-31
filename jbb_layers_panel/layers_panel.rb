@@ -8,7 +8,7 @@ module JBB_LayersPanel
 
 #-----------------------------------------------------------------------------
 
-	MAC = ( Object::RUBY_PLATFORM =~ /darwin/i ? true : false )
+	OSX = ( Object::RUBY_PLATFORM =~ /darwin/i ? true : false )
 	WIN = ( (Object::RUBY_PLATFORM =~ /mswin/i || Object::RUBY_PLATFORM =~ /mingw/i) ? true : false )
 
 #-----------------------------------------------------------------------------
@@ -133,7 +133,7 @@ module JBB_LayersPanel
 	end#if
 
 	if Sketchup.read_default("jbb_layers_panel", "startup") == true
-		self.showDialog(@dialog)
+		self.showDialog(@dialog, true)
 		self.make_toolwindow_frame("Layers Panel")
 		self.createDialogStates
 	end#if

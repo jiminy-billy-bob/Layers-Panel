@@ -69,7 +69,7 @@ module JBB_LayersPanel
 
 	@jbb_lp_entityObserver = JBB_LP_EntityObserver.new
 
-	if MAC
+	if OSX
 		# Attach the observer to layer0
 		@layers[0].add_observer(@jbb_lp_entityObserver)
 	end#if
@@ -154,7 +154,7 @@ module JBB_LayersPanel
 
 	@jbb_lp_layersObserver = JBB_LP_layersObserver.new
 
-	if MAC
+	if OSX
 		# Attach the observer.
 		@layers.add_observer(@jbb_lp_layersObserver)
 	end#if
@@ -178,7 +178,7 @@ module JBB_LayersPanel
 
 	@jbb_lp_modelObserver = JBB_LP_ModelObserver.new
 
-	if MAC
+	if OSX
 		# Attach the observer
 		@model.add_observer(@jbb_lp_modelObserver)
 	end#if
@@ -336,7 +336,7 @@ module JBB_LayersPanel
 
 	@jbb_lp_pagesObserver = JBB_LP_PagesObserver.new
 
-	if MAC
+	if OSX
 		# Attach the observer
 		@model.pages.add_observer(@jbb_lp_pagesObserver)
 	end#if
@@ -360,7 +360,7 @@ module JBB_LayersPanel
 	
 	@jbb_lp_renderingOptionsObserver = JBB_LP_RenderingOptionsObserver.new
 	
-	if MAC
+	if OSX
 		# Attach the observer
 		@model.rendering_options.add_observer(@jbb_lp_renderingOptionsObserver)
 	end#if
@@ -372,7 +372,7 @@ module JBB_LayersPanel
 	#Track active model change
 	class JBB_LP_ViewObserver < Sketchup::ViewObserver
 		def onViewChanged(view) 
-			if MAC
+			if OSX
 				# puts Sketchup.active_model.definitions.entityID
 				if JBB_LayersPanel.lastActiveModelID != Sketchup.active_model.definitions.entityID
 					JBB_LayersPanel.resetVariables
@@ -384,7 +384,7 @@ module JBB_LayersPanel
 		end
 	end#def
 	
-	if MAC
+	if OSX
 		@jbb_lp_viewObserver = JBB_LP_ViewObserver.new
 
 		# Attach the observer
@@ -415,6 +415,12 @@ module JBB_LayersPanel
 			}
 		end#def
 
+		def onQuit()
+			if OSX
+				JBB_LayersPanel.storeSizeAndPosition
+			end#if
+		end#def
+
 	end#class
 
 	def self.openedModel(newModel)
@@ -429,7 +435,7 @@ module JBB_LayersPanel
 		JBB_LayersPanel.layers.add_observer(JBB_LayersPanel.jbb_lp_layersObserver)
 		@model.rendering_options.add_observer(@jbb_lp_renderingOptionsObserver)
 		
-		if MAC #Track active model change
+		if OSX #Track active model change
 			JBB_LayersPanel.model.active_view.add_observer(JBB_LayersPanel.jbb_lp_viewObserver)
 		end#if
 		

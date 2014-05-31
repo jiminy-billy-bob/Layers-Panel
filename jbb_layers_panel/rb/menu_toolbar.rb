@@ -11,7 +11,7 @@ module JBB_LayersPanel
 			false
 		else
 			self.createDialog
-			self.showDialog(@dialog)
+			self.showDialog(@dialog, true)
 			self.make_toolwindow_frame("Layers Panel")
 			true
 		end#if

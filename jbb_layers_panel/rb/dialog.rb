@@ -271,6 +271,22 @@ module JBB_LayersPanel
 		end#if
 	end#def
 
+	def self.storeSizeAndPosition
+		if OSX
+			@dialog.execute_script("getDialogSize();")
+			jsonSize = @dialog.get_element_value("dialogSize")
+			sizeHash = self.jsonToHash(jsonSize)
+			Sketchup.write_default("jbb_layers_panel", "dialog_width", sizeHash['width'].to_i)
+			Sketchup.write_default("jbb_layers_panel", "dialog_height", sizeHash['height'].to_i)
+			
+			@dialog.execute_script("getDialogPosition();")
+			jsonPosition = @dialog.get_element_value("dialogPosition")
+			positionHash = self.jsonToHash(jsonPosition)
+			Sketchup.write_default("jbb_layers_panel", "dialog_x", positionHash['x'].to_i)
+			Sketchup.write_default("jbb_layers_panel", "dialog_y", positionHash['y'].to_i)
+		end#if
+	end#def
+
 	def self.resize(width, height)
 		#Extracted and modified from TT's SKUI project
 		#http://github.com/thomthom/SKUI
@@ -394,7 +410,7 @@ module JBB_LayersPanel
 		
 		@dialog = WebdialogBridge.new("Layers Panel", false, "LayersPanel", 215, 300, 300, 200, true)
 		@dialog.min_width = 199
-		@dialog.min_height = 37
+		@dialog.min_height = 37 if WIN
 		@dialog.set_file(@html_path)
 		
 		
@@ -1074,23 +1090,47 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("checkIEwarning") do |wdl, action|
 			self.checkIEwarning
-		end#callback render
+		end#callback
 
 		@dialog.add_bridge_callback("startup") do |wdl, action|
 			self.dialogStartup
-		end#callback render
+		end#callback
 
 		@dialog.add_bridge_callback("minimizeDialog") do |wdl, size|
+			if OSX
+				self.storeSizeAndPosition
+			end#if
+			
 			sizeHash = self.jsonToHash(size)
 			self.resize(sizeHash['width'].to_i, 10)
 			@heightBeforeMinimize = sizeHash['height']
-		end#callback render
+			
+			if OSX
+				x = Sketchup.read_default("jbb_layers_panel", "dialog_x")
+				y = Sketchup.read_default("jbb_layers_panel", "dialog_y")
+				x = 300 if x == nil
+				y = 200 if y == nil
+				dialog.set_position(x,y)
+			end#if
+		end#callback
 
 		@dialog.add_bridge_callback("maximizeDialog") do |wdl, width|
+			if OSX
+				self.storeSizeAndPosition
+			end#if
+			
 			width = width.to_i
 			height = @heightBeforeMinimize
 			self.resize(width, height)
-		end#callback render
+			
+			if OSX
+				x = Sketchup.read_default("jbb_layers_panel", "dialog_x")
+				y = Sketchup.read_default("jbb_layers_panel", "dialog_y")
+				x = 300 if x == nil
+				y = 200 if y == nil
+				dialog.set_position(x,y)
+			end#if
+		end#callback
 
 		@dialog.add_bridge_callback("colorByLayer") do |wdl, action|
 			if @model.rendering_options["DisplayColorByLayer"] == true
@@ -1098,12 +1138,21 @@ module JBB_LayersPanel
 			else
 				@model.rendering_options["DisplayColorByLayer"] = true
 			end#if
-		end#callback render
+		end#callback
 		
 		
 		############
+
+		@dialog.set_on_close do
+			if OSX
+				self.storeSizeAndPosition
+			end#if
+		end
+		
+		############
+		
 		if closed
-			self.showDialog(@dialog)
+			self.showDialog(@dialog, true)
 			self.make_toolwindow_frame("Layers Panel")
 			true
 		end#if
