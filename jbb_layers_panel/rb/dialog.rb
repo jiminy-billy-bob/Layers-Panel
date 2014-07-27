@@ -89,18 +89,18 @@ module JBB_LayersPanel
 			# puts layer.name
 			if layer != @layers[0]
 				if layer.get_attribute("jbb_layerspanel", "ID") == nil #if layer not IDed
-					# puts 'attribute'
-					if firstOp == true
-						@model.start_operation("Layers Panel ID", true)
-							self.initializeLayerDictID
-							self.IDLayer(layer)
-						@model.commit_operation
-						firstOp = false
-					else
-						@model.start_operation("Layers Panel ID", true, false, true)
-							self.IDLayer(layer)
-						@model.commit_operation
-					end#if
+					# if firstOp == true
+						# @model.start_operation("Layers Panel ID", true, false, true)
+							# self.initializeLayerDictID
+							# self.IDLayer(layer)
+						# @model.commit_operation
+						# firstOp = false
+					# else
+						# @model.start_operation("Layers Panel ID", true, false, true)
+							# self.IDLayer(layer)
+						# @model.commit_operation
+					# end#if
+					@layer_to_ID << layer
 				end#if
 				
 				layerID = layer.get_attribute("jbb_layerspanel", "ID")

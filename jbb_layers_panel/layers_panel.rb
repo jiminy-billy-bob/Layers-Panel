@@ -67,6 +67,7 @@ module JBB_LayersPanel
 	@layers = @model.layers
 	@entityObservers = Hash.new
 	@layerDictID = nil
+	@layer_to_ID = []
 	@dialog = nil
 	@dialogStates = nil
 	@allowSerialize = true

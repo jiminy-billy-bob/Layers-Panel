@@ -40,6 +40,7 @@ module JBB_LayersPanel
 
 	class WebdialogBridge < UI::WebDialog
 		def add_bridge_callback(callback, &block)
+			JBB_LayersPanel.empty_layers_to_id_stack
 			add_action_callback(callback) do  |webdialog, params|
 				# puts "add_bridge_callback(#{callback}) { |#{params}| }"
 				block.call(webdialog, params)
@@ -85,6 +86,16 @@ module JBB_LayersPanel
 			layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
 			# puts "layerDictID " + @layerDictID.to_s
 		end#if
+	end#def
+	
+	def self.empty_layers_to_id_stack
+		@model.start_operation("Layers Panel ID", true)
+			self.initializeLayerDictID
+			@layer_to_ID.each{|layer|
+				self.IDLayer(layer) if !layer.deleted?
+			}
+			@layer_to_ID = []
+		@model.commit_operation
 	end#def
 	
 	def self.checkEntityObserver(layer) #check if layer has observer, else attach to it
