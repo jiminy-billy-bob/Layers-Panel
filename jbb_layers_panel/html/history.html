@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--<meta http-equiv="x-ua-compatible" content="IE=8">-->
+		<meta charset="utf-8">
+		<link href="../css/history.css" rel="stylesheet" type="text/css">
+
+	</head>
+	<body>
+		<div id="wrapper">
+			<fieldset>
+				<legend>Layers Panel history</legend>
+				<div>Click on a date to go back to the corresponding ordering/sorting state.<br/><br/>
+				Most recent are on top.<br/>
+				<b>Orange dates are empty</b></div><br/>
+				<div id="items"></div>
+			</fieldset>
+		</div>
+		<script src="../js/jquery.js"></script>
+		<script src="../js/bridge.js"></script>
+		<script type="text/javascript">
+			function reloadDialog() {
+				location.reload();
+			}
+			
+			function addItem(id, date, serialized, reason) {
+				var warning = false;
+				if(serialized.length == 0){
+					warning = true;
+				}
+				
+				if (warning) {
+					var itemStr = '<div class="item warning" id="' + id + '"><a href="#" onClick="return false">' + date + ' : ' + reason + '</a></div>'
+				}
+				else {
+					var itemStr = '<div class="item" id="' + id + '"><a href="#" onClick="return false">' + date + ' : ' + reason + '</a></div>'
+				}
+				$('#items').prepend(itemStr);
+			}
+		
+			$(document).on("click", ".item", function(){
+				txt = $(this).children("a").text();
+				if(confirm('Are you sure you want to revert back to "' + txt + '" ?')){
+					id = $(this).attr("id");
+					skpCallback('skp:setSerialized@' + id);
+					reloadDialog();
+				}
+			});
+		
+			$(window).resize(function(){
+				$("#wrapper").height($(window).height() - 20);
+				$("#items").height($("#wrapper").height() - 130);
+			});
+		
+			$(window).focus(function(){
+				$("#items").empty();
+				skpCallback('skp:getItems@');
+			});
+		
+			$(document).ready(function(){
+				$(window).resize();
+				skpCallback('skp:getItems@');
+			});
+		</script>
+	</body>
+</html>

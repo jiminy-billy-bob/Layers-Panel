@@ -100,8 +100,8 @@ module JBB_LayersPanel
 	#Simple modification of TIG's snippet delete-layer.rb
 	#Basically, move or delete layer content, then creates an entry for every layer except one to delete, then purge layers, then delete entries
 	
-	def self.deleteLayer(layer, delete_geometry=false, currentLayer=false)
-		@model.start_operation("Delete layer", true)
+	def self.deleteLayer(layer, delete_geometry=false, currentLayer=false, operation=true)
+		@model.start_operation("Delete layer", true) if operation
 		@allowSerialize = false
 		ents=@model.entities; defs=@model.definitions
 		if delete_geometry
@@ -126,7 +126,7 @@ module JBB_LayersPanel
 		@layers.purge_unused ### purge layer from browser
 		group.erase! ### erase! the temporary layer user, use set as was.
 		@allowSerialize = true
-		@model.commit_operation 
+		@model.commit_operation if operation
 	end#def
 	
 	

@@ -835,6 +835,18 @@
 		$(layerID).children(".lidiv").addClass("ui-selected");
 	}
 	
+	function selectLayersContent() {
+		if($('.ui-selected').length == 0){
+			alert("Please select a layer");
+		}
+		else{
+			$('.ui-selected').each(function(){
+				layerID = $(this).parent().attr('id').replace('layer_', '');
+				skpCallback('skp:selectFromLayer@' + layerID);
+			});
+		}
+	}
+	
 	
 	
 	
@@ -879,46 +891,6 @@ $(document).ready(function(){
 		stop: function(event, ui) {
 		}
 	});
-
-	$(document).bind("contextmenu", function(e) { // Disable right-click
-		return false;
-	});
-
-	$(document).on('contextmenu', '.handle, .handle0', function (e) {
-		if ($(this).parent().parent().hasClass("layer")){
-			var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
-			skpCallback('skp:pickColor@' + layerID);
-		}
-	});
-	
-	
-	// $(function(){
-		// $.contextMenu({
-			// selector: '.lidiv', 
-			// callback: function(key, options) {
-				// var m = "clicked: " + key;
-				// window.console && console.log(m) || alert(m); 
-			// },
-			// items: {
-				// "selectAllEntities": {
-					// name: "Select all entities",
-					// callback: function(key, options) {
-						// alert('yop')
-					// }
-				// },
-				// "selectAllEntitiesContext": {
-					// name: "Select all entities in active context",
-					// callback: function(key, options) {
-						// alert('yop')
-					// }
-				// }
-			// }
-		// });
-		
-		// $('.context-menu-one').on('click', function(e){
-			// console.log('clicked', this);
-		// })
-	// });
 	
 	
 	
@@ -1351,6 +1323,10 @@ $(document).ready(function(){
 	
 	//------------
 	
+	$('#historyButton').click(function () {
+		skpCallback('skp:openHistoryDialog');
+	});
+	
 	$('#lock1').click(function() {lock()});
 	
 	$('#moveSel').click(function() {
@@ -1369,15 +1345,7 @@ $(document).ready(function(){
 	});
 	
 	$('#select').click(function() {
-		if($('.ui-selected').length == 0){
-			alert("Please select a layer");
-		}
-		else{
-			$('.ui-selected').each(function(){
-				layerID = $(this).parent().attr('id').replace('layer_', '');
-				skpCallback('skp:selectFromLayer@' + layerID);
-			});
-		}
+		selectLayersContent();
 	});
 	
 	$('#current').click(function() {
@@ -1400,19 +1368,10 @@ $(document).ready(function(){
 			$('#menu').hide();
 		}
 	});
-	$(document).mouseup(function (e){ // Hide menu on click-outside
-		var container = $("#menu");
-		
-		if (container.has(e.target).length === 0)
-		{
-			if($('#menu').is(':visible')){
-				setTimeout(function(){container.hide();},10);
-			}
+	$(document).mouseup(function (e){ // Hide menu on click
+		if($('#menu').is(':visible')){
+			setTimeout(function(){$("#menu").hide();},10);
 		}
-	});
-	
-	$('.menuElement').click(function() {
-		$('#menu').hide();
 	});
 	
 	$('#purgeLayers').click(function() {
@@ -1427,10 +1386,71 @@ $(document).ready(function(){
 		skpCallback('skp:openOptionsDialog');
 	});
 	
+	$('#history').click(function() {
+		skpCallback('skp:openHistoryDialog');
+	});
+	
 	$('#debug').click(function() {
 		skpCallback('skp:openDebugDialog');
 	});
 	
+	
+
+	////////////// CONTEXT MENU ////////////////
+
+	$(document).bind("contextmenu", function(e) { // Disable right-click
+		if($(e.target).parents().is(".layer, .group")){
+			if(!$(e.target).parents().is(".handle") && !$(e.target).is(".handle") && !$(e.target).parents().is(".handle0") && !$(e.target).is(".handle0")){
+				if(!$(e.target).closest(".lidiv").hasClass("ui-selected")){ //If not selected
+					$(".ui-selected").removeClass("ui-selected"); //Unselect selected
+					$(e.target).closest(".lidiv").addClass("ui-selected"); //Select target
+				}
+				
+				$(".disabledLink").removeClass("disabledLink");
+				if($(e.target).parents().is(".layer") && $(".ui-selected").length < 2){ // If only one layer selected (not group)
+					$("#mergeLayers").addClass("disabledLink");
+				}
+				if(!$(".ui-selected").parent().is(".layer")){ // If only groups selected
+					$("#contextLock").addClass("disabledLink");
+				}
+				if($(".ui-selected").length < 2 && $(".ui-selected").parent().is("#layer_0")){ // If only layer0 selected
+					$("#contextLock").addClass("disabledLink");
+					$("#groupLayers").addClass("disabledLink");
+				}
+				
+				if(e.pageX > ($(window).width() - $('#contextmenu').width())){ //If too close to the right edge
+					var x = $(window).width() - $('#contextmenu').width();
+				} else { var x = e.pageX; }
+				if(e.pageY > ($(window).height() - $('#contextmenu').height()) && $('#contextmenu').height() < e.pageY){ //If too close to the bottom edge, and not too close from the top edge
+					var y = e.pageY - $('#contextmenu').height();
+				} else { var y = e.pageY; }
+				$('#contextmenu').css({ top: y, left: x}).show();
+			}else{ $('#contextmenu').hide(); }
+		}
+		else{ $('#contextmenu').hide(); }
+		return false;
+	});
+	
+	$(document).mouseup(function (e){ // Hide contextmenu on click
+		if(e.which == 1){ //If left click
+			$('#contextmenu').hide();
+		}
+	});
+
+	$(document).on('contextmenu', '.handle, .handle0', function (e) {
+		if ($(this).parent().parent().hasClass("layer")){
+			var layerID = $(this).parent().parent().attr('id').replace('layer_', '');
+			skpCallback('skp:pickColor@' + layerID);
+		}
+	});
+	
+	$('#groupLayers').click(function() { groupLayers(); });
+	
+	$('#mergeLayers').click(function() { mergeLayers(); });
+	
+	$('#contextSelect').click(function() { selectLayersContent(); });
+	
+	$('#contextLock').click(function() { lock(); });
 	
 
 	////////////// LAYER MENU ////////////////

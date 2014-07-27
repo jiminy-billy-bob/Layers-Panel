@@ -30,7 +30,7 @@ module JBB_LayersPanel
 
 	#-------------------------------------------------------------------------------
 	
-	@version = "1.1.1"
+	@version = "1.2.0"
 	@store = "ps"
 
 	lp_ext = SketchupExtension.new 'Layers Panel', 'jbb_layers_panel/layers_panel.rb'

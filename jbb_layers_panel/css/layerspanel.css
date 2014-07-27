@@ -25,19 +25,6 @@ margin: 57px 0 30px 0;
 
 
 
-/****** CONTEXT MENU ******/
-
-.context-menu-list {
-min-width: 100px;
-max-width: 120px;
-}
-
-.context-menu-item {
-padding-left: 2px;
-}
-
-
-
 /****** HEADER ******/
 
 #minimize {
@@ -194,6 +181,12 @@ width: 25px;
 height: 100%;
 }
 
+#historyButton {
+background: url("./img/history.png") no-repeat 3px 3px;
+width: 25px;
+height: 100%;
+}
+
 /****** Utilities bar ******/
 
 #current {
@@ -289,6 +282,25 @@ width: 93%;
 border-bottom: 1px solid #bbb;
 }
 
+
+/******* CONTEXT MENU ******/
+
+#contextmenu {
+width: 125px;
+position: fixed;
+top: 1px;
+left: 1px;
+}
+
+.disabledLink{
+cursor: default;
+color: #888;
+}
+
+.disabledLink > .menuElement:hover {
+background: #eee;
+border: 1px solid #ccc;
+}
 
 	
 /****** LAYERS ******/

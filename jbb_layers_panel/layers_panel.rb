@@ -97,6 +97,7 @@ module JBB_LayersPanel
 	@html_path4 = File.dirname( __FILE__ ) + "/html/debug.html"
 	@html_path5 = File.dirname( __FILE__ ) + "/html/color.html"
 	@html_path6 = File.dirname( __FILE__ ) + "/html/states.html"
+	@html_path7 = File.dirname( __FILE__ ) + "/html/history.html"
 	
 	class << self
 		attr_accessor :version, :scfKey, :scfApi, :isActive, :model, :layers, :entityObservers, :layerDictID, :dialog, :dialogStates, :allowSerialize, :allowStatesChange, :previousPageDict, :previousPageDict2, :previousPageDict3, :previousPageDict4, :check, :selectedPageLayers, :timerCheckUpdate, :previousState, :heightBeforeMinimize, :jbb_lp_pagesObserver, :jbb_lp_modelObserver,  :jbb_lp_appObserver,  :jbb_lp_entityObserver,  :jbb_lp_layersObserver,  :jbb_lp_viewObserver, :jbb_lp_renderingOptionsObserver, :lastActiveModelID
@@ -117,6 +118,8 @@ module JBB_LayersPanel
 	require 'jbb_layers_panel/rb/options.rb'
 	
 	require 'jbb_layers_panel/rb/debug.rb'
+	
+	require 'jbb_layers_panel/rb/history.rb'
 	
 	require 'jbb_layers_panel/rb/color.rb'
 	

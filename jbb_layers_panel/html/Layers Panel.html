@@ -50,6 +50,7 @@
 			</div>
 			<div id="utilitiesBar" class="toolbar">
 				<a href="#" title="Open menu" onclick="return false"><div class='headerElement2 left' unselectable="on"><div id="menuButton" unselectable="on"></div></div></a>
+				<a href="#" title="Open history" onclick="return false"><div class='headerElement2 left' unselectable="on"><div id="historyButton" unselectable="on"></div></div></a>
 				<a href="#" title="Set selection's layer as current layer" onclick="return false"><div class='headerElement2 right' id="currentParent" unselectable="on"><div id="current" unselectable="on"></div></div></a>
 				<a href="#" title="Highlight selection's layer" onclick="return false"><div class='headerElement2 right' id="highlightParent" unselectable="on"><div id="highlight" unselectable="on"></div></div></a>
 				<a href="#" title="Select highlighted layer's entities" onclick="return false"><div class='headerElement2 right' id="selectParent" unselectable="on"><div id="select" unselectable="on"></div></div></a>
@@ -59,23 +60,33 @@
 		</div>
 	   
 		<div class="menu" id="renderList">
-				<a href="#" id="useIndigo" title="Use Indigo" onclick="return false"><div class="menuElement">Indigo</div></a>
-				<a href="#" id="useKT" title="Use Kerkythea" onclick="return false"><div class="menuElement">Kerkythea</div></a>
-				<a href="#" id="useKS" title="Use KeyShot" onclick="return false"><div class="menuElement">KeyShot</div></a>
-				<a href="#" id="useMaxwell" title="Use Maxwell" onclick="return false"><div class="menuElement">Maxwell</div></a>
-				<a href="#" id="usePodium" title="Use Podium" onclick="return false"><div class="menuElement">Podium</div></a>
-				<a href="#" id="useVray" title="Use Vray" onclick="return false"><div class="menuElement">Vray</div></a>
+			<a href="#" id="useIndigo" title="Use Indigo" onclick="return false"><div class="menuElement">Indigo</div></a>
+			<a href="#" id="useKT" title="Use Kerkythea" onclick="return false"><div class="menuElement">Kerkythea</div></a>
+			<a href="#" id="useKS" title="Use KeyShot" onclick="return false"><div class="menuElement">KeyShot</div></a>
+			<a href="#" id="useMaxwell" title="Use Maxwell" onclick="return false"><div class="menuElement">Maxwell</div></a>
+			<a href="#" id="usePodium" title="Use Podium" onclick="return false"><div class="menuElement">Podium</div></a>
+			<a href="#" id="useVray" title="Use Vray" onclick="return false"><div class="menuElement">Vray</div></a>
 		</div>
 		
 		
 		<div class="menu" id="menu">
-				<a href="#" id="purgeLayers" title="Purge unused layers" onclick="return false"><div class="menuElement">Purge unused layers</div></a>
-				<a href="#" id="purgeGroups" title="Purge unused groups" onclick="return false"><div class="menuElement">Purge unused groups</div></a>
-				<div class="seperator"></div>
-				<a href="#" id="options" title="" onclick="return false"><div class="menuElement">Options</div></a>
-				<a href="#" id="debug" title="" onclick="return false"><div class="menuElement">Debug</div></a>
-				<div class="seperator"></div>
-				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=thomash76%40gmail%2ecom&lc=GB&item_name=Thomas%20Hauchecorne&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" id="" title="Donate to the author" target="_blank"><div class="menuElement">Donate to the author</div></a>
+			<a href="#" id="purgeLayers" title="Purge unused layers" onclick="return false"><div class="menuElement">Purge unused layers</div></a>
+			<a href="#" id="purgeGroups" title="Purge unused groups" onclick="return false"><div class="menuElement">Purge unused groups</div></a>
+			<div class="seperator"></div>
+			<a href="#" id="options" title="" onclick="return false"><div class="menuElement">Options</div></a>
+			<a href="#" id="history" title="" onclick="return false"><div class="menuElement">History</div></a>
+			<a href="#" id="debug" title="" onclick="return false"><div class="menuElement">Debug</div></a>
+			<div class="seperator"></div>
+			<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=thomash76%40gmail%2ecom&lc=GB&item_name=Thomas%20Hauchecorne&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" id="" title="Donate to the author" target="_blank"><div class="menuElement">Donate to the author</div></a>
+		</div>
+		
+		
+		<div class="menu" id="contextmenu">
+			<a href="#" id="groupLayers" onclick="return false"><div class="menuElement">Group layer(s)</div></a>
+			<a href="#" id="mergeLayers" onclick="return false"><div class="menuElement">Merge layers</div></a>
+			<a href="#" id="contextLock" onclick="return false"><div class="menuElement">Lock/Unlock layer(s)</div></a>
+			<div class="seperator"></div>
+			<a href="#" id="contextSelect" onclick="return false"><div class="menuElement">Select layer's entities</div></a>
 		</div>
 		
 		

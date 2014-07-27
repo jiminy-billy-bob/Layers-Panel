@@ -104,7 +104,7 @@ module JBB_LayersPanel
 							end#if
 						end#if
 						JBB_LayersPanel.checkEntityObserver(layer)
-						JBB_LayersPanel.storeSerialize
+						JBB_LayersPanel.storeSerialize("Add layer")
 					if Sketchup.active_model.tools.active_tool_name != 'PasteTool'
 						JBB_LayersPanel.model.commit_operation
 					end#if
@@ -121,16 +121,6 @@ module JBB_LayersPanel
 			layerID = layer.get_attribute("jbb_layerspanel", "ID")
 			deleteLayerFromRuby = "deleteLayerFromRuby('#{layerID}');"
 			JBB_LayersPanel.dialog.execute_script(deleteLayerFromRuby)
-			done_03 = false
-			timer_03 = UI.start_timer(0, false) {
-				next if done_03
-				done_03 = true
-				if JBB_LayersPanel.allowSerialize == true
-					JBB_LayersPanel.model.start_operation("Delete layer", true, false, true)
-					JBB_LayersPanel.storeSerialize
-					JBB_LayersPanel.model.commit_operation
-				end#if
-			}
 		end#onLayerRemoved
 		
 		
@@ -167,12 +157,12 @@ module JBB_LayersPanel
 		def onTransactionUndo(model)
 			# puts "undo"
 			JBB_LayersPanel.refreshDialog
-			JBB_LayersPanel.refreshStatesDialog
+			JBB_LayersPanel.refreshStatesDialog if JBB_LayersPanel.dialogStates != nil
 		end#def
 		def onTransactionRedo(model)
 			# puts "redo"
 			JBB_LayersPanel.refreshDialog
-			JBB_LayersPanel.refreshStatesDialog
+			JBB_LayersPanel.refreshStatesDialog if JBB_LayersPanel.dialogStates != nil
 		end#def
 	end#class
 
@@ -377,7 +367,7 @@ module JBB_LayersPanel
 				if JBB_LayersPanel.lastActiveModelID != Sketchup.active_model.definitions.entityID
 					JBB_LayersPanel.resetVariables
 					JBB_LayersPanel.dialogStartup #Reload main dialog
-					JBB_LayersPanel.refreshStatesDialog #Reload states dialog
+					JBB_LayersPanel.refreshStatesDialog if JBB_LayersPanel.dialogStates != nil #Reload states dialog
 				end#if
 				JBB_LayersPanel.lastActiveModelID = Sketchup.active_model.definitions.entityID
 			end#if

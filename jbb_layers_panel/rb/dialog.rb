@@ -262,12 +262,21 @@ module JBB_LayersPanel
 		end#if
 	end#def
 
-	def self.storeSerialize
+	def self.storeSerialize(reason = nil)
 		if @allowSerialize == true
 			@dialog.execute_script("storeSerialize();")
 			serialized = @dialog.get_element_value("serialize")
 			# puts serialized
 			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
+			
+			serialized_history = @model.get_attribute("jbb_layerspanel", "serialized_history")
+			if serialized_history
+				serialized_history.shift if serialized_history.length >= 200
+			else
+				serialized_history = []
+			end#if
+			serialized_history << [Time.now.strftime("%Y-%m-%d %H:%M:%S"), serialized, reason]
+			@model.set_attribute("jbb_layerspanel", "serialized_history", serialized_history)
 		end#if
 	end#def
 
@@ -618,7 +627,7 @@ module JBB_LayersPanel
 				else
 					@layers.each{|layer| 
 						if layer.get_attribute("jbb_layerspanel", "ID").to_i == match[0].to_i
-							self.deleteLayer(layer, false, true)
+							self.deleteLayer(layer, false, true, false)
 							break
 						end#if
 					}
@@ -629,7 +638,7 @@ module JBB_LayersPanel
 			if !activeLayer.deleted?
 				@model.active_layer = activeLayer #Restore active layer
 			end#if
-			self.storeSerialize
+			self.storeSerialize("Merge layers")
 			@model.commit_operation
 		end#callback mergeLayers
 
@@ -684,7 +693,7 @@ module JBB_LayersPanel
 		end#callback addGroup
 
 		@dialog.add_bridge_callback("addGroupEnd") do |wdl, allowSerialize|
-			allowSerialize == "true" ? self.storeSerialize :
+			allowSerialize == "true" ? self.storeSerialize("Add group layer") :
 			@model.commit_operation
 		end#callback addGroup
 
@@ -745,7 +754,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("groupLayers") do |wdl, action|
 			@model.start_operation("Group layers", true, false, true) #merges with previous "Add group" operation
-				self.storeSerialize
+				self.storeSerialize("Group layers")
 				@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 				@previousState = 0
 			@model.commit_operation
@@ -753,7 +762,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("unGroupLayers") do |wdl, action|
 			@model.start_operation("Ungroup layers", true)
-				self.storeSerialize
+				self.storeSerialize("Ungroup layers")
 				@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 				@previousState = 0
 			@model.commit_operation
@@ -761,7 +770,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("purgeGroups") do |wdl, action|
 			@model.start_operation("Purge groups", true)
-				self.storeSerialize
+				self.storeSerialize("Purge groups")
 				@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 				@previousState = 0
 			@model.commit_operation
@@ -1048,7 +1057,6 @@ module JBB_LayersPanel
 			if group.deleted? == false
 				group.erase! ### erase! the temporary layer user, use set as was.
 			end#if
-			self.storeSerialize
 			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 			@model.commit_operation
@@ -1074,7 +1082,7 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("sortItem") do |wdl, serialized|
 			@model.start_operation("Sort layer/group", true)
-			self.storeSerialize
+			self.storeSerialize("Sort layer/group")
 			@model.commit_operation
 		end#callback 
 
@@ -1088,6 +1096,10 @@ module JBB_LayersPanel
 
 		@dialog.add_bridge_callback("openDebugDialog") do
 			self.show_layerspanel_dlg_debug
+		end#callback
+
+		@dialog.add_bridge_callback("openHistoryDialog") do
+			self.show_layerspanel_dlg_history
 		end#callback
 
 		@dialog.add_bridge_callback("undo") do
