@@ -87,7 +87,7 @@ module JBB_LayersPanel
 	end#def
 	
 	def self.refreshStatesDialog
-		@dialogStates.execute_script("emptyOl();")
+		@dialogStates.execute_script("emptyOl();") if @dialogStates != nil
 		self.statesDialogStartup
 	end#def
 	
@@ -178,7 +178,7 @@ module JBB_LayersPanel
 			self.incStateDictID
 			# puts stateName
 			# puts @stateDictID
-			@model.set_attribute("jbb_layerspanel_states", @stateDictID, stateName)
+			@model.set_attribute("jbb_layerspanel_states", @stateDictID, stateName) if @stateDictID
 			@previousState = @stateDictID
 			self.updateState(@stateDictID)
 		end#callback 
@@ -257,12 +257,12 @@ module JBB_LayersPanel
 				#Expand all groups
 				if context.attribute_dictionaries["jbb_layerspanel_collapseGroups"] != nil
 					context.attribute_dictionaries["jbb_layerspanel_collapseGroups"].each{|groupID, value|
-						context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0)
+						context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0) if groupID
 					}
 				end#if
 				#Collapse groups
 				collapsedGroups.each{|groupID|
-					context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1)
+					context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID
 				}
 				
 				self.refreshDialog
@@ -285,7 +285,7 @@ module JBB_LayersPanel
 			# puts stateID
 			newStateName = hashState['newStateName']
 			# puts newStateName
-			@model.set_attribute("jbb_layerspanel_states", stateID, newStateName) #Store new state's name from ID
+			@model.set_attribute("jbb_layerspanel_states", stateID, newStateName) if stateID #Store new state's name from ID
 			@model.commit_operation
 		end#callback
 		
@@ -298,7 +298,7 @@ module JBB_LayersPanel
 			self.incStateDictID
 			# puts groupName
 			# puts @stateDictID
-			@model.set_attribute("jbb_layerspanel_statesGroups", @stateDictID, groupName)
+			@model.set_attribute("jbb_layerspanel_statesGroups", @stateDictID, groupName) if @stateDictID
 		end#callback 
 
 		@dialogStates.add_bridge_callback("addGroupEnd") do |wdl, allowSerialize|
@@ -322,14 +322,14 @@ module JBB_LayersPanel
 		@dialogStates.add_bridge_callback("collapseGroup") do |wdl, groupID|
 			# puts "collapse " + groupID
 			@model.start_operation("Collapse group layer", true)
-			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 1)
+			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 1) if groupID
 			@model.commit_operation
 		end#callback
 
 		@dialogStates.add_bridge_callback("expandGroup") do |wdl, groupID|
 			# puts "expand " + groupID
 			@model.start_operation("Expand group layer", true)
-			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 0)
+			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 0) if groupID
 			@model.commit_operation
 		end#callback
 
@@ -344,7 +344,7 @@ module JBB_LayersPanel
 			# puts groupID
 			newGroupName = hashGroup['newGroupName']
 			# puts newGroupName
-			@model.set_attribute("jbb_layerspanel_statesGroups", groupID, newGroupName) #Store new group's name from ID
+			@model.set_attribute("jbb_layerspanel_statesGroups", groupID, newGroupName) if groupID #Store new group's name from ID
 			@model.commit_operation
 		end#callback
 		

@@ -167,7 +167,7 @@ module JBB_LayersPanel
 		
 		self.initializeLayerDictID
 		self.incLayerDictID
-		@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
+		@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) if @layerDictID #Store group's name with ID
 		
 		serialized = @model.get_attribute("jbb_layerspanel", "serialized")
 		serialized = "" if serialized == nil
@@ -208,7 +208,7 @@ module JBB_LayersPanel
 	end#def
 	
 	def self.rename_group(groupID, groupName)
-		@model.set_attribute("jbb_layerspanel_groups", groupID, groupName.to_s)
+		@model.set_attribute("jbb_layerspanel_groups", groupID, groupName.to_s) if groupID
 		self.refreshDialog
 		return true
 	end#def
@@ -341,9 +341,9 @@ module JBB_LayersPanel
 		layerID = layer.get_attribute("jbb_layerspanel", "ID")
 		context = self.currentContext
 		if bool == false
-			context.set_attribute("jbb_layerspanel_render", layerID, 0)
+			context.set_attribute("jbb_layerspanel_render", layerID, 0) if layerID
 		else
-			context.set_attribute("jbb_layerspanel_render", layerID, 2)
+			context.set_attribute("jbb_layerspanel_render", layerID, 2) if layerID
 		end#if
 		self.refreshDialog
 		return nil
