@@ -178,7 +178,7 @@ module JBB_LayersPanel
 			self.incStateDictID
 			# puts stateName
 			# puts @stateDictID
-			@model.set_attribute("jbb_layerspanel_states", @stateDictID, stateName) if @stateDictID
+			@model.set_attribute("jbb_layerspanel_states", @stateDictID, stateName) if @stateDictID && @stateDictID != ""
 			@previousState = @stateDictID
 			self.updateState(@stateDictID)
 		end#callback 
@@ -223,10 +223,16 @@ module JBB_LayersPanel
 				end#if
 				
 				visibleLayers = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "visibleLayers")
-				visibleGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "visibleGroups")
+				puts visibleGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "visibleGroups")
 				hiddenByGroupsLayers = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "hiddenByGroupsLayers")
 				hiddenByGroupsGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "hiddenByGroupsGroups")
 				collapsedGroups = @model.get_attribute("jbb_layerspanel_states", stateID.to_s + "collapsedGroups")
+				
+				visibleLayers = [] if !visibleLayers
+				visibleGroups = [] if !visibleGroups
+				hiddenByGroupsLayers = [] if !hiddenByGroupsLayers
+				hiddenByGroupsGroups = [] if !hiddenByGroupsGroups
+				collapsedGroups = [] if !collapsedGroups
 				
 				#Unhide visible layers and groups
 				visibleLayers.each{|layerID|
@@ -257,12 +263,12 @@ module JBB_LayersPanel
 				#Expand all groups
 				if context.attribute_dictionaries["jbb_layerspanel_collapseGroups"] != nil
 					context.attribute_dictionaries["jbb_layerspanel_collapseGroups"].each{|groupID, value|
-						context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0) if groupID
+						context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0) if groupID && groupID != ""
 					}
 				end#if
 				#Collapse groups
 				collapsedGroups.each{|groupID|
-					context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID
+					context.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
 				}
 				
 				self.refreshDialog
@@ -285,7 +291,7 @@ module JBB_LayersPanel
 			# puts stateID
 			newStateName = hashState['newStateName']
 			# puts newStateName
-			@model.set_attribute("jbb_layerspanel_states", stateID, newStateName) if stateID #Store new state's name from ID
+			@model.set_attribute("jbb_layerspanel_states", stateID, newStateName) if stateID && stateID != "" #Store new state's name from ID
 			@model.commit_operation
 		end#callback
 		
@@ -298,7 +304,7 @@ module JBB_LayersPanel
 			self.incStateDictID
 			# puts groupName
 			# puts @stateDictID
-			@model.set_attribute("jbb_layerspanel_statesGroups", @stateDictID, groupName) if @stateDictID
+			@model.set_attribute("jbb_layerspanel_statesGroups", @stateDictID, groupName) if @stateDictID && @stateDictID != ""
 		end#callback 
 
 		@dialogStates.add_bridge_callback("addGroupEnd") do |wdl, allowSerialize|
@@ -322,14 +328,14 @@ module JBB_LayersPanel
 		@dialogStates.add_bridge_callback("collapseGroup") do |wdl, groupID|
 			# puts "collapse " + groupID
 			@model.start_operation("Collapse group layer", true)
-			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 1) if groupID
+			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 1) if groupID && groupID != ""
 			@model.commit_operation
 		end#callback
 
 		@dialogStates.add_bridge_callback("expandGroup") do |wdl, groupID|
 			# puts "expand " + groupID
 			@model.start_operation("Expand group layer", true)
-			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 0) if groupID
+			self.currentContext.set_attribute("jbb_layerspanel_collapseStatesGroups", groupID, 0) if groupID && groupID != ""
 			@model.commit_operation
 		end#callback
 
@@ -344,7 +350,7 @@ module JBB_LayersPanel
 			# puts groupID
 			newGroupName = hashGroup['newGroupName']
 			# puts newGroupName
-			@model.set_attribute("jbb_layerspanel_statesGroups", groupID, newGroupName) if groupID #Store new group's name from ID
+			@model.set_attribute("jbb_layerspanel_statesGroups", groupID, newGroupName) if groupID && groupID != "" #Store new group's name from ID
 			@model.commit_operation
 		end#callback
 		

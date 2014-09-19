@@ -201,10 +201,10 @@ module JBB_LayersPanel
 					next if done_07
 					done_07 = true
 					dict.each { | key, value |
-					   activePage.set_attribute("jbb_layerspanel_tempHiddenGroups", key, value) if key
+					   activePage.set_attribute("jbb_layerspanel_tempHiddenGroups", key, value) if key && key != ""
 					}
 					dict2.each { | key, value |
-					   activePage.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", key, value) if key
+					   activePage.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", key, value) if key && key != ""
 					}
 					JBB_LayersPanel.selectedPageLayers = activePage.layers
 				
@@ -249,16 +249,16 @@ module JBB_LayersPanel
 				next if done_08
 				done_08 = true
 				dict.each { | key, value |
-				   page.set_attribute("jbb_layerspanel_collapseGroups", key, value) if key
+				   page.set_attribute("jbb_layerspanel_collapseGroups", key, value) if key && key != ""
 				}
 				dict2.each { | key, value |
-				   page.set_attribute("jbb_layerspanel_hiddenGroups", key, value) if key
+				   page.set_attribute("jbb_layerspanel_hiddenGroups", key, value) if key && key != ""
 				}
 				dict3.each { | key, value |
-				   page.set_attribute("jbb_layerspanel_hiddenByGroupLayers", key, value) if key
+				   page.set_attribute("jbb_layerspanel_hiddenByGroupLayers", key, value) if key && key != ""
 				}
 				dict4.each { | key, value |
-				   page.set_attribute("jbb_layerspanel_render", key, value) if key
+				   page.set_attribute("jbb_layerspanel_render", key, value) if key && key != ""
 				}
 				activePage = JBB_LayersPanel.model.pages.selected_page
 				JBB_LayersPanel.model.pages.selected_page = activePage
@@ -295,10 +295,10 @@ module JBB_LayersPanel
 			dict2 = activePage.attribute_dictionary "jbb_layerspanel_tempHiddenByGroupLayers", true
 			
 			dict.each { | key, value |
-			   activePage.set_attribute("jbb_layerspanel_hiddenGroups", key, value) if key
+			   activePage.set_attribute("jbb_layerspanel_hiddenGroups", key, value) if key && key != ""
 			}
 			dict2.each { | key, value |
-			   activePage.set_attribute("jbb_layerspanel_hiddenByGroupLayers", key, value) if key
+			   activePage.set_attribute("jbb_layerspanel_hiddenByGroupLayers", key, value) if key && key != ""
 			}
 		}
 	end#def

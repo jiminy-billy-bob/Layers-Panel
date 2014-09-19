@@ -72,7 +72,7 @@ module JBB_LayersPanel
 					if ids[id] != nil
 						puts "Fixed ID for \"" + name + "\""
 						self.incLayerDictID
-						@model.set_attribute("jbb_layerspanel_groups", @layerDictID, name) if @layerDictID
+						@model.set_attribute("jbb_layerspanel_groups", @layerDictID, name) if @layerDictID && @layerDictID != ""
 						id = @layerDictID
 					end#if
 					ids[id] = name

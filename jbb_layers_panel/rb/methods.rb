@@ -167,7 +167,7 @@ module JBB_LayersPanel
 		
 		self.initializeLayerDictID
 		self.incLayerDictID
-		@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) if @layerDictID #Store group's name with ID
+		@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) if @layerDictID && @layerDictID != "" #Store group's name with ID
 		
 		serialized = @model.get_attribute("jbb_layerspanel", "serialized")
 		serialized = "" if serialized == nil
@@ -208,9 +208,25 @@ module JBB_LayersPanel
 	end#def
 	
 	def self.rename_group(groupID, groupName)
-		@model.set_attribute("jbb_layerspanel_groups", groupID, groupName.to_s) if groupID
+		@model.set_attribute("jbb_layerspanel_groups", groupID, groupName.to_s) if groupID && groupID != ""
 		self.refreshDialog
 		return true
+	end#def
+	
+	def self.collapse_group(groupID, all_scenes = true)
+		@model.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+		if @model.pages.length > 0
+			if all_scenes
+				@model.pages.each{|page|
+					page.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+				}
+			else
+				@model.pages.selected_page.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+			end#if
+		end#if
+		@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
+		@previousState = 0
+		self.refreshDialog
 	end#def
 	
 	def self.get_layer_by_ID(layerID)
@@ -259,7 +275,7 @@ module JBB_LayersPanel
 					match.gsub!(/\=(\d+|null)/) { |m| '=' + targetID.to_s } #Replace item parent by target
 				}
 				@model.set_attribute("jbb_layerspanel", "serialized", serialized)
-				self.sort_nextTo(itemID, targetID, "after", false)
+				self.move_nextTo(itemID, targetID, "after", false)
 				self.refreshDialog
 			end#if
 		end#if
@@ -341,9 +357,9 @@ module JBB_LayersPanel
 		layerID = layer.get_attribute("jbb_layerspanel", "ID")
 		context = self.currentContext
 		if bool == false
-			context.set_attribute("jbb_layerspanel_render", layerID, 0) if layerID
+			context.set_attribute("jbb_layerspanel_render", layerID, 0) if layerID && layerID != ""
 		else
-			context.set_attribute("jbb_layerspanel_render", layerID, 2) if layerID
+			context.set_attribute("jbb_layerspanel_render", layerID, 2) if layerID && layerID != ""
 		end#if
 		self.refreshDialog
 		return nil
