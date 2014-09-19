@@ -40,8 +40,11 @@ module JBB_LayersPanel
 
 	class WebdialogBridge < UI::WebDialog
 		def add_bridge_callback(callback, &block)
-			JBB_LayersPanel.empty_layers_to_id_stack
 			add_action_callback(callback) do  |webdialog, params|
+				if callback != "startup" &&  callback != "useRenderEngine" &&  callback != "getCollapsedGroups"
+					JBB_LayersPanel.empty_layers_to_id_stack
+					# puts callback
+				end#if
 				# puts "add_bridge_callback(#{callback}) { |#{params}| }"
 				block.call(webdialog, params)
 				execute_script('skpCallbackReceived();')
@@ -71,7 +74,8 @@ module JBB_LayersPanel
 			if @model.get_attribute("jbb_layerspanel", "layerDictID") != nil #Get layerDictID from model if exists
 				@layerDictID = @model.get_attribute("jbb_layerspanel", "layerDictID")
 			else #Else, create it
-				@layers[0].set_attribute("jbb_layerspanel", "ID", 0) #Give Layer0 ID 0
+				layer0 = @layers[0]
+				layer0.set_attribute("jbb_layerspanel", "ID", 0) if !layer0.deleted? #Give Layer0 ID 0
 				@layerDictID = 0
 			end#if
 			self.incLayerDictID

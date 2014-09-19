@@ -106,7 +106,12 @@ module JBB_LayersPanel
 		layerspanel_tb.add_item cmd_toggle_layerspanel_dlg
 		layerspanel_tb.add_item cmd_toggle_states_dlg
 		if WIN
-			layerspanel_tb.show
+			done = false
+			timer = UI.start_timer(0, false) {
+				next if done
+				done = true
+				layerspanel_tb.restore
+			}
 		end#if
 	end
 
