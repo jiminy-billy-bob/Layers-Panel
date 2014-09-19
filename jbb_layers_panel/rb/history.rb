@@ -29,8 +29,8 @@ module JBB_LayersPanel
 				@serialized_history.shift if @serialized_history.length >= 200
 				@serialized_history << [Time.now.strftime("%Y-%m-%d %H:%M:%S"), serialized, "History"]
 				@model.start_operation("Layers Panel history", true)
-				@model.set_attribute("jbb_layerspanel", "serialized", serialized)
-				@model.set_attribute("jbb_layerspanel", "serialized_history", @serialized_history)
+				self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized)
+				self.set_attribute(@model, "jbb_layerspanel", "serialized_history", @serialized_history)
 				self.refreshDialog
 				@model.commit_operation
 			end#if

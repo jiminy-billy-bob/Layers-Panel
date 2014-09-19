@@ -195,18 +195,18 @@ module JBB_LayersPanel
 
 	def self.hideByGroup(layerID)
 		context = self.currentContext
-		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID, 1) if layerID && layerID != ""
+		self.set_attribute(context, "jbb_layerspanel_tempHiddenByGroupLayers", layerID, 1)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerID, 1) if layerID && layerID != ""
+			self.set_attribute(context, "jbb_layerspanel_hiddenByGroupLayers", layerID, 1)
 		end#if
 		# puts layer.name + " unhidden by group"
 	end#def
 
 	def self.unHideByGroup(layerID)
 		context = self.currentContext
-		context.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID, 0) if layerID && layerID != ""
+		self.set_attribute(context, "jbb_layerspanel_tempHiddenByGroupLayers", layerID, 0)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenByGroupLayers", layerID, 0) if layerID && layerID != ""
+			self.set_attribute(context, "jbb_layerspanel_hiddenByGroupLayers", layerID, 0)
 		end#if
 		# puts layer.name + " unhidden by group"
 	end#def
@@ -218,17 +218,17 @@ module JBB_LayersPanel
 		else
 			value = 1
 		end#if
-		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupID, value) if groupID && groupID != ""
+		self.set_attribute(context, "jbb_layerspanel_tempHiddenGroups", groupID, value)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenGroups", groupID, value) if groupID && groupID != ""
+			self.set_attribute(context, "jbb_layerspanel_hiddenGroups", groupID, value)
 		end#if
 	end#def
 		
 	def self.unHideGroup(groupID)
 		context = self.currentContext
-		context.set_attribute("jbb_layerspanel_tempHiddenGroups", groupID, 0) if groupID && groupID != ""
+		self.set_attribute(context, "jbb_layerspanel_tempHiddenGroups", groupID, 0)
 		if Sketchup.read_default("jbb_layers_panel", "auto_update") == true
-			context.set_attribute("jbb_layerspanel_hiddenGroups", groupID, 0) if groupID && groupID != ""
+			self.set_attribute(context, "jbb_layerspanel_hiddenGroups", groupID, 0)
 		end#if
 	end#def
 
@@ -267,7 +267,7 @@ module JBB_LayersPanel
 			@dialog.execute_script("storeSerialize();")
 			serialized = @dialog.get_element_value("serialize")
 			# puts serialized
-			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
+			self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
 			
 			serialized_history = @model.get_attribute("jbb_layerspanel", "serialized_history")
 			if serialized_history
@@ -276,7 +276,7 @@ module JBB_LayersPanel
 				serialized_history = []
 			end#if
 			serialized_history << [Time.now.strftime("%Y-%m-%d %H:%M:%S"), serialized, reason]
-			@model.set_attribute("jbb_layerspanel", "serialized_history", serialized_history)
+			self.set_attribute(@model, "jbb_layerspanel", "serialized_history", serialized_history)
 		end#if
 	end#def
 
@@ -551,7 +551,7 @@ module JBB_LayersPanel
 			@model.start_operation("Lock layer", true)
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
-					layer.set_attribute("jbb_layerspanel", "lock", 1)
+					self.set_attribute(layer, "jbb_layerspanel", "lock", 1)
 					# puts layer.name + " locked"
 					break
 				end#if
@@ -563,7 +563,7 @@ module JBB_LayersPanel
 			@model.start_operation("Unlock layer", true)
 			@layers.each{|layer| 
 				if layer.get_attribute("jbb_layerspanel", "ID").to_i == layerID.to_i
-					layer.set_attribute("jbb_layerspanel", "lock", 0)
+					self.set_attribute(layer, "jbb_layerspanel", "lock", 0)
 					# puts layer.name + " unlocked"
 					break
 				end#if
@@ -687,7 +687,7 @@ module JBB_LayersPanel
 			self.incLayerDictID
 			# puts groupName
 			# puts @layerDictID
-			@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) if @layerDictID && @layerDictID != "" #Store group's name with ID
+			self.set_attribute(@model, "jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
 			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 		end#callback addGroup
@@ -704,7 +704,7 @@ module JBB_LayersPanel
 			# puts groupID
 			newGroupName = hashGroup['newGroupName']
 			# puts newGroupName
-			@model.set_attribute("jbb_layerspanel_groups", groupID, newGroupName) if groupID && groupID != "" #Store new group's name from ID
+			self.set_attribute(@model, "jbb_layerspanel_groups", groupID, newGroupName) #Store new group's name from ID
 			@model.commit_operation
 		end#callback renameGroup
 
@@ -716,7 +716,7 @@ module JBB_LayersPanel
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+			self.set_attribute(dict, "jbb_layerspanel_collapseGroups", groupID, 1)
 			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 			@model.commit_operation
@@ -730,7 +730,7 @@ module JBB_LayersPanel
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_collapseGroups", groupID, 0) if groupID && groupID != ""
+			self.set_attribute(dict, "jbb_layerspanel_collapseGroups", groupID, 0)
 			@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
 			@previousState = 0
 			@model.commit_operation
@@ -799,7 +799,7 @@ module JBB_LayersPanel
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_render", itemID, 2) if itemID && itemID != ""
+			self.set_attribute(dict, "jbb_layerspanel_render", itemID, 2)
 			@model.commit_operation
 		end#callback render
 
@@ -811,7 +811,7 @@ module JBB_LayersPanel
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_render", itemID, 0) if itemID && itemID != ""
+			self.set_attribute(dict, "jbb_layerspanel_render", itemID, 0)
 			@model.commit_operation
 		end#callback noRender
 
@@ -823,7 +823,7 @@ module JBB_LayersPanel
 			else
 				dict = @model.pages.selected_page
 			end#if
-			dict.set_attribute("jbb_layerspanel_render", itemID, 1) if itemID && itemID != ""
+			self.set_attribute(dict, "jbb_layerspanel_render", itemID, 1)
 			@model.commit_operation
 		end#callback noRenderByGroup
 
@@ -851,11 +851,11 @@ module JBB_LayersPanel
 					
 					#Store current visibility to revert later
 					if layer.visible?
-						layer.set_attribute("jbb_layerspanel", "visibilityBeforeRender", 2)
+						self.set_attribute(layer, "jbb_layerspanel", "visibilityBeforeRender", 2)
 					elsif dict.get_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID) == 1
-						layer.set_attribute("jbb_layerspanel", "visibilityBeforeRender", 1)
+						self.set_attribute(layer, "jbb_layerspanel", "visibilityBeforeRender", 1)
 					else
-						layer.set_attribute("jbb_layerspanel", "visibilityBeforeRender", 0)
+						self.set_attribute(layer, "jbb_layerspanel", "visibilityBeforeRender", 0)
 					end#if
 					
 					if dict.get_attribute("jbb_layerspanel_render", layerID) == 0
@@ -954,7 +954,7 @@ module JBB_LayersPanel
 					if layer.get_attribute("jbb_layerspanel", "visibilityBeforeRender") == 0
 						layer.visible = false
 					elsif layer.get_attribute("jbb_layerspanel", "visibilityBeforeRender") == 1
-						dict.set_attribute("jbb_layerspanel_tempHiddenByGroupLayers", layerID, 1) if layerID && layerID != ""
+						self.set_attribute(dict, "jbb_layerspanel_tempHiddenByGroupLayers", layerID, 1)
 						layer.visible = false
 					elsif layer.get_attribute("jbb_layerspanel", "visibilityBeforeRender") == 2
 						layer.visible = true

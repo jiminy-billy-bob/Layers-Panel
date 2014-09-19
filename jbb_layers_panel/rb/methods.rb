@@ -3,6 +3,14 @@ module JBB_LayersPanel
 
 	
 	
+	def self.set_attribute(target, name, key, value)
+		if key && key != ""
+			target.set_attribute(name, key, value)
+		else
+			puts "Attribute key is empty - Name : " + name + " - value : " + value.to_s
+		end#if
+	end#def
+	
 	def self.jsonToHash(string)
 		string = string.to_s.gsub('/',"\\").gsub('\\\\',"\\") #This is for unicode values
 		hashString = eval( string.inspect.gsub(':','=>') ) #Convert Json string to hash string
@@ -65,7 +73,7 @@ module JBB_LayersPanel
 	
 	def self.incLayerDictID
 		@layerDictID = @layerDictID + 1
-		@model.set_attribute("jbb_layerspanel", "layerDictID", @layerDictID) #Store incremented layerDictID in model attribute dict
+		self.set_attribute(@model, "jbb_layerspanel", "layerDictID", @layerDictID) #Store incremented layerDictID in model attribute dict
 		# puts "incLayerDictID"
 	end#def
 	
@@ -87,7 +95,7 @@ module JBB_LayersPanel
 			#puts layer.name + " already IDed " + layer.get_attribute("jbb_layerspanel", "ID").to_s
 		else
 			self.incLayerDictID
-			layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
+			self.set_attribute(layer, "jbb_layerspanel", "ID", @layerDictID)
 			# puts "layerDictID " + @layerDictID.to_s
 		end#if
 	end#def
@@ -167,12 +175,12 @@ module JBB_LayersPanel
 		
 		self.initializeLayerDictID
 		self.incLayerDictID
-		@model.set_attribute("jbb_layerspanel_groups", @layerDictID, groupName) if @layerDictID && @layerDictID != "" #Store group's name with ID
+		self.set_attribute(@model, "jbb_layerspanel_groups", @layerDictID, groupName) #Store group's name with ID
 		
 		serialized = @model.get_attribute("jbb_layerspanel", "serialized")
 		serialized = "" if serialized == nil
 		serialized = serialized + 'group[' + @layerDictID.to_s + ']=null'
-		@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+		self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized)
 		
 		self.refreshDialog
 		@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
@@ -202,26 +210,26 @@ module JBB_LayersPanel
 		serialized.gsub!(/(layer|group)\[\d+\]\=#{groupID}/) { |match| 
 			match.gsub!(/\=#{groupID}/) { |match| '=null' } 
 		}
-		@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+		self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized)
 		self.refreshDialog
 		return state
 	end#def
 	
 	def self.rename_group(groupID, groupName)
-		@model.set_attribute("jbb_layerspanel_groups", groupID, groupName.to_s) if groupID && groupID != ""
+		self.set_attribute(@model, "jbb_layerspanel_groups", groupID, groupName.to_s)
 		self.refreshDialog
 		return true
 	end#def
 	
 	def self.collapse_group(groupID, all_scenes = true)
-		@model.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+		self.set_attribute(@model, "jbb_layerspanel_collapseGroups", groupID, 1)
 		if @model.pages.length > 0
 			if all_scenes
 				@model.pages.each{|page|
-					page.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+					self.set_attribute(page, "jbb_layerspanel_collapseGroups", groupID, 1)
 				}
 			else
-				@model.pages.selected_page.set_attribute("jbb_layerspanel_collapseGroups", groupID, 1) if groupID && groupID != ""
+				self.set_attribute(@model.pages.selected_page, "jbb_layerspanel_collapseGroups", groupID, 1)
 			end#if
 		end#if
 		@dialogStates.execute_script("visibilityChanged();") if @dialogStates != nil
@@ -274,7 +282,7 @@ module JBB_LayersPanel
 					item = match
 					match.gsub!(/\=(\d+|null)/) { |m| '=' + targetID.to_s } #Replace item parent by target
 				}
-				@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+				self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized)
 				self.move_nextTo(itemID, targetID, "after", false)
 				self.refreshDialog
 			end#if
@@ -330,7 +338,7 @@ module JBB_LayersPanel
 			serialized.to_s.gsub!(/&{2}/) { |match| 
 				'&'
 			}
-			@model.set_attribute("jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
+			self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized) #Store serialized in model attribute dict
 			self.refreshDialog
 		end#if
 		
@@ -357,9 +365,9 @@ module JBB_LayersPanel
 		layerID = layer.get_attribute("jbb_layerspanel", "ID")
 		context = self.currentContext
 		if bool == false
-			context.set_attribute("jbb_layerspanel_render", layerID, 0) if layerID && layerID != ""
+			self.set_attribute(context, "jbb_layerspanel_render", layerID, 0)
 		else
-			context.set_attribute("jbb_layerspanel_render", layerID, 2) if layerID && layerID != ""
+			self.set_attribute(context, "jbb_layerspanel_render", layerID, 2)
 		end#if
 		self.refreshDialog
 		return nil

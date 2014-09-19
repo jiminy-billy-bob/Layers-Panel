@@ -54,7 +54,7 @@ module JBB_LayersPanel
 						end#if
 					}
 				if @model.get_attribute("jbb_layerspanel", "layerDictID") < highestID.to_i + 1
-					@model.set_attribute("jbb_layerspanel", "layerDictID", highestID.to_i+1)
+					self.set_attribute(@model, "jbb_layerspanel", "layerDictID", highestID.to_i+1)
 					@layerDictID = highestID.to_i+1
 				end#if
 				
@@ -72,19 +72,19 @@ module JBB_LayersPanel
 					if ids[id] != nil
 						puts "Fixed ID for \"" + name + "\""
 						self.incLayerDictID
-						@model.set_attribute("jbb_layerspanel_groups", @layerDictID, name) if @layerDictID && @layerDictID != ""
+						self.set_attribute(@model, "jbb_layerspanel_groups", @layerDictID, name)
 						id = @layerDictID
 					end#if
 					ids[id] = name
 					"group[" + id.to_s + "]" #Replace id in serialized string
 				end
-				@model.set_attribute("jbb_layerspanel", "serialized", serialized)
+				self.set_attribute(@model, "jbb_layerspanel", "serialized", serialized)
 				
 				#Then fix layers
 				@layers.each{|layer| 
 						if ids[layer.get_attribute("jbb_layerspanel", "ID")] != nil
 							puts "Fixed ID for \"" + layer.name + "\""
-							layer.set_attribute("jbb_layerspanel", "ID", @layerDictID)
+							self.set_attribute(layer, "jbb_layerspanel", "ID", @layerDictID)
 							self.incLayerDictID
 						end#if
 						ids[layer.get_attribute("jbb_layerspanel", "ID")] = layer.name
